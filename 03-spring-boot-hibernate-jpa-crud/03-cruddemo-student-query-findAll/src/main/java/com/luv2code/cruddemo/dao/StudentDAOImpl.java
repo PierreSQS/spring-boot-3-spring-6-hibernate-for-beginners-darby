@@ -2,7 +2,9 @@ package com.luv2code.cruddemo.dao;
 
 import com.luv2code.cruddemo.entity.Student;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,11 +35,21 @@ public class StudentDAOImpl implements StudentDAO {
 
     @Override
     public List<Student> findAll() {
-        // create query
-        TypedQuery<Student> theQuery = entityManager.createQuery("FROM Student", Student.class);
+        // create CriteriaBuilder
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+        // create CriteriaQuery
+        CriteriaQuery<Student> criteriaQuery = criteriaBuilder.createQuery(Student.class);
+
+        // create Root
+        Root<Student> studentRoot = criteriaQuery.from(Student.class);
+
+        // select
+        criteriaQuery.select(studentRoot);
+
 
         // return query results
-        return theQuery.getResultList();
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
 }
