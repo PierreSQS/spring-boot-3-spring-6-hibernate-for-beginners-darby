@@ -59,7 +59,11 @@ public class StudentDAOImpl implements StudentDAO {
         ParameterExpression<String> lastNameParam = criteriaBuilder.parameter(String.class);
         criteriaQuery.where(criteriaBuilder.equal(root.get("lastName"), lastNameParam));
 
-        return entityManager.createQuery(criteriaQuery).getResultList();
+        // get TypedQuery and set parameter
+        TypedQuery<Student> query = entityManager.createQuery(criteriaQuery);
+        query.setParameter(lastNameParam,theLastName);
+
+        return query.getResultList();
     }
 
 }
