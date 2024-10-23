@@ -39,9 +39,7 @@ public class CruddemoApplication {
 		List<Student> theStudents = studentDAO.findByLastName("Doe");
 
 		// display list of students
-		for (Student tempStudent : theStudents) {
-			System.out.println(tempStudent);
-		}
+		theStudents.forEach(System.out::println);
 	}
 
 	private void queryForStudents(StudentDAO studentDAO) {
