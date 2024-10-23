@@ -3,6 +3,10 @@ package com.luv2code.cruddemo.dao;
 import com.luv2code.cruddemo.entity.Student;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.ParameterExpression;
+import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,15 +46,20 @@ public class StudentDAOImpl implements StudentDAO {
 
     @Override
     public List<Student> findByLastName(String theLastName) {
-        // create query
-        TypedQuery<Student> theQuery = entityManager.createQuery(
-                                        "FROM Student WHERE lastName=:theData", Student.class);
+        // create CriteriaBuilder
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
-        // set query parameters
-        theQuery.setParameter("theData", theLastName);
+        // create CriteriaQuery
+        CriteriaQuery<Student> criteriaQuery = criteriaBuilder.createQuery(Student.class);
 
-        // return query results
-        return theQuery.getResultList();
+        // create Root
+        Root<Student> root = criteriaQuery.from(Student.class);
+
+        // set query parameter
+        ParameterExpression<String> lastNameParam = criteriaBuilder.parameter(String.class);
+        criteriaQuery.where(criteriaBuilder.equal(root.get("lastName"), lastNameParam));
+
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
 }
