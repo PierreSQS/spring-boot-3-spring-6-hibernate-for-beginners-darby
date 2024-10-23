@@ -37,9 +37,7 @@ public class CruddemoApplication {
 		List<Student> theStudents = studentDAO.findAll();
 
 		// display list of students
-		for (Student tempStudent : theStudents) {
-			System.out.println(tempStudent);
-		}
+		theStudents.forEach(System.out::println);
 	}
 
 	private void readStudent(StudentDAO studentDAO) {
