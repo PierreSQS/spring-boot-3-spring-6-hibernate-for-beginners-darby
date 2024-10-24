@@ -19,11 +19,7 @@ public class CruddemoApplication {
 	@Bean
 	public CommandLineRunner commandLineRunner(AppDAO appDAO) {
 
-		return runner -> {
-
-			createCourseAndStudents(appDAO);
-
-		};
+		return runner -> createCourseAndStudents(appDAO);
 	}
 
 	private void createCourseAndStudents(AppDAO appDAO) {
