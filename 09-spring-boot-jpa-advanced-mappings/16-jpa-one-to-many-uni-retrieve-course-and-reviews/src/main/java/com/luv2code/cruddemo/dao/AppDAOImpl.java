@@ -5,7 +5,6 @@ import com.luv2code.cruddemo.entity.Instructor;
 import com.luv2code.cruddemo.entity.InstructorDetail;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,10 +14,9 @@ import java.util.List;
 public class AppDAOImpl implements AppDAO {
 
     // define field for entity manager
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     // inject entity manager using constructor injection
-    @Autowired
     public AppDAOImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
@@ -66,7 +64,7 @@ public class AppDAOImpl implements AppDAO {
         InstructorDetail tempInstructorDetail = entityManager.find(InstructorDetail.class, theId);
 
         // remove the associated object reference
-        // break bi-directional link
+        // break bidirectional link
         //
         tempInstructorDetail.getInstructor().setInstructorDetail(null);
 
@@ -83,9 +81,8 @@ public class AppDAOImpl implements AppDAO {
         query.setParameter("data", theId);
 
         // execute query
-        List<Course> courses = query.getResultList();
 
-        return courses;
+        return query.getResultList();
     }
 
     @Override
@@ -100,9 +97,8 @@ public class AppDAOImpl implements AppDAO {
         query.setParameter("data", theId);
 
         // execute query
-        Instructor instructor = query.getSingleResult();
 
-        return instructor;
+        return query.getSingleResult();
     }
 
     @Override
@@ -151,9 +147,8 @@ public class AppDAOImpl implements AppDAO {
         query.setParameter("data", theId);
 
         // execute query
-        Course course = query.getSingleResult();
 
-        return course;
+        return query.getSingleResult();
     }
 }
 
