@@ -1,12 +1,15 @@
 package com.luv2code.cruddemo;
 
 import com.luv2code.cruddemo.dao.AppDAO;
+import com.luv2code.cruddemo.entity.Course;
 import com.luv2code.cruddemo.entity.Instructor;
 import com.luv2code.cruddemo.entity.InstructorDetail;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import java.util.Set;
 
 @SpringBootApplication
 public class CruddemoApplication {
@@ -19,14 +22,42 @@ public class CruddemoApplication {
 	public CommandLineRunner commandLineRunner(AppDAO appDAO) {
 
 		return runner -> {
-			// createInstructor(appDAO);
+//			createInstructor(appDAO);
+//
+//			findInstructor(appDAO);
+//
+//			deleteInstructor(appDAO);
+//
+//			findInstructorDetail(appDAO);
 
-			// findInstructor(appDAO);
+			createInstructorWithCourses(appDAO);
 
-			// deleteInstructor(appDAO);
 
-			findInstructorDetail(appDAO);
 		};
+	}
+
+	private void createInstructorWithCourses(AppDAO dao) {
+		// create instructor
+		Instructor instructor = new Instructor("Pierrot","Mongonamm",
+				"pierrot.mongonnam@luv2code.com");
+
+		// create the instructor detail
+		InstructorDetail instructorDetail =
+				new InstructorDetail(
+						"http://www.youtube.com/mongonnam",
+						"Video Games");
+
+		// create instructor courses
+		Course course1 = new Course("SpringBoot 3");
+		Course course2 = new Course("Junit5");
+
+		// associate the objects
+		instructor.setCourses(Set.of(course1, course2));
+		instructor.setInstructorDetail(instructorDetail);
+
+		dao.save(instructor);
+
+
 	}
 
 	private void findInstructorDetail(AppDAO appDAO) {
