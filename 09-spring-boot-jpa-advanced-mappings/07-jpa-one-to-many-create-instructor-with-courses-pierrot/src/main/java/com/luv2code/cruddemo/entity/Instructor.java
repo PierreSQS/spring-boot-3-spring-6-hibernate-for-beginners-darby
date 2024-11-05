@@ -113,17 +113,17 @@ public class Instructor {
         return courses;
     }
 
-    public void setCourses(Set<Course> courses) {
-        this.courses = courses;
-    }
-
     // add convenience methods for bidirectional relationship
-    public void addCourse(Course course) {
-        if (course == null) {
+    public void addCourses(Set<Course> instrCourses) {
+        if (courses == null) {
             courses = new HashSet<>();
         }
-        courses.add(course);
-        Objects.requireNonNull(course).setInstructor(this);
+
+        instrCourses.forEach(course -> {
+            courses.add(course);
+            Objects.requireNonNull(course).setInstructor(this);
+        });
+
     }
 }
 

@@ -66,7 +66,7 @@ public class CruddemoApplication {
 		Course course2 = new Course("Junit5");
 
 		// associate the objects
-		instructor.setCourses(Set.of(course1, course2));
+		instructor.addCourses(Set.of(course1, course2));
 		instructor.setInstructorDetail(instructorDetail);
 
 		dao.save(instructor);
