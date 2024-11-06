@@ -9,6 +9,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.Set;
+
 @SpringBootApplication
 public class CruddemoApplication {
 
@@ -38,49 +40,44 @@ public class CruddemoApplication {
 	}
 
 	private void findInstructorWithCourses(AppDAO appDAO) {
+		int instructID = 1;
 
-		int theId = 1;
-		System.out.println("Finding instructor id: " + theId);
+		System.out.println("Finding the Instructor with the ID: "+instructID);
+		Instructor instructorById = appDAO.findInstructorById(instructID);
 
-		Instructor tempInstructor = appDAO.findInstructorById(theId);
-
-		System.out.println("tempInstructor: " + tempInstructor);
-		System.out.println("the associated courses: " + tempInstructor.getCourses());
+		System.out.println("Found Intructor: "+instructorById);
+		System.out.println("Intructor Courses: "+instructorById.getCourses());
 
 		System.out.println("Done!");
 	}
 
-	private void createInstructorWithCourses(AppDAO appDAO) {
-
-		// create the instructor
-		Instructor tempInstructor =
-				new Instructor("Susan", "Public", "susan.public@luv2code.com");
+	private void createInstructorWithCourses(AppDAO dao) {
+		// create instructor
+		Instructor instructor = new Instructor("Pierrot","Mongonamm",
+				"pierrot.mongonnam@luv2code.com");
 
 		// create the instructor detail
-		InstructorDetail tempInstructorDetail =
+		InstructorDetail instructorDetail =
 				new InstructorDetail(
-						"http://www.youtube.com",
+						"http://www.youtube.com/mongonnam",
 						"Video Games");
 
+		// create instructor courses
+		Course course1 = new Course("SpringBoot 3");
+		Course course2 = new Course("Junit5");
+
 		// associate the objects
-		tempInstructor.setInstructorDetail(tempInstructorDetail);
-
-		// create some courses
-		Course tempCourse1 = new Course("Air Guitar - The Ultimate Guide");
-		Course tempCourse2 = new Course("The Pinball Masterclass");
-
-		// add courses to instructor
-		tempInstructor.add(tempCourse1);
-		tempInstructor.add(tempCourse2);
+		instructor.addCourses(Set.of(course1, course2));
+		instructor.setInstructorDetail(instructorDetail);
 
 		// save the instructor
 		//
 		// NOTE: this will ALSO save the courses
 		// because of CascadeType.PERSIST
 		//
-		System.out.println("Saving instructor: " + tempInstructor);
-		System.out.println("The courses: " + tempInstructor.getCourses());
-		appDAO.save(tempInstructor);
+		System.out.println("Saving instructor: " + instructor);
+		System.out.println("The courses: " + instructor.getCourses());
+		dao.save(instructor);
 
 		System.out.println("Done!");
 	}

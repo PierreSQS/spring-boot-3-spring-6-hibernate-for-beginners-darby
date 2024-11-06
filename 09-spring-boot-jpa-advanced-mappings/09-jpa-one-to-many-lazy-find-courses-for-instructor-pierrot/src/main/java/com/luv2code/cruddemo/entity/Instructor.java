@@ -2,8 +2,9 @@ package com.luv2code.cruddemo.entity;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name="instructor")
@@ -42,10 +43,10 @@ public class Instructor {
     private InstructorDetail instructorDetail;
 
     @OneToMany(mappedBy = "instructor",
-               fetch = FetchType.EAGER,
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-                          CascadeType.DETACH, CascadeType.REFRESH})
-    private List<Course> courses;
+                          CascadeType.DETACH,CascadeType.REFRESH},
+               fetch = FetchType.EAGER)
+    private Set<Course> courses;
 
     public Instructor() {
 
@@ -108,25 +109,21 @@ public class Instructor {
                 '}';
     }
 
-    public List<Course> getCourses() {
+    public Set<Course> getCourses() {
         return courses;
     }
 
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
-    }
-
-    // add convenience methods for bi-directional relationship
-
-    public void add(Course tempCourse) {
-
+    // add convenience methods for bidirectional relationship
+    public void addCourses(Set<Course> instrCourses) {
         if (courses == null) {
-            courses = new ArrayList<>();
+            courses = new HashSet<>();
         }
 
-        courses.add(tempCourse);
+        instrCourses.forEach(course -> {
+            courses.add(course);
+            Objects.requireNonNull(course).setInstructor(this);
+        });
 
-        tempCourse.setInstructor(this);
     }
 }
 
