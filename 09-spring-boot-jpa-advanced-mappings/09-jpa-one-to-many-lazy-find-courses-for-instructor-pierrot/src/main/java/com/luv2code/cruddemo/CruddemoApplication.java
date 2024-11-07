@@ -9,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.List;
 import java.util.Set;
 
 @SpringBootApplication
@@ -34,9 +35,29 @@ public class CruddemoApplication {
 
 			// createInstructorWithCourses(appDAO);
 
-			findInstructorWithCourses(appDAO);
+			// findInstructorWithCourses(appDAO);
+
+			findCoursesByInstructorID(appDAO);
 
 		};
+	}
+
+	private void findCoursesByInstructorID(AppDAO appDAO) {
+		int instructID = 1;
+
+		System.out.println("Finding the Instructor with the ID: "+instructID);
+		Instructor instructorById = appDAO.findInstructorById(instructID);
+		System.out.println("The found instructor: "+instructorById);
+
+		System.out.println("Finding the Courses of the Instructor with the ID: "+instructID);
+		List<Course> coursesByInstructorID = appDAO.findCoursesByInstructorID(instructID);
+		System.out.println("The courses of the instructor: "+coursesByInstructorID);
+
+		System.out.println("Getting the associated courses of the Instructor with the ID: "+instructID);
+		Set<Course> associatesCourses = instructorById.getCourses();// should raise exception since lazy loading
+		System.out.println("the associated courses: "+associatesCourses);
+
+		System.out.println("Done!");
 	}
 
 	private void findInstructorWithCourses(AppDAO appDAO) {
@@ -130,19 +151,6 @@ public class CruddemoApplication {
 	}
 
 	private void createInstructor(AppDAO appDAO) {
-
-		/*
-		// create the instructor
-		Instructor tempInstructor =
-				new Instructor("Chad", "Darby", "darby@luv2code.com");
-
-		// create the instructor detail
-		InstructorDetail tempInstructorDetail =
-				new InstructorDetail(
-						"http://www.luv2code.com/youtube",
-						"Luv 2 code!!!");
-		*/
-
 		// create the instructor
 		Instructor tempInstructor =
 				new Instructor("Madhu", "Patel", "madhu@luv2code.com");
