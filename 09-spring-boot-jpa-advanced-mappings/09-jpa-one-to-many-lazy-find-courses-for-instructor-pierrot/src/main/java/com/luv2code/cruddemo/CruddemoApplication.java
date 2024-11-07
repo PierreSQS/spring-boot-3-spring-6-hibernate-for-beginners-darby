@@ -55,7 +55,7 @@ public class CruddemoApplication {
 		System.out.println("The courses of the instructor: "+coursesByInstructorID);
 
 		// workaround for the lazy loading issue in the associated courses
-		instructorById.addCourses(new HashSet<>(coursesByInstructorID));
+		instructorById.setCourses(new HashSet<>(coursesByInstructorID));
 
 		System.out.println("Getting the associated courses of the Instructor with the ID: "+instructID);
 		Set<Course> associatesCourses = instructorById.getCourses();// should raise exception since lazy loading

@@ -113,6 +113,10 @@ public class Instructor {
         return courses;
     }
 
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
+    }
+
     // add convenience methods for bidirectional relationship
     public void addCourses(Set<Course> instrCourses) {
         if (courses == null) {
