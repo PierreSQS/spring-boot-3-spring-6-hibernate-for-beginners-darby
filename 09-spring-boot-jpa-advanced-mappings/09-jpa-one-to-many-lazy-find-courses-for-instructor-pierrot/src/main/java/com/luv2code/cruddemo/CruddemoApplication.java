@@ -9,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -52,6 +53,9 @@ public class CruddemoApplication {
 		System.out.println("Finding the Courses of the Instructor with the ID: "+instructID);
 		List<Course> coursesByInstructorID = appDAO.findCoursesByInstructorID(instructID);
 		System.out.println("The courses of the instructor: "+coursesByInstructorID);
+
+		// workaround for the lazy loading issue in the associated courses
+		instructorById.addCourses(new HashSet<>(coursesByInstructorID));
 
 		System.out.println("Getting the associated courses of the Instructor with the ID: "+instructID);
 		Set<Course> associatesCourses = instructorById.getCourses();// should raise exception since lazy loading
