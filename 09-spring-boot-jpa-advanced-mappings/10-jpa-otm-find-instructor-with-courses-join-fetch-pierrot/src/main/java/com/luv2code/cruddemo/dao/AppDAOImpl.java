@@ -86,6 +86,7 @@ public class AppDAOImpl implements AppDAO {
         TypedQuery<Instructor> instructorTypedQuery = entityManager.createQuery(
                 "select i from Instructor i " +
                         "JOIN FETCH i.courses " +
+                        "JOIN FETCH i.instructorDetail " +
                         "where i.id = :data", Instructor.class);
 
         instructorTypedQuery.setParameter("data", theID);
