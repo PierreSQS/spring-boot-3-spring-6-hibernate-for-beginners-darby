@@ -77,6 +77,21 @@ public class AppDAOImpl implements AppDAO {
         return query.getResultList();
 
     }
+
+    @Override
+    public Instructor findInstructorByIdJoinFetch(int theID) {
+
+        // EVEN WITH THE FetchType = LAZY ON OneToMany THE QUERY
+        // STILL LOADS THE INSTRUCTOR WITH COURSES !!!
+        TypedQuery<Instructor> instructorTypedQuery = entityManager.createQuery(
+                "select i from Instructor i " +
+                        "JOIN FETCH i.courses " +
+                        "where i.id = :data", Instructor.class);
+
+        instructorTypedQuery.setParameter("data", theID);
+
+        return instructorTypedQuery.getSingleResult();
+    }
 }
 
 
