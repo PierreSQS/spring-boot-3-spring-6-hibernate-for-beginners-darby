@@ -27,26 +27,25 @@ public class CruddemoApplication {
 
 			// createInstructorWithCourses(appDAO);
 
-			updateInstructor(appDAO);
+			updateCourse(appDAO);
 
 		};
 	}
 
-	private void updateInstructor(AppDAO appDAO) {
-		int instructID = 1;
+	private void updateCourse(AppDAO appDAO) {
+		int instructID = 10;
 
-		log.info("Finding The Instructor by ID : {}", instructID);
-		Instructor foundInstructor = appDAO.findInstructorById(instructID);
-		log.info("Found Intructor: {}", foundInstructor);
+		log.info("Finding Course with the ID {}",instructID);
+		Course foundCourse = appDAO.findCourseByID(instructID);
+		log.info("found Course: {}", foundCourse);
 
-		// Changing the foundInstructor
-		foundInstructor.setLastName("TESTER");
+		log.info("Updating the Course...");
+		foundCourse.setTitle("Updated Title");
+		appDAO.updateCourse(foundCourse);
+		log.info("The updated Course: {}", foundCourse);
 
-		log.info("Updating the Instructor...");
-		appDAO.updateInstructor(foundInstructor);
-
-		log.info("The changed Instructor {}", foundInstructor);
 		printDoneMessage();
+
 	}
 
 	private static void printDoneMessage() {
