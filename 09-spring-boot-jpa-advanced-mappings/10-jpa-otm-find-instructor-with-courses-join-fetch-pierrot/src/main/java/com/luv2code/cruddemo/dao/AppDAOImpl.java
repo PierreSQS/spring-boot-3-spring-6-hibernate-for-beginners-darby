@@ -5,6 +5,10 @@ import com.luv2code.cruddemo.entity.Instructor;
 import com.luv2code.cruddemo.entity.InstructorDetail;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,12 +87,25 @@ public class AppDAOImpl implements AppDAO {
 
         // EVEN WITH THE FetchType = LAZY ON OneToMany THE QUERY
         // STILL LOADS THE INSTRUCTOR WITH COURSES !!!
-        TypedQuery<Instructor> instructorTypedQuery = entityManager.createQuery(
-                "select i from Instructor i " +
-                        "JOIN FETCH i.courses " +
-                        "JOIN FETCH i.instructorDetail " +
-                        "where i.id = :data", Instructor.class);
 
+        // Step 1: Get CriteriaBuilder instance
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+        // Step 2: Create CriteriaQuery for the Instructor entity
+        CriteriaQuery<Instructor> criteriaQuery = criteriaBuilder.createQuery(Instructor.class);
+
+        // Step 3: Define the root entity (Instructor) and specify joins
+        Root<Instructor> instructorRoot = criteriaQuery.from(Instructor.class);
+        instructorRoot.fetch("courses", JoinType.INNER);
+        instructorRoot.fetch("instructorDetail", JoinType.INNER);
+
+        // Step 4: Set the where condition
+        criteriaQuery.select(instructorRoot)
+                .where(criteriaBuilder.equal(instructorRoot.get("id"),
+                        criteriaBuilder.parameter(Integer.class, "data")));
+
+        // Step 5: Create the typed query and set the parameter
+        TypedQuery<Instructor> instructorTypedQuery = entityManager.createQuery(criteriaQuery);
         instructorTypedQuery.setParameter("data", theID);
 
         return instructorTypedQuery.getSingleResult();
