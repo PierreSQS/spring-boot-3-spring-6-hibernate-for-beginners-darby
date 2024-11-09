@@ -22,6 +22,8 @@ public interface AppDAO {
 
     Instructor findInstructorByIdJoinFetch(int theID);
 
+    void updateIntstructor( Instructor instructorUpdate);
+
 }
 
 

@@ -81,7 +81,7 @@ public class AppDAOImpl implements AppDAO {
     @Override
     public Instructor findInstructorByIdJoinFetch(int theID) {
 
-        // EVEN WITH THE FetchType = LAZY ON OneToMany THE QUERY
+        // EVEN WITH THE FetchType = LAZY ON OneToMany, THE QUERY
         // STILL LOADS THE INSTRUCTOR WITH COURSES !!!
         TypedQuery<Instructor> instructorTypedQuery = entityManager.createQuery(
                 "select i from Instructor i " +
@@ -92,6 +92,13 @@ public class AppDAOImpl implements AppDAO {
         instructorTypedQuery.setParameter("data", theID);
 
         return instructorTypedQuery.getSingleResult();
+    }
+
+    @Override
+    @Transactional // DON'T FORGET IT SINCE WE ARE CHANGING THE DB-DATA
+    public void updateIntstructor(Instructor instructorUpdate) {
+        // MERGE WILL UPDATE ANY EXISTING INSTRUCTOR !!
+        entityManager.merge(instructorUpdate);
     }
 }
 
