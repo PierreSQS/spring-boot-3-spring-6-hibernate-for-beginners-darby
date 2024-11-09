@@ -27,8 +27,6 @@ public class CruddemoApplication {
 
 			// createInstructorWithCourses(appDAO);
 
-			// findInstructorByIdJoinFetch(appDAO);
-
 			updateInstructor(appDAO);
 
 		};
@@ -48,19 +46,10 @@ public class CruddemoApplication {
 		appDAO.updateIntstructor(foundInstructor);
 
 		log.info("The changed Instructor {}", foundInstructor);
-		log.info("Done!");
+		printDoneMessage();
 	}
 
-	private void findInstructorByIdJoinFetch(AppDAO appDAO) {
-		int instructID = 1;
-
-		log.info("Finding The Instructor by ID with JoinFetch: {}", instructID);
-		Instructor instructorById = appDAO.findInstructorByIdJoinFetch(instructID);
-
-		log.info("The found instructor: {}", instructorById);
-
-		log.info("The courses of the Instructor: {}",instructorById.getCourses());
-
+	private static void printDoneMessage() {
 		log.info("Done!");
 	}
 
@@ -92,7 +81,7 @@ public class CruddemoApplication {
 		log.info("The courses: {}", instructor.getCourses());
 		dao.save(instructor);
 
-		log.info("Done!");
+		printDoneMessage();
 	}
 }
 
