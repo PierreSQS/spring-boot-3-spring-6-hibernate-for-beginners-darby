@@ -25,24 +25,23 @@ public class CruddemoApplication {
 
 		return runner -> {
 
-			// createInstructorWithCourses(appDAO);
+			createInstructorWithCourses(appDAO);
 
-			updateCourse(appDAO);
+			deleteInstructor(appDAO);
 
 		};
 	}
 
-	private void updateCourse(AppDAO appDAO) {
-		int instructID = 10;
+	private void deleteInstructor(AppDAO appDAO) {
+		int instructID = 2;
 
-		log.info("Finding Course with the ID {}",instructID);
-		Course foundCourse = appDAO.findCourseByID(instructID);
-		log.info("found Course: {}", foundCourse);
+		log.info("Finding Instructor with the ID {}",instructID);
+		Instructor foundInstructor = appDAO.findInstructorById(instructID);
+		log.info("found Instructor: {}", foundInstructor);
 
-		log.info("Updating the Course...");
-		foundCourse.setTitle("Updated Title");
-		appDAO.updateCourse(foundCourse);
-		log.info("The updated Course: {}", foundCourse);
+		log.info("Deleting the Instructor...");
+		appDAO.deleteInstructorById(instructID);
+		log.info("Finding the deleted Instructor: {}", appDAO.findInstructorById(instructID));
 
 		printDoneMessage();
 
@@ -54,18 +53,18 @@ public class CruddemoApplication {
 
 	private void createInstructorWithCourses(AppDAO dao) {
 		// create instructor
-		Instructor instructor = new Instructor("Pierrot","Mongonamm",
-				"pierrot.mongonnam@luv2code.com");
+		Instructor instructor = new Instructor("Pierrot","ToDelete",
+				"pierrot.todelete@luv2code.com");
 
 		// create the instructor detail
 		InstructorDetail instructorDetail =
 				new InstructorDetail(
-						"http://www.youtube.com/mongonnam",
-						"Video Games");
+						"http://www.youtube.com/todelete",
+						"Travels");
 
 		// create instructor courses
-		Course course1 = new Course("SpringBoot 3");
-		Course course2 = new Course("Junit5");
+		Course course1 = new Course("Java 21");
+		Course course2 = new Course("Spring6");
 
 		// associate the objects
 		instructor.addCourses(Set.of(course1, course2));
