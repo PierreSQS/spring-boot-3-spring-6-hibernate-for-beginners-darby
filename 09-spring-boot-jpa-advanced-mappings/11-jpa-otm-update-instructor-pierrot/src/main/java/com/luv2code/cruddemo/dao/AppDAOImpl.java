@@ -96,7 +96,7 @@ public class AppDAOImpl implements AppDAO {
 
     @Override
     @Transactional // DON'T FORGET IT SINCE WE ARE CHANGING THE DB-DATA
-    public void updateIntstructor(Instructor instructorUpdate) {
+    public void updateInstructor(Instructor instructorUpdate) {
         // MERGE WILL UPDATE ANY EXISTING INSTRUCTOR !!
         entityManager.merge(instructorUpdate);
     }

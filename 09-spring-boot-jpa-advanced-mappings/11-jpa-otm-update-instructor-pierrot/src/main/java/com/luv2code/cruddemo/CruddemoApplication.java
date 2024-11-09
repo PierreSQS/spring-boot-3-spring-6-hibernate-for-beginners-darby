@@ -43,7 +43,7 @@ public class CruddemoApplication {
 		foundInstructor.setLastName("TESTER");
 
 		log.info("Updating the Instructor...");
-		appDAO.updateIntstructor(foundInstructor);
+		appDAO.updateInstructor(foundInstructor);
 
 		log.info("The changed Instructor {}", foundInstructor);
 		printDoneMessage();
