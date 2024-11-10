@@ -118,7 +118,7 @@ public class AppDAOImpl implements AppDAO {
     }
 
     @Override
-    public void deleteCourseByID(int theID) {
+    @Transactional public void deleteCourseByID(int theID) {
         // find the course to remove
         Course foundCourse = findCourseByID(theID);
 
