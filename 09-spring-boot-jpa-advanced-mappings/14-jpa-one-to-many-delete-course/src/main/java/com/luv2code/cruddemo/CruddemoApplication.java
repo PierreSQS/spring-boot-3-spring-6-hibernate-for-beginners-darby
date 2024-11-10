@@ -56,16 +56,19 @@ public class CruddemoApplication {
 		Course course = new Course();
 		course.setTitle("New Course Title");
 
-		// associate the course with find Instructor
+		// associate the course with found Instructor
 		log.info("Adding course to Instructor...");
 		foundInstructor.getCourses().add(course);
+		log.info("Liking Instructor to course..."); // since bidirectional
 		course.setInstructor(foundInstructor);
 
+		log.info("Updating Instructor...");
 		// update the Instructor
 		appDAO.updateInstructor(foundInstructor);
 
 		// show the all the Instructor's Courses
-		log.info("All Instructor's Courses: {}",appDAO.findInstructorById(instructID).getCourses());
+		log.info("All Instructor's Courses updated: {}",
+				appDAO.findInstructorByIdJoinFetch(instructID).getCourses());
 
 		printDoneMessage();
 
