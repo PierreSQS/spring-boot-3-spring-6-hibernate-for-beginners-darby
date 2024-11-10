@@ -117,8 +117,9 @@ public class CruddemoApplication {
 		// because of CascadeType.PERSIST
 		//
 		log.info("Saving instructor: {}", instructor);
-		log.info("The courses: {}", instructor.getCourses());
 		dao.save(instructor);
+		log.info("The courses from the instructor variable: {}", instructor.getCourses());
+		log.info("The courses from the DB: {}", dao.findCoursesByInstructorID(instructor.getId()));
 
 		printDoneMessage();
 	}
