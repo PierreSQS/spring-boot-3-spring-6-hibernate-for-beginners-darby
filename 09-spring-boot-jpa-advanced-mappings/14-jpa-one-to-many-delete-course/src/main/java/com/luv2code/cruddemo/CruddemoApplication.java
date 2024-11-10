@@ -25,11 +25,11 @@ public class CruddemoApplication {
 
 		return runner -> {
 
-			// createInstructorWithCourses(appDAO);
+			createInstructorWithCourses(appDAO);
 
 			addNewCourseToInstructor(appDAO);
 
-			// deleteCourse(appDAO);
+			deleteCourse(appDAO);
 
 		};
 	}
@@ -118,8 +118,10 @@ public class CruddemoApplication {
 		// because of CascadeType.PERSIST
 		//
 		log.info("Saving instructor: {}", instructor);
-		log.info("The courses: {}", instructor.getCourses());
+		log.info("The instructor's courses before saving instructor: {}", instructor.getCourses());
 		dao.save(instructor);
+		log.info("The instructor's courses after saving instructor: {}", instructor.getCourses());
+
 
 		printDoneMessage();
 	}
