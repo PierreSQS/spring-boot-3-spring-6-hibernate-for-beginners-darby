@@ -25,11 +25,11 @@ public class CruddemoApplication {
 
 		return runner -> {
 
-			// createInstructorWithCourses(appDAO);
+			createInstructorWithCourses(appDAO);
 
 			addNewCourseToInstructor(appDAO);
 
-			// deleteCourse(appDAO);
+			deleteCourse(appDAO);
 
 		};
 	}
@@ -95,14 +95,13 @@ public class CruddemoApplication {
 
 	private void createInstructorWithCourses(AppDAO dao) {
 		// create instructor
-		Instructor instructor = new Instructor("Pierrot","Mongonnam",
-				"pierrot.mongonnam@luv2code.com");
+		Instructor instructor = Instructor.builder().firstName("Pierrot")
+				.lastName("Mongonnam").email("pierrot.mongonnam@luv2code.com").build();
 
-		// create the instructor detail
-		InstructorDetail instructorDetail =
-				new InstructorDetail(
-						"http://www.youtube.com/mongonnam",
-						"Travels");
+        // create the instructor detail
+		InstructorDetail instructorDetail = InstructorDetail.builder()
+				.youtubeChannel("http://www.youtube.com/mongonnam")
+				.hobby("Travels").build();
 
 		// create instructor courses
 		Course course1 = new Course("SpringBoot 3");

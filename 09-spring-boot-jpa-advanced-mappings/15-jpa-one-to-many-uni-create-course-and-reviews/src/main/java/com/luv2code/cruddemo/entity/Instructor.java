@@ -1,11 +1,21 @@
 package com.luv2code.cruddemo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 @Table(name="instructor")
 public class Instructor {
@@ -48,56 +58,6 @@ public class Instructor {
                fetch = FetchType.LAZY)
     private Set<Course> courses;
 
-    public Instructor() {
-
-    }
-
-    public Instructor(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public InstructorDetail getInstructorDetail() {
-        return instructorDetail;
-    }
-
-    public void setInstructorDetail(InstructorDetail instructorDetail) {
-        this.instructorDetail = instructorDetail;
-    }
-
     @Override
     public String toString() {
         return "Instructor{" +
@@ -107,14 +67,6 @@ public class Instructor {
                 ", email='" + email + '\'' +
                 ", instructorDetail=" + instructorDetail +
                 '}';
-    }
-
-    public Set<Course> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(Set<Course> courses) {
-        this.courses = courses;
     }
 
     // add convenience methods for bidirectional relationship
