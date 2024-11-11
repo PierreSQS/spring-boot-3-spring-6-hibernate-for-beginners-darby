@@ -47,6 +47,7 @@ public class Course {
     private Instructor instructor;
 
     @OneToMany(cascade = CascadeType.ALL) // Default FetchType = LAZY
+    @JoinColumn(name = "course_id")
     private Set<Review> reviews;
 
     public Course(String title) {
@@ -67,6 +68,8 @@ public class Course {
         return "Course{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", instructor=" + instructor +
+                ", reviews=" + reviews +
                 '}';
     }
 }
