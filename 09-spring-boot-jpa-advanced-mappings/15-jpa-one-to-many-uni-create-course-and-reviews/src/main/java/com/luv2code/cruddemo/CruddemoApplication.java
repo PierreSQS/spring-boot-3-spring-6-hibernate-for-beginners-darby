@@ -25,12 +25,6 @@ public class CruddemoApplication {
 
 		return runner -> {
 
-			createInstructorWithCourses(appDAO);
-
-			addNewCourseToInstructor(appDAO);
-
-			deleteCourse(appDAO);
-
 		};
 	}
 
