@@ -7,11 +7,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -42,8 +46,20 @@ public class Course {
     @JoinColumn(name="instructor_id")
     private Instructor instructor;
 
+    @OneToMany(cascade = CascadeType.ALL) // Default FetchType = LAZY
+    private Set<Review> reviews;
+
     public Course(String title) {
         this.title = title;
+    }
+
+    // add convenience method
+    public void addReview(Review review) {
+        if (reviews == null) {
+            reviews = new HashSet<>();
+        }
+
+        reviews.add(review);
     }
 
     @Override
