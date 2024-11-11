@@ -5,7 +5,6 @@ import com.luv2code.cruddemo.entity.Instructor;
 import com.luv2code.cruddemo.entity.InstructorDetail;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,17 +14,16 @@ import java.util.List;
 public class AppDAOImpl implements AppDAO {
 
     // define field for entity manager
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     // inject entity manager using constructor injection
-    @Autowired
     public AppDAOImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     @Override
     @Transactional
-    public void save(Instructor theInstructor) {
+    public void saveInstructor(Instructor theInstructor) {
         entityManager.persist(theInstructor);
     }
 
@@ -39,18 +37,14 @@ public class AppDAOImpl implements AppDAO {
     public void deleteInstructorById(int theId) {
 
         // retrieve the instructor
-        Instructor tempInstructor = entityManager.find(Instructor.class, theId);
+        Instructor foundInstructor = entityManager.find(Instructor.class, theId);
 
-        // get the courses
-        List<Course> courses = tempInstructor.getCourses();
-
-        // break association of all courses for the instructor
-        for (Course tempCourse : courses) {
-            tempCourse.setInstructor(null);
-        }
+        // remove instructor from all the associated Course
+        // Otherwise Constraint Violation
+        foundInstructor.getCourses().forEach(course -> course.setInstructor(null));
 
         // delete the instructor
-        entityManager.remove(tempInstructor);
+        entityManager.remove(foundInstructor);
     }
 
     @Override
@@ -66,7 +60,7 @@ public class AppDAOImpl implements AppDAO {
         InstructorDetail tempInstructorDetail = entityManager.find(InstructorDetail.class, theId);
 
         // remove the associated object reference
-        // break bi-directional link
+        // break bidirectional link
         //
         tempInstructorDetail.getInstructor().setInstructorDetail(null);
 
@@ -75,85 +69,87 @@ public class AppDAOImpl implements AppDAO {
     }
 
     @Override
-    public List<Course> findCoursesByInstructorId(int theId) {
-
+    public List<Course> findCoursesByInstructorID(int theID) {
         // create query
         TypedQuery<Course> query = entityManager.createQuery(
-                                    "from Course where instructor.id = :data", Course.class);
-        query.setParameter("data", theId);
+                "from Course where instructor.id = : data", Course.class);
 
-        // execute query
-        List<Course> courses = query.getResultList();
+        // Set NamedParameter
+        query.setParameter("data",theID);
 
-        return courses;
+        // execute and return the query results
+        return query.getResultList();
+
     }
 
     @Override
-    public Instructor findInstructorByIdJoinFetch(int theId) {
+    public Instructor findInstructorByIdJoinFetch(int theID) {
 
-        // create query
-        TypedQuery<Instructor> query = entityManager.createQuery(
-                                                "select i from Instructor i "
-                                                    + "JOIN FETCH i.courses "
-                                                    + "JOIN FETCH i.instructorDetail "
-                                                    + "where i.id = :data", Instructor.class);
-        query.setParameter("data", theId);
+        // EVEN WITH THE FetchType = LAZY ON OneToMany, THE QUERY
+        // STILL LOADS THE INSTRUCTOR WITH COURSES !!!
+        TypedQuery<Instructor> instructorTypedQuery = entityManager.createQuery(
+                "select i from Instructor i " +
+                        "JOIN FETCH i.courses " +
+                        "JOIN FETCH i.instructorDetail " +
+                        "where i.id = :data", Instructor.class);
 
-        // execute query
-        Instructor instructor = query.getSingleResult();
+        instructorTypedQuery.setParameter("data", theID);
 
-        return instructor;
+        return instructorTypedQuery.getSingleResult();
     }
 
     @Override
-    @Transactional
-    public void update(Instructor tempInstructor) {
-        entityManager.merge(tempInstructor);
+    @Transactional // DON'T FORGET IT SINCE WE ARE CHANGING THE DB-DATA
+    public void updateInstructor(Instructor instructorUpdate) {
+        // MERGE WILL UPDATE ANY EXISTING INSTRUCTOR !!
+        entityManager.merge(instructorUpdate);
     }
 
     @Override
-    @Transactional
-    public void update(Course tempCourse) {
-        entityManager.merge(tempCourse);
+    @Transactional // DON'T FORGET IT SINCE WE ARE CHANGING THE DB-DATA
+    public void updateCourse(Course courseUpdate) {
+        // MERGE WILL UPDATE ANY EXISTING COURSE !!
+        entityManager.merge(courseUpdate);
     }
 
     @Override
-    public Course findCourseById(int theId) {
-        return entityManager.find(Course.class, theId);
-    }
-
-    @Override
-    @Transactional
-    public void deleteCourseById(int theId) {
-
-        // retrieve the course
-        Course tempCourse = entityManager.find(Course.class, theId);
-
-        // delete the course
-        entityManager.remove(tempCourse);
+    public Course findCourseByID(int theID) {
+        return entityManager.find(Course.class, theID);
     }
 
     @Override
     @Transactional
-    public void save(Course theCourse) {
-        entityManager.persist(theCourse);
+    public void deleteCourseByID(int theID) {
+        // find the course to remove
+        Course foundCourse = findCourseByID(theID);
+
+        // remove the associated Instructor
+        foundCourse.setInstructor(null);
+
+        // remove the course
+        entityManager.remove(foundCourse);
+    }
+
+    @Override
+    @Transactional
+    public void saveCourse(Course course) {
+        entityManager.persist(course);
     }
 
     @Override
     public Course findCourseAndReviewsByCourseId(int theId) {
-
         // create query
-        TypedQuery<Course> query = entityManager.createQuery(
-                "select c from Course c "
-                + "JOIN FETCH c.reviews "
-                + "where c.id = :data", Course.class);
+        TypedQuery<Course> courseTypedQuery = entityManager.createQuery(
+                "select c from Course c " +
+                        "JOIN FETCH c.reviews " +
+                        "where c.id = :data", Course.class);
 
-        query.setParameter("data", theId);
+        // set Parameter
+        courseTypedQuery.setParameter("data", theId);
 
         // execute query
-        Course course = query.getSingleResult();
+        return courseTypedQuery.getSingleResult();
 
-        return course;
     }
 }
 
