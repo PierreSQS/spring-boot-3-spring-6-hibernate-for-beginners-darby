@@ -23,7 +23,7 @@ public class AppDAOImpl implements AppDAO {
 
     @Override
     @Transactional
-    public void save(Instructor theInstructor) {
+    public void saveInstructor(Instructor theInstructor) {
         entityManager.persist(theInstructor);
     }
 
@@ -128,6 +128,12 @@ public class AppDAOImpl implements AppDAO {
 
         // remove the course
         entityManager.remove(foundCourse);
+    }
+
+    @Override
+    @Transactional
+    public void saveCourse(Course course) {
+        entityManager.persist(course);
     }
 }
 
