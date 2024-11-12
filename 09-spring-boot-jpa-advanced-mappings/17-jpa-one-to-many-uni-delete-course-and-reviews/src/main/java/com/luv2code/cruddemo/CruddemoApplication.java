@@ -23,8 +23,8 @@ public class CruddemoApplication {
 	public CommandLineRunner commandLineRunner(AppDAO appDAO) {
 
 		return runner -> {
-		//	createCoursesAndReviews(appDAO);
-			deleteCourseAndReviewsByID(appDAO);
+			createCoursesAndReviews(appDAO);
+		//	deleteCourseAndReviewsByID(appDAO);
 		};
 	}
 
@@ -43,6 +43,7 @@ public class CruddemoApplication {
 	}
 
 	private void createCoursesAndReviews(AppDAO appDAO) {
+
 		// create course
 		log.info("Creating Course...");
 		Course course = Course.builder().title("Kubernetes for beginners").build();

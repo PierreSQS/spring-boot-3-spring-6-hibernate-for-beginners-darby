@@ -19,11 +19,14 @@ class AppDAOImplTest {
 
         Course course = appDAO.getAllCourses().getFirst();
 
-        assertThat(course.getId()).isNotNull();
+        int courseId = course.getId();
+        assertThat(courseId).isNotNull();
 
-        appDAO.deleteCourseByID(course.getId());
+        appDAO.deleteCourseByID(courseId);
 
-        assertThat(course.getId()).isNull();
+        Course courseByID = appDAO.findCourseByID(course.getId());
+
+        assertThat(courseByID).isNull();
 
     }
 }
