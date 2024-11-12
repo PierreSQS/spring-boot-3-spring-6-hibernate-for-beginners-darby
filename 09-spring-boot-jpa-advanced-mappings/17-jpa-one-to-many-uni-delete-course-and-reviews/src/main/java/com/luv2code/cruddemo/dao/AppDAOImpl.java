@@ -151,6 +151,19 @@ public class AppDAOImpl implements AppDAO {
         return courseTypedQuery.getSingleResult();
 
     }
+
+    @Override
+    public List<Course> getAllCourses() {
+        // create query
+        TypedQuery<Course> courseTypedQuery = entityManager.createQuery(
+                "select c from Course c " +
+                        "JOIN FETCH c.reviews ", Course.class);
+
+
+        // execute query
+        return courseTypedQuery.getResultList();
+
+    }
 }
 
 
