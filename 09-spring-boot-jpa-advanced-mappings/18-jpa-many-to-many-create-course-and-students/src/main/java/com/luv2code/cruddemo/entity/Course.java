@@ -71,12 +71,12 @@ public class Course {
         reviews.add(review);
     }
 
-    private void addStudent(Student student) {
+    private void addStudents(Set<Student> studentsToAdd) {
         if (students == null) {
             students = new HashSet<>();
         }
 
-        students.add(student);
+        students.addAll(studentsToAdd);
     }
 
     @Override
