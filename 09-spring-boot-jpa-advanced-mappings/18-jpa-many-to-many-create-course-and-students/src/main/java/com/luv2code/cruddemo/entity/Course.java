@@ -71,7 +71,7 @@ public class Course {
         reviews.add(review);
     }
 
-    private void addStudents(Set<Student> studentsToAdd) {
+    public void addStudents(Set<Student> studentsToAdd) {
         if (students == null) {
             students = new HashSet<>();
         }

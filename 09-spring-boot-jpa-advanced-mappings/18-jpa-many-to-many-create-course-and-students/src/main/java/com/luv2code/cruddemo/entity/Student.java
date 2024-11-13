@@ -48,7 +48,7 @@ public class Student {
     private Set<Course> courses;
 
     // convenience method to add a Student to Course
-    private void addCourses(Set<Course> courseToAdd) {
+    public void addCourses(Set<Course> courseToAdd) {
         if (courses == null) {
             courses = new HashSet<>();
         }
