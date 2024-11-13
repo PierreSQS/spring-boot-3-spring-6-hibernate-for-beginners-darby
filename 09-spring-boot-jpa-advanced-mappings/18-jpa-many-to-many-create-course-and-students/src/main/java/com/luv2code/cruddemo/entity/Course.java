@@ -43,6 +43,7 @@ public class Course {
 
     private String title;
 
+    // Default FetchType = LAZY
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name="instructor_id")
@@ -60,10 +61,6 @@ public class Course {
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "student_id"))
     private Set<Student> students;
-
-    public Course(String title) {
-        this.title = title;
-    }
 
     // add convenience methods for Review and Student mapping
     public void addReview(Review review) {
