@@ -36,6 +36,8 @@ public interface AppDAO {
 
     List<Course> getAllCourses();
 
+    Course findCourseAndStudentsByCourseID(int courseID);
+
 }
 
 
