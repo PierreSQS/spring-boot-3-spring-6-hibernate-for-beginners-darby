@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -46,21 +47,35 @@ public class Course {
     @JoinColumn(name="instructor_id")
     private Instructor instructor;
 
-    @OneToMany(cascade = CascadeType.ALL) // Default FetchType = LAZY
+    // Default FetchType = LAZY
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "course_id")
     private Set<Review> reviews;
+
+    // Default FetchType = LAZY
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH})
+    private Set<Student> students;
 
     public Course(String title) {
         this.title = title;
     }
 
-    // add convenience method
+    // add convenience methods for Review and Student mapping
     public void addReview(Review review) {
         if (reviews == null) {
             reviews = new HashSet<>();
         }
 
         reviews.add(review);
+    }
+
+    private void addStudent(Student student) {
+        if (students == null) {
+            students = new HashSet<>();
+        }
+
+        students.add(student);
     }
 
     @Override
