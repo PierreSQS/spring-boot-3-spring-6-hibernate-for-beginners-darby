@@ -51,9 +51,9 @@ public class CruddemoApplication {
 		log.info("Creating courses...");
 
 
-		log.info("created Set of Students...");
+		log.info("Created Set of Students...");
 		Set<Student> studentSet = Set.of(student1, student2);
-		log.info("Create Set of {} students", studentSet.size());
+		log.info("Created Set of {} students", studentSet.size());
 
 
 		// Link Students to Course
