@@ -3,13 +3,12 @@ package com.luv2code.cruddemo.dao;
 import com.luv2code.cruddemo.entity.Course;
 import com.luv2code.cruddemo.entity.Instructor;
 import com.luv2code.cruddemo.entity.InstructorDetail;
-import com.luv2code.cruddemo.entity.Student;
 
 import java.util.List;
 
 public interface AppDAO {
 
-    void save(Instructor theInstructor);
+    void saveInstructor(Instructor theInstructor);
 
     Instructor findInstructorById(int theId);
 
@@ -19,25 +18,26 @@ public interface AppDAO {
 
     void deleteInstructorDetailById(int theId);
 
-    List<Course> findCoursesByInstructorId(int theId);
+    List<Course> findCoursesByInstructorID(int theID);
 
-    Instructor findInstructorByIdJoinFetch(int theId);
+    Instructor findInstructorByIdJoinFetch(int theID);
 
-    void update(Instructor tempInstructor);
+    void updateInstructor(Instructor instructorUpdate);
 
-    void update(Course tempCourse);
+    void updateCourse(Course courseUpdate);
 
-    Course findCourseById(int theId);
+    Course findCourseByID(int theID);
 
-    void deleteCourseById(int theId);
+    void deleteCourseByID(int theID);
 
-    void save(Course theCourse);
+    void saveCourse(Course course);
 
-    Course findCourseAndReviewsByCourseId(int theId);
+    Course findCourseAndReviewsByCourseId(int theID);
 
-    Course findCourseAndStudentsByCourseId(int theId);
+    List<Course> getAllCourses();
 
-    Student findStudentAndCoursesByStudentId(int theId);
+    Course findCourseAndStudentsByCourseID(int courseID);
+
 }
 
 
