@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,6 +23,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 @Entity
 public class Student {
 
@@ -43,6 +45,7 @@ public class Student {
     @JoinTable(name = "course_student",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
+    @ToString.Exclude
     private Set<Course> courses;
 
     // convenience method to add a Student to Course
@@ -54,13 +57,4 @@ public class Student {
         courses.addAll(courseToAdd);
     }
 
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +'\''+
-                ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                '}';
-    }
 }

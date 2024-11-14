@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +25,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 @Entity
 public class Course {
 
@@ -52,6 +54,7 @@ public class Course {
     // Default FetchType = LAZY
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "course_id")
+    @ToString.Exclude
     private Set<Review> reviews;
 
     // Default FetchType = LAZY
@@ -60,6 +63,7 @@ public class Course {
     @JoinTable(name = "course_student",
             joinColumns = @JoinColumn(name = "course_id"),
             inverseJoinColumns = @JoinColumn(name = "student_id"))
+    @ToString.Exclude
     private Set<Student> students;
 
     // add convenience methods for Review and Student mapping
@@ -79,11 +83,4 @@ public class Course {
         students.addAll(studentsToAdd);
     }
 
-    @Override
-    public String toString() {
-        return "Course{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                '}';
-    }
 }
