@@ -1,7 +1,7 @@
 package com.luv2code.cruddemo;
 
 import com.luv2code.cruddemo.dao.AppDAO;
-import com.luv2code.cruddemo.entity.Course;
+import com.luv2code.cruddemo.entity.Student;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -21,25 +21,25 @@ public class CruddemoApplication {
 
 		return runner -> {
 
-			findCoursesAndStudents(appDAO);
+			findStudentAndCourses(appDAO);
 
 		};
 	}
 
-	private void findCoursesAndStudents(AppDAO appDAO) {
-		int courseID = 10;
+	private void findStudentAndCourses(AppDAO appDAO) {
+		int studentID = 1;
 
 		// finding course and students by courseID
-		log.info("Finding course by ID and students...");
-		Course foundCourse = appDAO.findCourseAndStudentsByCourseID(courseID);
+		log.info("Finding student by ID and courses...");
+		Student foundStudent = appDAO.findStudentAndCoursesByStudentID(studentID);
 
-		log.info("Found course {}", foundCourse);
+		log.info("Found Student {}", foundStudent);
 
 
 		// list the Students to Course
-		log.info("Listing the Students of course with the ID: {}...", courseID);
+		log.info("Listing the courses of student with the ID: {}...", studentID);
 
-		log.info("The students in the course {}", foundCourse.getStudents());
+		log.info("The courses of the student {}", foundStudent.getCourses());
 
 
 		printDoneMessage();
