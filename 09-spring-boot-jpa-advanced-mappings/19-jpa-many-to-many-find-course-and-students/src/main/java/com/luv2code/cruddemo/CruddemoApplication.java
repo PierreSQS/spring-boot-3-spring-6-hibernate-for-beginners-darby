@@ -31,7 +31,9 @@ public class CruddemoApplication {
 
 		// finding course and students by courseID
 		log.info("Finding course by ID and students...");
-		Course foundCourse = appDAO.findCourseAndReviewsByCourseId(courseID);
+		Course foundCourse = appDAO.findCourseAndStudentsByCourseID(courseID);
+
+		log.info("Found course {}", foundCourse);
 
 
 		// list the Students to Course
