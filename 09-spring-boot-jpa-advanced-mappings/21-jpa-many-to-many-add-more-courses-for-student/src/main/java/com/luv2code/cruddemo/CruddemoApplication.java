@@ -52,9 +52,10 @@ public class CruddemoApplication {
 		foundStudent.addCourses(Set.of(course1, course2));
 
 		// updating student
+		log.info("Updating student...");
 		appDAO.updateStudent(foundStudent);
 
-		log.info("the courses of the student after updating: {}",foundStudent);
+		log.info("the courses of the student after updating: {}",foundStudent.getCourses());
 
 		printDoneMessage();
 	}
