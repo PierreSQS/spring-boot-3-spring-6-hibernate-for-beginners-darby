@@ -20,11 +20,20 @@ public class CruddemoApplication {
 
 		return runner -> {
 
-
+			deleteStudent(appDAO);
 
 		};
 	}
 
+	private void deleteStudent(AppDAO appDAO) {
+		int studentID = 2;
+		log.info("Finding and deleting student with ID {}", studentID);
+		appDAO.deleteStudentByID(studentID);
+
+		log.info("Deleted student with ID {}", studentID);
+
+		printDoneMessage();
+	}
 
 	private static void printDoneMessage() {
 		log.info("Done!");
