@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -64,4 +65,17 @@ class FormLoginTest {
                         .string(containsString("Role(s): <span>[ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_MANAGER]</span>")))
                 .andDo(print());
     }
+
+    @Test
+    @WithUserDetails(value = "John")
+    void johnAuthenticated() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("home"))
+                .andExpect(content().string(containsString("User: <span>John</span>")))
+                .andExpect(content()
+                        .string(containsString("Role(s): <span>[ROLE_EMPLOYEE]</span>")))
+                .andDo(print());
+    }
+
 }
