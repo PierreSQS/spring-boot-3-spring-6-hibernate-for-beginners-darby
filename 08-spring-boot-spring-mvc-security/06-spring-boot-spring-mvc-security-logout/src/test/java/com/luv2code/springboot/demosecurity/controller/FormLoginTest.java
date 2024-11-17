@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -36,6 +37,14 @@ class FormLoginTest {
                 .andExpect(unauthenticated())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/showMyLoginPage?error"))
+                .andDo(print());
+    }
+
+    @Test
+    void formLogout() throws Exception {
+        mockMvc.perform(logout("/logout"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/showMyLoginPage?logout"))
                 .andDo(print());
     }
 }
