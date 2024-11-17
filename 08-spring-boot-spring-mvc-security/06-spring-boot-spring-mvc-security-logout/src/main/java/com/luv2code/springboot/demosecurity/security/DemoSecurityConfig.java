@@ -12,23 +12,23 @@ import org.springframework.security.web.SecurityFilterChain;
 public class DemoSecurityConfig {
 
     @Bean
-    public InMemoryUserDetailsManager userDetailsManager() {
+    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
 
         UserDetails john = User.builder()
-                .username("john")
-                .password("{noop}test123")
+                .username("John")
+                .password("{noop}John")
                 .roles("EMPLOYEE")
                 .build();
 
         UserDetails mary = User.builder()
-                .username("mary")
-                .password("{noop}test123")
+                .username("Mary")
+                .password("{noop}Mary")
                 .roles("EMPLOYEE", "MANAGER")
                 .build();
 
         UserDetails susan = User.builder()
-                .username("susan")
-                .password("{noop}test123")
+                .username("Susan")
+                .password("{noop}Susan")
                 .roles("EMPLOYEE", "MANAGER", "ADMIN")
                 .build();
 
@@ -37,18 +37,12 @@ public class DemoSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        http.authorizeHttpRequests(configurer ->
-                        configurer
-                                .anyRequest().authenticated()
-                )
-                .formLogin(form ->
-                        form
-                                .loginPage("/showMyLoginPage")
-                                .loginProcessingUrl("/authenticateTheUser")
-                                .permitAll()
-                )
-                .logout(logout -> logout.permitAll()
+        http.authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().authenticated())
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/showMyLoginPage")
+                        .loginProcessingUrl("/authenticateTheUser") // allows the authentication automatically
+                        .permitAll()
                 );
 
         return http.build();
