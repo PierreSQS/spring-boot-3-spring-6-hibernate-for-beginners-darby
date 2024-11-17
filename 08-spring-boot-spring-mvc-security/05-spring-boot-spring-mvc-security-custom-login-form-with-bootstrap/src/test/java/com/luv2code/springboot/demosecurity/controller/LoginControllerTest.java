@@ -30,8 +30,8 @@ class LoginControllerTest {
     void login() throws Exception {
         mockMvc.perform(get("/showMyLoginPage"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("plain-login"))
-                .andExpect(content().string(containsString("<title>Custom Login Page</title>")))
+                .andExpect(view().name("fancy-login"))
+                .andExpect(content().string(containsString("<title>Login Page</title>")))
                 .andDo(print());
     }
 }
