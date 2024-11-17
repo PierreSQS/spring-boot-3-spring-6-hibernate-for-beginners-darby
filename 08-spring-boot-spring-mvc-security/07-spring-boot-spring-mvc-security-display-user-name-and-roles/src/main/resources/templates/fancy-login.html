@@ -1,3 +1,4 @@
+<!-- New introduced view -->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
@@ -32,16 +33,12 @@
                                                 <div class="alert alert-danger col-xs-offset-1 col-xs-10">
                                                     Invalid username and password.
                                                 </div>
-
-                                            </div>
-
-                                            <!-- Check for logout -->
+                                            </div><!-- Check for logout -->
                                             <div th:if="${param.logout}">
 
                                                 <div class="alert alert-success col-xs-offset-1 col-xs-10">
-                                                    You have been logged out.
+                                                    You are successfully logged out.
                                                 </div>
-
                                             </div>
 
                                         </div>
