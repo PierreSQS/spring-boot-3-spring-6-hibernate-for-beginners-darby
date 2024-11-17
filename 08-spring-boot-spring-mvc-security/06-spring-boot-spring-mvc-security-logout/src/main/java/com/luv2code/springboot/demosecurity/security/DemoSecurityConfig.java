@@ -1,13 +1,16 @@
 package com.luv2code.springboot.demosecurity.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+@Slf4j
 @Configuration
 public class DemoSecurityConfig {
 
@@ -42,8 +45,8 @@ public class DemoSecurityConfig {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/showMyLoginPage")
                         .loginProcessingUrl("/authenticateTheUser") // allows the authentication automatically
-                        .permitAll()
-                );
+                        .permitAll())
+                .logout(LogoutConfigurer::permitAll);
 
         return http.build();
     }
