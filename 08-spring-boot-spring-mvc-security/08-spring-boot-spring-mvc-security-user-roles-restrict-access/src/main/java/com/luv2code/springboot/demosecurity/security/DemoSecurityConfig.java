@@ -14,25 +14,29 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class DemoSecurityConfig {
 
+    public static final String EMPLOYEE_ROLE = "EMPLOYEE";
+    public static final String MANAGER_ROLE = "MANAGER";
+    public static final String ADMIN_ROLE = "ADMIN";
+
     @Bean
     public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
 
         UserDetails john = User.builder()
                 .username("John")
                 .password("{noop}John")
-                .roles("EMPLOYEE")
+                .roles(EMPLOYEE_ROLE)
                 .build();
 
         UserDetails mary = User.builder()
                 .username("Mary")
                 .password("{noop}Mary")
-                .roles("EMPLOYEE", "MANAGER")
+                .roles(EMPLOYEE_ROLE, MANAGER_ROLE)
                 .build();
 
         UserDetails susan = User.builder()
                 .username("Susan")
                 .password("{noop}Susan")
-                .roles("EMPLOYEE", "MANAGER", "ADMIN")
+                .roles(EMPLOYEE_ROLE, MANAGER_ROLE, ADMIN_ROLE)
                 .build();
 
         return new InMemoryUserDetailsManager(john, mary, susan);
@@ -41,6 +45,9 @@ public class DemoSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/").hasRole(EMPLOYEE_ROLE)
+                        .requestMatchers("/leaders/**").hasRole(MANAGER_ROLE)
+                        .requestMatchers("/sytems/**").hasRole(ADMIN_ROLE)
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/showMyLoginPage")
