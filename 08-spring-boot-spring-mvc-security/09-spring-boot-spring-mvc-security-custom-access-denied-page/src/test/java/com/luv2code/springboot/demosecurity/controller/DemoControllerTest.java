@@ -50,4 +50,28 @@ class DemoControllerTest {
                 .andExpect(content().string(containsString("<title>luv2code SYSTEMS Home Page</title>")))
                 .andDo(print());
     }
+
+    @Test
+    @WithUserDetails(value = "John")
+    void johnNotAllowedOnAdminPage() throws Exception{
+        mockMvc.perform(get("/systems"))
+                .andExpect(status().isForbidden())
+                .andDo(print());
+    }
+
+    @Test
+    @WithUserDetails(value = "John")
+    void johnNotAllowedOnManagerPage() throws Exception{
+        mockMvc.perform(get("/leaders"))
+                .andExpect(status().isForbidden())
+                .andDo(print());
+    }
+
+    @Test
+    @WithUserDetails(value = "Mary")
+    void maryNotAllowedOnAdminPage() throws Exception{
+        mockMvc.perform(get("/systems"))
+                .andExpect(status().isForbidden())
+                .andDo(print());
+    }
 }
