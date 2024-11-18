@@ -24,7 +24,7 @@
 
     <hr>
     <!-- Add a link to point to /leaders ... this is for the managers ONLY!!!!-->
-    <div sec:authorize="hasRole()">
+    <div sec:authorize="hasRole('MANAGER')">
         <p>
             <a th:href="@{/leaders}">Leadership Meeting</a>
             (Only for Manager peeps)
