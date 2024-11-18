@@ -5,10 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.core.StringContains.containsString;
+import static org.mockito.AdditionalMatchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -72,6 +74,29 @@ class DemoControllerTest {
     void maryNotAllowedOnAdminPage() throws Exception{
         mockMvc.perform(get("/systems"))
                 .andExpect(status().isForbidden())
+                .andDo(print());
+    }
+
+    // Roles based Content Tests
+    @Test
+    @WithMockUser(username = "MockUser", roles = {"EMPLOYEE"})
+    void employeeRoleDoesNotSeeManagersAndLeadersLink() throws Exception{
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString(not("<title>luv2code SYSTEMS Home Page</title>"))))
+                .andExpect(content().string(
+                        containsString(not("<title>luv2code LEADERS Home Page</title>"))))
+                .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "MockUser", roles = {"MANAGER"})
+    void managerRoleDoesNotSeeLeadersLink() throws Exception{
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString(not("<title>luv2code LEADERS Home Page</title>"))))
                 .andDo(print());
     }
 }
