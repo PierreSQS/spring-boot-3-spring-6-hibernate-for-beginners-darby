@@ -53,7 +53,10 @@ public class DemoSecurityConfig {
                         .loginPage("/showMyLoginPage")
                         .loginProcessingUrl("/authenticateTheUser") // allows the authentication automatically
                         .permitAll())
-                .logout(LogoutConfigurer::permitAll);
+                .logout(LogoutConfigurer::permitAll)
+                // configured the access denied Page
+                .exceptionHandling(configurer ->
+                        configurer.accessDeniedPage("/access-denied") );
 
         return http.build();
     }
