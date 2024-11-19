@@ -1,4 +1,4 @@
-USE `employee_directory`;
+USE `user_directory`;
 
 DROP TABLE IF EXISTS `roles`;
 DROP TABLE IF EXISTS `members`;
@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS `members`;
 
 CREATE TABLE `members` (
   `user_id` varchar(50) NOT NULL,
-  `pw` char(68) NOT NULL,
+  `pw` char(70) NOT NULL,
   `active` tinyint NOT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -26,9 +26,9 @@ CREATE TABLE `members` (
 
 INSERT INTO `members`
 VALUES
-('john','{bcrypt}$2a$10$qeS0HEh7urweMojsnwNAR.vcXJeXR1UcMRZ2WcGQl9YeuspUdgF.q',1),
-('mary','{bcrypt}$2a$10$qeS0HEh7urweMojsnwNAR.vcXJeXR1UcMRZ2WcGQl9YeuspUdgF.q',1),
-('susan','{bcrypt}$2a$10$qeS0HEh7urweMojsnwNAR.vcXJeXR1UcMRZ2WcGQl9YeuspUdgF.q',1);
+('John','{bcrypt}$2a$10$c9O0xw8IuBDYqQPesZh6xOBlxqsC/E/f0wAf2FS5mhgkUYFXNyAPG',1),
+('Mary','{bcrypt}$2a$10$SimYWWWIMX/e4PUfiCMVH.x23XMkkJbXNyDGLMXPIotfBo0zPos1W',1),
+('Susan','{bcrypt}$2a$10$/MolWFiF8w5DVypImC40tuOttgN2UqUv/X6UxmF9rs/74VDMTgB3K',1);
 
 
 --
@@ -48,9 +48,9 @@ CREATE TABLE `roles` (
 
 INSERT INTO `roles`
 VALUES
-('john','ROLE_EMPLOYEE'),
-('mary','ROLE_EMPLOYEE'),
-('mary','ROLE_MANAGER'),
-('susan','ROLE_EMPLOYEE'),
-('susan','ROLE_MANAGER'),
-('susan','ROLE_ADMIN');
+('John','ROLE_EMPLOYEE'),
+('Mary','ROLE_EMPLOYEE'),
+('Mary','ROLE_MANAGER'),
+('Susan','ROLE_EMPLOYEE'),
+('Susan','ROLE_MANAGER'),
+('Susan','ROLE_ADMIN');
