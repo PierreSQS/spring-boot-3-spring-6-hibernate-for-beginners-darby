@@ -22,7 +22,9 @@
         Role(s): <span sec:authentication="principal.authorities"></span>
     </p>
 
-    <hr>
+    <!-- Shows the Break only for Managers and Admins-->
+    <hr sec:authorize="hasAnyRole('MANAGER','ADMIN')">
+
     <!-- Add a link to point to /leaders ... this is for the managers ONLY!!!!-->
     <div sec:authorize="hasRole('MANAGER')">
         <p>
