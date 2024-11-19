@@ -25,7 +25,7 @@ class DemoControllerTest {
     MockMvc mockMvc;
 
     @Test
-    void showHome() throws Exception {
+    void showHomeWithoutAuthentication() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("http://localhost/showMyLoginPage"))
@@ -33,8 +33,19 @@ class DemoControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "MockUser", roles = {"EMPLOYEE"})
+    void showEmployeeHome() throws Exception {
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("home"))
+                .andExpect(content()
+                        .string(containsString("<title>luv2code Company Home Page</title>")))
+                .andDo(print());
+    }
+
+    @Test
     @WithUserDetails(value = "Mary")
-    void showLeaders() throws Exception{
+    void showLeadersHome() throws Exception{
         mockMvc.perform(get("/leaders"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("leaders"))
@@ -44,7 +55,7 @@ class DemoControllerTest {
 
     @Test
     @WithUserDetails(value = "Susan")
-    void showAdmins() throws Exception{
+    void showAdminsHome() throws Exception{
         mockMvc.perform(get("/systems"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("systems"))
@@ -83,9 +94,9 @@ class DemoControllerTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
-                        not(containsString("<title>luv2code SYSTEMS Home Page</title>"))))
+                        not(containsString("(Only for Manager peeps)"))))
                 .andExpect(content().string(
-                        not(containsString("<title>luv2code LEADERS Home Page</title>"))))
+                        not(containsString("(Only for Admin peeps)"))))
                 .andDo(print());
     }
 
@@ -95,7 +106,19 @@ class DemoControllerTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
-                        not(containsString(("<title>luv2code LEADERS Home Page</title>")))))
+                        not(containsString(("(Only for Admin peeps)")))))
+                .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "MockUser", roles = {"EMPLOYEE","MANAGER","ADMIN"})
+    void adminRoleSeesAllLinks() throws Exception{
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(content()
+                        .string(containsString(("(Only for Manager peeps)"))))
+                .andExpect(content()
+                        .string(containsString(("(Only for Admin peeps)"))))
                 .andDo(print());
     }
 }
