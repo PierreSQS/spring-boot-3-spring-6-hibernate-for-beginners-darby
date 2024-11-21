@@ -3,6 +3,7 @@ package com.luv2code.demo.rest;
 import com.luv2code.demo.entity.Student;
 import jakarta.annotation.PostConstruct;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,6 +35,11 @@ public class StudentRestController {
     public List<Student> getStudents() {
 
         return theStudents;
+    }
+
+    @GetMapping("students/{studentID}")
+    public Student getStudent(@PathVariable int studentID) {
+        return theStudents.get(studentID);
     }
 }
 
