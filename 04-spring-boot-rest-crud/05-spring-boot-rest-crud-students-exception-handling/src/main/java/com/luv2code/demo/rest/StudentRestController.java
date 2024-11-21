@@ -50,7 +50,7 @@ public class StudentRestController {
         return theStudents.get(studentID);
     }
 
-    // Add an Exception Handler
+    // Add an Exception Handler for NFE
     @ExceptionHandler
     public ResponseEntity<StudentErrorResponse> handleException(StudentNotFoundException sNFE) {
         // create a ResponseError
@@ -59,6 +59,20 @@ public class StudentRestController {
         // return the Response Entity
         studentErrResp.setStatus(HttpStatus.NOT_FOUND.value());
         studentErrResp.setMessage(sNFE.getMessage());
+        studentErrResp.setTimeStamp(System.currentTimeMillis());
+
+        return ResponseEntity.of(Optional.of(studentErrResp));
+    }
+
+    // Add another Exception Handler to catch any exception
+    @ExceptionHandler
+    public ResponseEntity<StudentErrorResponse> handleException(Exception e) {
+        // create a ResponseError
+        StudentErrorResponse studentErrResp = new StudentErrorResponse();
+
+        // return the Response Entity
+        studentErrResp.setStatus(HttpStatus.BAD_REQUEST.value());
+        studentErrResp.setMessage(e.getMessage());
         studentErrResp.setTimeStamp(System.currentTimeMillis());
 
         return ResponseEntity.of(Optional.of(studentErrResp));
