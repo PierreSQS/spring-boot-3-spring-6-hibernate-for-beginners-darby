@@ -35,4 +35,13 @@ class StudentRestControllerTest {
                 .andExpect(jsonPath("$.firstName",equalTo("Poornima")))
                 .andDo(print());
     }
+    @Test
+    void getStudentBadRequest() throws Exception {
+        int studentID= 99;
+        mockMvc.perform(get("/api/students/{studentID}",studentID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message",
+                        equalTo("Student with " + studentID + " not found !")))
+                .andDo(print());
+    }
 }
