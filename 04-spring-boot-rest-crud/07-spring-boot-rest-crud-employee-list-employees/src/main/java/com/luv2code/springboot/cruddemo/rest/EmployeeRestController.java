@@ -12,7 +12,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class EmployeeRestController {
 
-    private EmployeeDAO employeeDAO;
+    private final EmployeeDAO employeeDAO;
 
     // quick and dirty: inject employee dao (use constructor injection)
     public EmployeeRestController(EmployeeDAO theEmployeeDAO) {
