@@ -3,6 +3,7 @@ package com.luv2code.demo.rest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -35,13 +36,23 @@ class StudentRestControllerTest {
                 .andExpect(jsonPath("$.firstName",equalTo("Poornima")))
                 .andDo(print());
     }
+
     @Test
-    void getStudentBadRequest() throws Exception {
+    void getStudentNotFound() throws Exception {
         int studentID= 99;
         mockMvc.perform(get("/api/students/{studentID}",studentID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message",
                         equalTo("Student with " + studentID + " not found !")))
+                .andDo(print());
+    }
+
+    @Test
+    void getStudentBadRequest() throws Exception {
+        String studentID= "abcd";
+        mockMvc.perform(get("/api/students/{studentID}",studentID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status", equalTo(HttpStatus.BAD_REQUEST.value())))
                 .andDo(print());
     }
 }
