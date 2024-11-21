@@ -26,4 +26,13 @@ class StudentRestControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andDo(print());
     }
+
+    @Test
+    void getStudent() throws Exception {
+        int studentID= 0;
+        mockMvc.perform(get("/api/students/{studentID}",studentID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName",equalTo("Poornima")))
+                .andDo(print());
+    }
 }
