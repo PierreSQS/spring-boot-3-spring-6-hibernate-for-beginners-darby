@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,12 +35,12 @@ public class EmployeeRestController {
 
     @PostMapping("/employees")
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
-        // IN CASE THE USER PASSES AN ID IN JSON, SET ID = 0
-        // THIS FORCES A SAVE OF NEW ITEM INSTEAD OF AN UPDATE !
-        if (employee.getId() != 0)
-            employee.setId(0);
-
         return new ResponseEntity<>(empServ.save(employee), HttpStatus.CREATED);
+    }
+
+    @PutMapping("employees")
+    public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee) {
+        return new ResponseEntity<>(empServ.update(employee), HttpStatus.OK);
     }
 
 }
