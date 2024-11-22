@@ -1,3 +1,4 @@
+// New to Chap119
 package com.luv2code.springboot.cruddemo.dao;
 
 import com.luv2code.springboot.cruddemo.entity.Employee;
@@ -8,19 +9,10 @@ public interface EmployeeDAO {
 
     List<Employee> findAll();
 
-    Employee findById(int theId);
+    Employee findById(int employeeID);
 
-    Employee save(Employee theEmployee);
+    Employee save(Employee employee);
 
-    void deleteById(int theId);
+    void deleteById(int employeeID);
+
 }
-
-
-
-
-
-
-
-
-
-
