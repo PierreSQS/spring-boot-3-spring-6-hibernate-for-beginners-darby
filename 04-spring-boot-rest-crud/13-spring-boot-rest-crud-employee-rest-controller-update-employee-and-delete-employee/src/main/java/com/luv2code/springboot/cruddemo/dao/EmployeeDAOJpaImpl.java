@@ -38,7 +38,6 @@ public class EmployeeDAOJpaImpl implements EmployeeDAO {
     // WE DON'T USE @Transactional AT DAO-LAYER BUT ON THE SERVICE LAYER
     @Override
     public Employee save(Employee employee) {
-
         // if empID = 0 then save else update
         return entityManager.merge(employee);
     }
@@ -53,6 +52,7 @@ public class EmployeeDAOJpaImpl implements EmployeeDAO {
         entityManager.remove(foundEmp);
 
     }
+
 }
 
 
