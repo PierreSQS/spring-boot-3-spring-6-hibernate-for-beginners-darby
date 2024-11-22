@@ -1,5 +1,6 @@
 package com.luv2code.springboot.cruddemo.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
 import jakarta.servlet.ServletException;
@@ -8,15 +9,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +33,9 @@ class EmployeeRestControllerTest {
 
     @MockBean
     EmployeeService empServ;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     Employee emp1, emp2;
 
@@ -90,5 +97,22 @@ class EmployeeRestControllerTest {
                 .havingCause()
                 .withMessage(errMsg);
 
+    }
+
+    @Test
+    void createEmployee() throws Exception {
+        // given
+        Employee createdEmp = emp2;
+        createdEmp.setId(2);
+
+        given(empServ.save(any())).willReturn(createdEmp);
+
+        mockMvc.perform(post("/api/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(emp2)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", equalTo(2)))
+                .andExpect(jsonPath("$.firstName", equalTo("emp2")))
+                .andDo(print());
     }
 }
