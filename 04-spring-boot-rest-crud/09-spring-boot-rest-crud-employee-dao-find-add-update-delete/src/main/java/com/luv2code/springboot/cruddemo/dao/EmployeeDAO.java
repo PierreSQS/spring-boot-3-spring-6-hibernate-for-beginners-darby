@@ -9,4 +9,10 @@ public interface EmployeeDAO {
 
     List<Employee> findAll();
 
+    Employee findById(int employeeID);
+
+    Employee save(Employee employee);
+
+    void deleteById(int employeeID);
+
 }

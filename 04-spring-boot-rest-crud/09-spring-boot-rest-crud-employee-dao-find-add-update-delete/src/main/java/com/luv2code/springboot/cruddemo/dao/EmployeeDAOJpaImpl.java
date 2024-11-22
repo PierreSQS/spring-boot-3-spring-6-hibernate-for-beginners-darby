@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public class EmployeeDAOJpaImpl implements EmployeeDAO {
 
-    // define field for entitymanager
+    // define field for entity manager
     private final EntityManager entityManager;
 
 
@@ -28,6 +28,30 @@ public class EmployeeDAOJpaImpl implements EmployeeDAO {
 
         // execute query and get result list
         return theQuery.getResultList();
+    }
+
+    @Override
+    public Employee findById(int employeeID) {
+        return entityManager.find(Employee.class, employeeID);
+    }
+
+    // WE DON'T USE @Transactional AT DAO-LAYER BUT ON THE SERVICE LAYER
+    @Override
+    public Employee save(Employee employee) {
+
+        // if empID = 0 then save else update
+        return entityManager.merge(employee);
+    }
+
+    // WE DON'T USE @Transactional AT DAO-LAYER BUT ON THE SERVICE LAYER
+    @Override
+    public void deleteById(int employeeID) {
+        // find the Employee by ID
+        Employee foundEmp = findById(employeeID);
+
+        // delete the found Employee
+        entityManager.remove(foundEmp);
+
     }
 }
 
