@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -46,7 +47,7 @@ class EmployeeRestControllerTest {
     }
 
     @Test
-    void findAll() throws Exception {
+    void findAllEmployees() throws Exception {
         // given, when
         given(empServ.findAll()).willReturn(List.of(emp1,emp2));
 
@@ -57,4 +58,17 @@ class EmployeeRestControllerTest {
                 .andExpect(jsonPath("$.[0].lastName").value(equalTo("test1")))
                 .andDo(print());
     }
+
+    @Test
+    void findEmployeeByID() throws Exception{
+        // given
+        emp1.setId(1); // id != 0 , simulates an Employee from the DB
+        // when
+        given(empServ.findById(anyInt())).willReturn(emp1);
+
+        // then
+        mockMvc.perform(get("/api/employees/{empID}",emp1.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.lastName").value(equalTo("test1")))
+                .andDo(print());    }
 }
