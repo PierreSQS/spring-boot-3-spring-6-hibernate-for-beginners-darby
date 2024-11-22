@@ -115,4 +115,30 @@ class EmployeeRestControllerTest {
                 .andExpect(jsonPath("$.firstName", equalTo("emp2")))
                 .andDo(print());
     }
+
+    @Test
+    void updateEmployee() throws Exception {
+        // given
+        Employee empToUpdate = Employee
+                .builder()
+                .id(2)
+                .firstName("emp2")
+                .lastName("test2")
+                .build();
+
+        emp2.setId(2);
+        emp2.setFirstName("empChanged");
+        emp2.setLastName("testChange2");
+
+        given(empServ.save(any())).willReturn(emp2);
+
+        // when, then
+        mockMvc.perform(post("/api/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(empToUpdate)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.firstName", equalTo("empChanged")))
+                .andExpect(jsonPath("$.lastName", equalTo("testChange2")))
+                .andDo(print());
+    }
 }
