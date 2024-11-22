@@ -102,17 +102,23 @@ class EmployeeRestControllerTest {
     @Test
     void createEmployee() throws Exception {
         // given
-        Employee createdEmp = emp2;
-        createdEmp.setId(2);
+        Employee createdEmp = Employee
+                .builder()
+                .id(1)
+                .firstName("emp1")
+                .lastName("test1")
+                .email("emp1.test1@example.com")
+                .build();
 
         given(empServ.save(any())).willReturn(createdEmp);
 
+        // when, then
         mockMvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(emp2)))
+                        .content(objectMapper.writeValueAsString(emp1)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", equalTo(2)))
-                .andExpect(jsonPath("$.firstName", equalTo("emp2")))
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.lastName", equalTo("test1")))
                 .andDo(print());
     }
 
