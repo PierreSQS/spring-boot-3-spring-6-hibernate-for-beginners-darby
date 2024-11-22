@@ -2,92 +2,47 @@ package com.luv2code.springboot.cruddemo.rest;
 
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
 public class EmployeeRestController {
 
-    private EmployeeService employeeService;
-
-    @Autowired
-    public EmployeeRestController(EmployeeService theEmployeeService) {
-        employeeService = theEmployeeService;
-    }
+    private final EmployeeService empServ;
 
     // expose "/employees" and return a list of employees
     @GetMapping("/employees")
-    public List<Employee> findAll() {
-        return employeeService.findAll();
+    public List<Employee> findAllEmployees() {
+        return empServ.findAll();
     }
 
-    // add mapping for GET /employees/{employeeId}
-
-    @GetMapping("/employees/{employeeId}")
-    public Employee getEmployee(@PathVariable int employeeId) {
-
-        Employee theEmployee = employeeService.findById(employeeId);
-
-        if (theEmployee == null) {
-            throw new RuntimeException("Employee id not found - " + employeeId);
-        }
-
-        return theEmployee;
+    @GetMapping("/employees/{empID}")
+    public Employee findEmployeeByID( @PathVariable int empID) {
+        return empServ.findById(empID);
     }
-
-    // add mapping for POST /employees - add new employee
 
     @PostMapping("/employees")
-    public Employee addEmployee(@RequestBody Employee theEmployee) {
+    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
+        // IN CASE THE USER PASSES AN ID IN JSON, SET ID = 0
+        // THIS FORCES A SAVE OF NEW ITEM INSTEAD OF AN UPDATE !
+        if (employee.getId() != 0)
+            employee.setId(0);
 
-        // also just in case they pass an id in JSON ... set id to 0
-        // this is to force a save of new item ... instead of update
-
-        theEmployee.setId(0);
-
-        Employee dbEmployee = employeeService.save(theEmployee);
-
-        return dbEmployee;
-    }
-
-    // add mapping for PUT /employees - update existing employee
-
-    @PutMapping("/employees")
-    public Employee updateEmployee(@RequestBody Employee theEmployee) {
-
-        Employee dbEmployee = employeeService.save(theEmployee);
-
-        return dbEmployee;
-    }
-
-    // add mapping for DELETE /employees/{employeeId} - delete employee
-
-    @DeleteMapping("/employees/{employeeId}")
-    public String deleteEmployee(@PathVariable int employeeId) {
-
-        Employee tempEmployee = employeeService.findById(employeeId);
-
-        // throw exception if null
-
-        if (tempEmployee == null) {
-            throw new RuntimeException("Employee id not found - " + employeeId);
-        }
-
-        employeeService.deleteById(employeeId);
-
-        return "Deleted employee id - " + employeeId;
+        return new ResponseEntity<>(empServ.save(employee), HttpStatus.CREATED);
     }
 
 }
-
-
-
-
-
-
 
 
 
