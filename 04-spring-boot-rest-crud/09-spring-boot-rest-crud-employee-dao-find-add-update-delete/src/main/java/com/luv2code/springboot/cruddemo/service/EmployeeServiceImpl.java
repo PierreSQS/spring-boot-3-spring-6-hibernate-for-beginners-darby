@@ -2,24 +2,20 @@ package com.luv2code.springboot.cruddemo.service;
 
 import com.luv2code.springboot.cruddemo.dao.EmployeeDAO;
 import com.luv2code.springboot.cruddemo.entity.Employee;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private EmployeeDAO employeeDAO;
-
-    @Autowired
-    public EmployeeServiceImpl(EmployeeDAO theEmployeeDAO) {
-        employeeDAO = theEmployeeDAO;
-    }
+    private final EmployeeDAO empDAO;
 
     @Override
     public List<Employee> findAll() {
-        return employeeDAO.findAll();
+        return empDAO.findAll();
     }
 }
 
