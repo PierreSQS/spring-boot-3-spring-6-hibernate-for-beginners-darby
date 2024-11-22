@@ -1,7 +1,7 @@
 package com.luv2code.springboot.cruddemo.rest;
 
-import com.luv2code.springboot.cruddemo.dao.EmployeeDAO;
 import com.luv2code.springboot.cruddemo.entity.Employee;
+import com.luv2code.springboot.cruddemo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ class EmployeeRestControllerTest {
     MockMvc mockMvc;
 
     @MockBean
-    EmployeeDAO empDAO;
+    EmployeeService empServ;
 
     Employee emp1, emp2;
 
@@ -48,7 +48,7 @@ class EmployeeRestControllerTest {
     @Test
     void findAll() throws Exception {
         // given, when
-        given(empDAO.findAll()).willReturn(List.of(emp1,emp2));
+        given(empServ.findAll()).willReturn(List.of(emp1,emp2));
 
         // then
         mockMvc.perform(get("/api/employees"))
