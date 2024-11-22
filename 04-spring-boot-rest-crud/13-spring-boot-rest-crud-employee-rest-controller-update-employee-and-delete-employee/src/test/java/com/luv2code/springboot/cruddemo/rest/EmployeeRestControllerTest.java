@@ -5,6 +5,7 @@ import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,6 +20,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -146,5 +149,16 @@ class EmployeeRestControllerTest {
                 .andExpect(jsonPath("$.firstName", equalTo("empChanged")))
                 .andExpect(jsonPath("$.lastName", equalTo("testChange2")))
                 .andDo(print());
+    }
+
+    @Disabled("needs more analyse")
+    @Test
+    void deleteEmployeeByID() throws Exception {
+
+        // when then
+        mockMvc.perform(delete("/api/employee/{empID}",1))
+                .andDo(print());
+
+        verify(empServ).deleteById(emp1.getId());
     }
 }
