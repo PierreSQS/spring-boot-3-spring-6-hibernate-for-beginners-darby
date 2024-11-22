@@ -4,7 +4,6 @@ import com.luv2code.springboot.cruddemo.dao.EmployeeRepository;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,13 +24,11 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new RuntimeException("Employee with ID "+employeeID+" not found!"));
     }
 
-    @Transactional
     @Override
     public Employee save(Employee employee) {
         return empRepo.save(employee);
     }
 
-    @Transactional
     @Override
     public void deleteById(int employeeID) {
         empRepo.deleteById(employeeID);
