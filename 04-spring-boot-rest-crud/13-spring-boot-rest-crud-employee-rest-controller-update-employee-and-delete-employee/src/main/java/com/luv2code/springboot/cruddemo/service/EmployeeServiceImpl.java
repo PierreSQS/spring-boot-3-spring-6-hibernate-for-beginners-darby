@@ -29,6 +29,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Transactional
     @Override
     public Employee save(Employee employee) {
+        // IN CASE THE USER PASSES AN ID IN JSON, SET ID = 0
+        // THIS FORCES A SAVE OF NEW ITEM INSTEAD OF AN UPDATE !
+        if (employee.getId() != 0)
+            employee.setId(0);
+
         return empDAO.save(employee);
     }
 
@@ -36,6 +41,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void deleteById(int employeeID) {
         empDAO.deleteById(employeeID);
+    }
+
+    @Transactional
+    @Override
+    public Employee update(Employee employee) {
+        // THIS IS AN UPDATE
+        return empDAO.save(employee);
     }
 }
 
