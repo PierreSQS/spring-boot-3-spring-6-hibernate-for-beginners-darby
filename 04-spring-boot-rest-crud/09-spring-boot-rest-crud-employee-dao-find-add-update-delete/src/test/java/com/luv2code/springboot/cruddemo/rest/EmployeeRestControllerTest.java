@@ -2,6 +2,7 @@ package com.luv2code.springboot.cruddemo.rest;
 
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
+import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
@@ -70,5 +72,23 @@ class EmployeeRestControllerTest {
         mockMvc.perform(get("/api/employees/{empID}",emp1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lastName").value(equalTo("test1")))
-                .andDo(print());    }
+                .andDo(print());
+    }
+
+    @Test
+    void findEmployeeByIDNotFound(){
+        // given
+        // emp1.id = 0, simulates a non-existing employee in the DB
+        int empID = emp1.getId();
+        String errMsg = "Employee with ID " + empID + " not found!";
+
+        given(empServ.findById(anyInt())).willThrow(new RuntimeException(errMsg));
+
+        // then assert that the request is throwing an Exception
+        assertThatExceptionOfType(ServletException.class)
+                .isThrownBy(() -> mockMvc.perform(get("/api/employees/{empID}", empID)))
+                .havingCause()
+                .withMessage(errMsg);
+
+    }
 }
