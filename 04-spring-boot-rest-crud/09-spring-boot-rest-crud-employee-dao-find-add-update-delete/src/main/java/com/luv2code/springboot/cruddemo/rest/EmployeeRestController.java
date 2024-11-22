@@ -34,6 +34,11 @@ public class EmployeeRestController {
 
     @PostMapping("/employees")
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
+        // IN CASE THE USER PASSES AN ID IN JSON, SET ID = 0
+        // THIS FORCES A SAVE OF NEW ITEM INSTEAD OF AN UPDATE !
+        if (employee.getId() != 0)
+            employee.setId(0);
+
         return new ResponseEntity<>(empServ.save(employee), HttpStatus.CREATED);
     }
 
