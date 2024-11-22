@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -21,7 +22,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee findById(int employeeID) {
-        return empDAO.findById(employeeID);
+        return Optional.of(empDAO.findById(employeeID))
+                .orElseThrow(() -> new RuntimeException("Employee with ID "+employeeID+" not found!"));
     }
 
     @Transactional
