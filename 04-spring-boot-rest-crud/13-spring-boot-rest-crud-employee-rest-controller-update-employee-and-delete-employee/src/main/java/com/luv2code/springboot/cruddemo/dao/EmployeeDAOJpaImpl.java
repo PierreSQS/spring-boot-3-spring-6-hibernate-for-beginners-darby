@@ -6,6 +6,7 @@ import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class EmployeeDAOJpaImpl implements EmployeeDAO {
@@ -45,12 +46,8 @@ public class EmployeeDAOJpaImpl implements EmployeeDAO {
     // WE DON'T USE @Transactional AT DAO-LAYER BUT ON THE SERVICE LAYER
     @Override
     public void deleteById(int employeeID) {
-        // find the Employee by ID
-        Employee foundEmp = findById(employeeID);
-
-        // delete the found Employee
-        entityManager.remove(foundEmp);
-
+        // delete Employee with ID if exists
+        Optional.of(findById(employeeID)).ifPresent(entityManager::remove);
     }
 
 }
