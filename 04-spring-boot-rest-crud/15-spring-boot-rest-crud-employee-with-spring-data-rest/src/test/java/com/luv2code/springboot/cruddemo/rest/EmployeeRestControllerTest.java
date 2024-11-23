@@ -116,13 +116,13 @@ class EmployeeRestControllerTest {
                 .andDo(print());
     }
 
-    @Disabled("still needs more analyse")
+    @Disabled("still doesn't work but works in standalone")
     @Test
     void deleteEmployeeByID() throws Exception {
 
         // when then
         // mockMvc.perform(delete("/employee/{empID}",1))
-        mockMvc.perform(delete("/employee/1"))
+        mockMvc.perform(delete("/api/employees/6"))
                 .andExpect(status().isNoContent())
                 .andDo(print());
 
