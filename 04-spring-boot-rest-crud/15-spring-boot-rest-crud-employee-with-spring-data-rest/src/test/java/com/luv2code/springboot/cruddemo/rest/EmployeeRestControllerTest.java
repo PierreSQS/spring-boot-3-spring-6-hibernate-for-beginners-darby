@@ -52,7 +52,7 @@ class EmployeeRestControllerTest {
     void findAllEmployees() throws Exception {
 
         // when, then
-        mockMvc.perform(get("/employees"))
+        mockMvc.perform(get("/api/employees"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(equalTo(3)))
                 .andExpect(jsonPath("$._embedded.employees[0].lastName")
@@ -64,7 +64,7 @@ class EmployeeRestControllerTest {
     void findEmployeeByID() throws Exception{
 
         // when, then
-        mockMvc.perform(get("/employees/{empID}",1))
+        mockMvc.perform(get("/api/employees/{empID}",1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lastName").value(equalTo("Andrews")))
                 .andDo(print());
@@ -76,7 +76,7 @@ class EmployeeRestControllerTest {
         // emp1.id = 99, a non-existing employee in the DB
         int empID = 99;
 
-        mockMvc.perform(get("/employees/{empID}", empID))
+        mockMvc.perform(get("/api/employees/{empID}", empID))
                 .andExpect(status().isNotFound());
 
     }
@@ -85,7 +85,7 @@ class EmployeeRestControllerTest {
     void createEmployee() throws Exception {
 
         // when, then
-        mockMvc.perform(post("/employees")
+        mockMvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(emp1)))
                 .andExpect(status().isCreated())
@@ -108,11 +108,11 @@ class EmployeeRestControllerTest {
 
 
         // when, then
-        mockMvc.perform(post("/employees")
+        mockMvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(empToUpdate)))
                 .andExpect(status().isCreated())
-                .andExpect(redirectedUrl("http://localhost/employees/2"))
+                .andExpect(redirectedUrl("http://localhost/api/employees/2"))
                 .andDo(print());
     }
 
