@@ -33,6 +33,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteById(int employeeID) {
         empRepo.deleteById(employeeID);
     }
+
+    @Override
+    public Employee update(Employee employee) {
+        return empRepo.save(employee);
+    }
 }
 
 
