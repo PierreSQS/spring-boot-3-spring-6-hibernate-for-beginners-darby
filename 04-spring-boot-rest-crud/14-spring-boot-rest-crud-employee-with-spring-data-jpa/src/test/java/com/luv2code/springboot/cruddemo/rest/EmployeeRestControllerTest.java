@@ -5,6 +5,7 @@ import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,6 +20,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -102,17 +105,60 @@ class EmployeeRestControllerTest {
     @Test
     void createEmployee() throws Exception {
         // given
-        Employee createdEmp = emp2;
-        createdEmp.setId(2);
+        Employee createdEmp = Employee
+                .builder()
+                .id(1)
+                .firstName("emp1")
+                .lastName("test1")
+                .email("emp1.test1@example.com")
+                .build();
 
         given(empServ.save(any())).willReturn(createdEmp);
 
+        // when, then
         mockMvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(emp2)))
+                        .content(objectMapper.writeValueAsString(emp1)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", equalTo(2)))
-                .andExpect(jsonPath("$.firstName", equalTo("emp2")))
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.lastName", equalTo("test1")))
                 .andDo(print());
+    }
+
+    @Test
+    void updateEmployee() throws Exception {
+        // given
+        Employee empToUpdate = Employee
+                .builder()
+                .id(2)
+                .firstName("emp2")
+                .lastName("test2")
+                .build();
+
+        emp2.setId(2);
+        emp2.setFirstName("empChanged");
+        emp2.setLastName("testChange2");
+
+        given(empServ.save(any())).willReturn(emp2);
+
+        // when, then
+        mockMvc.perform(post("/api/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(empToUpdate)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.firstName", equalTo("empChanged")))
+                .andExpect(jsonPath("$.lastName", equalTo("testChange2")))
+                .andDo(print());
+    }
+
+    @Disabled("needs more analyse")
+    @Test
+    void deleteEmployeeByID() throws Exception {
+
+        // when then
+        mockMvc.perform(delete("/api/employee/{empID}",1))
+                .andDo(print());
+
+        verify(empServ).deleteById(emp1.getId());
     }
 }
