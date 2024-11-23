@@ -2,40 +2,30 @@ package com.luv2code.springboot.cruddemo.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luv2code.springboot.cruddemo.entity.Employee;
-import com.luv2code.springboot.cruddemo.service.EmployeeService;
-import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(EmployeeRestController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class EmployeeRestControllerTest {
 
     @Autowired
     MockMvc mockMvc;
-
-    @MockBean
-    EmployeeService empServ;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -60,68 +50,45 @@ class EmployeeRestControllerTest {
 
     @Test
     void findAllEmployees() throws Exception {
-        // given, when
-        given(empServ.findAll()).willReturn(List.of(emp1,emp2));
 
-        // then
-        mockMvc.perform(get("/api/employees"))
+        // when, then
+        mockMvc.perform(get("/employees"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(equalTo(2)))
-                .andExpect(jsonPath("$.[0].lastName").value(equalTo("test1")))
+                .andExpect(jsonPath("$.size()").value(equalTo(3)))
+                .andExpect(jsonPath("$._embedded.employees[0].lastName")
+                        .value(equalTo("Andrews")))
                 .andDo(print());
     }
 
     @Test
     void findEmployeeByID() throws Exception{
-        // given
-        emp1.setId(1); // id != 0 , simulates an Employee from the DB
-        // when
-        given(empServ.findById(anyInt())).willReturn(emp1);
 
-        // then
-        mockMvc.perform(get("/api/employees/{empID}",emp1.getId()))
+        // when, then
+        mockMvc.perform(get("/employees/{empID}",1))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.lastName").value(equalTo("test1")))
+                .andExpect(jsonPath("$.lastName").value(equalTo("Andrews")))
                 .andDo(print());
     }
 
     @Test
-    void findEmployeeByIDNotFound(){
+    void findEmployeeByIDNotFound() throws Exception {
         // given
-        // emp1.id = 0, simulates a non-existing employee in the DB
-        int empID = emp1.getId();
-        String errMsg = "Employee with ID " + empID + " not found!";
+        // emp1.id = 99, a non-existing employee in the DB
+        int empID = 99;
 
-        given(empServ.findById(anyInt())).willThrow(new RuntimeException(errMsg));
-
-        // then assert that the request is throwing an Exception
-        assertThatExceptionOfType(ServletException.class)
-                .isThrownBy(() -> mockMvc.perform(get("/api/employees/{empID}", empID)))
-                .havingCause()
-                .withMessage(errMsg);
+        mockMvc.perform(get("/employees/{empID}", empID))
+                .andExpect(status().isNotFound());
 
     }
 
     @Test
     void createEmployee() throws Exception {
-        // given
-        Employee createdEmp = Employee
-                .builder()
-                .id(1)
-                .firstName("emp1")
-                .lastName("test1")
-                .email("emp1.test1@example.com")
-                .build();
-
-        given(empServ.save(any())).willReturn(createdEmp);
 
         // when, then
-        mockMvc.perform(post("/api/employees")
+        mockMvc.perform(post("/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(emp1)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", equalTo(1)))
-                .andExpect(jsonPath("$.lastName", equalTo("test1")))
                 .andDo(print());
     }
 
@@ -139,26 +106,25 @@ class EmployeeRestControllerTest {
         emp2.setFirstName("empChanged2");
         emp2.setLastName("testChange2");
 
-        given(empServ.save(any())).willReturn(emp2);
 
         // when, then
-        mockMvc.perform(post("/api/employees")
+        mockMvc.perform(post("/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(empToUpdate)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.firstName", equalTo("empChanged2")))
-                .andExpect(jsonPath("$.lastName", equalTo("testChange2")))
+                .andExpect(redirectedUrl("http://localhost/employees/2"))
                 .andDo(print());
     }
 
-    @Disabled("needs more analyse")
+    @Disabled("still needs more analyse")
     @Test
     void deleteEmployeeByID() throws Exception {
 
         // when then
-        mockMvc.perform(delete("/api/employee/{empID}",1))
+        // mockMvc.perform(delete("/employee/{empID}",1))
+        mockMvc.perform(delete("/employee/1"))
+                .andExpect(status().isNoContent())
                 .andDo(print());
 
-        verify(empServ).deleteById(emp1.getId());
     }
 }
