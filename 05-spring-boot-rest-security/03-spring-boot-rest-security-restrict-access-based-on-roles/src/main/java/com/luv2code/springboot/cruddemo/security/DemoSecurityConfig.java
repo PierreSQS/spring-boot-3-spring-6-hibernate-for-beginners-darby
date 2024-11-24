@@ -50,7 +50,7 @@ public class DemoSecurityConfig {
                 .requestMatchers(HttpMethod.GET, EMPLOYEE_PATH+"/**").hasRole(EMPLOYEE_ROLE)
                 .requestMatchers(HttpMethod.POST, EMPLOYEE_PATH).hasRole(MANAGER_ROLE)
                 .requestMatchers(HttpMethod.PUT, EMPLOYEE_PATH).hasRole(MANAGER_ROLE)
-                .requestMatchers(HttpMethod.DELETE, EMPLOYEE_PATH).hasRole(ADMIN_ROLE));
+                .requestMatchers(HttpMethod.DELETE, EMPLOYEE_PATH+"/**").hasRole(ADMIN_ROLE));
 
         // Basic Authentication
         http.httpBasic(Customizer.withDefaults());
