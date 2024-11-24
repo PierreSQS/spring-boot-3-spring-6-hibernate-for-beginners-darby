@@ -16,6 +16,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,7 +34,7 @@ class EmployeeRestControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    Employee emp1;
+    Employee emp1, emp2;
 
     @BeforeEach
     void setUp() {
@@ -41,6 +42,13 @@ class EmployeeRestControllerTest {
                 .firstName("Hector")
                 .lastName("Perez")
                 .email("hector.perez@example.com")
+                .build();
+
+        emp2 = Employee.builder()
+                .id(6)
+                .firstName("Hector")
+                .lastName("Fernandez")
+                .email("hector.fernandez@example.com")
                 .build();
     }
 
@@ -77,7 +85,14 @@ class EmployeeRestControllerTest {
     }
 
     @Test
-    void updateEmployee() {
+    void updateEmployee() throws Exception {
+        mockMvc.perform(put("/api/employees")
+                        .with(httpBasic("Susan","Susan"))
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(emp2)))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
     @Test
