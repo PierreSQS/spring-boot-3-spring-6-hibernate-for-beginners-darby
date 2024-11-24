@@ -1,5 +1,7 @@
 package com.luv2code.springboot.cruddemo.rest;
 
+import com.luv2code.springboot.cruddemo.entity.Employee;
+import com.luv2code.springboot.cruddemo.service.EmployeeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ class EmployeeRestControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    EmployeeServiceImpl empServ;
+
     @BeforeEach
     void setUp() {
     }
@@ -37,10 +42,12 @@ class EmployeeRestControllerTest {
     @Test
     void getEmployee() throws Exception {
 
-        mockMvc.perform(get("/api/employees")
+        Employee firstFoundEmp = empServ.findAll().getFirst();
+
+        mockMvc.perform(get("/api/employees/{empID}",firstFoundEmp.getId())
                         .with(httpBasic("John", "John")))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.[0].firstName").value(equalTo("Leslie")))
+                .andExpect(jsonPath("$.firstName").value(equalTo("Leslie")))
                 .andDo(print());
     }
 
