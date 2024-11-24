@@ -9,25 +9,29 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 public class DemoSecurityConfig {
 
+    public static final String EMPLOYEE_ROLE = "EMPLOYEE";
+    public static final String MANAGER_ROLE = "MANAGER";
+    public static final String ADMIN_ROLE = "ADMIN";
+
     @Bean
     public InMemoryUserDetailsManager userDetailsManager() {
 
         UserDetails john = User.builder()
-                .username("john")
-                .password("{noop}test123")
-                .roles("EMPLOYEE")
+                .username("John")
+                .password("{noop}John")
+                .roles(EMPLOYEE_ROLE)
                 .build();
 
         UserDetails mary = User.builder()
-                .username("mary")
-                .password("{noop}test123")
-                .roles("EMPLOYEE", "MANAGER")
+                .username("Mary")
+                .password("{noop}Mary")
+                .roles(EMPLOYEE_ROLE, MANAGER_ROLE)
                 .build();
 
         UserDetails susan = User.builder()
-                .username("susan")
-                .password("{noop}test123")
-                .roles("EMPLOYEE", "MANAGER", "ADMIN")
+                .username("Susan")
+                .password("{noop}Susan")
+                .roles(EMPLOYEE_ROLE, MANAGER_ROLE, ADMIN_ROLE)
                 .build();
 
         return new InMemoryUserDetailsManager(john, mary, susan);
