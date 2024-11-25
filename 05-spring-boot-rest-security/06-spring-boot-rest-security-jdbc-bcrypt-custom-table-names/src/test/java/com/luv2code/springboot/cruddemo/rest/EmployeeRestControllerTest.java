@@ -97,7 +97,7 @@ class EmployeeRestControllerTest {
                 .andDo(print());
     }
 
-    @Disabled("need more analysis")
+    @Disabled("needs more analysis")
     @Test
     void deleteEmployee() throws Exception {
         mockMvc.perform(delete("/api/employees/{empID}",6)
