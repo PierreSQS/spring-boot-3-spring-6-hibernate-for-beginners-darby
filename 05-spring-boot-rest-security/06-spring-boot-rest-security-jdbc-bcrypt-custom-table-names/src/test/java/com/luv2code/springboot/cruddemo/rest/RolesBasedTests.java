@@ -99,7 +99,7 @@ class RolesBasedTests {
 
     @WithMockUser(username = "MockUser", roles = {EMPLOYEE_ROLE})
     @Test
-    void roleManagerCanNotAddEmployee() throws Exception {
+    void roleEmployeeCanNotAddEmployee() throws Exception {
         mockMvc.perform(post("/api/employees"))
                 .andExpect(status().isForbidden())
                 .andDo(print());
@@ -107,7 +107,7 @@ class RolesBasedTests {
 
     @WithMockUser(username = "MockUser", roles = {EMPLOYEE_ROLE})
     @Test
-    void roleManagerCanNotUpdateEmployee() throws Exception {
+    void roleEmployeeCanNotUpdateEmployee() throws Exception {
         mockMvc.perform(put("/api/employees"))
                 .andExpect(status().isForbidden())
                 .andDo(print());
