@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
-  `password` char(68) NOT NULL,
+  `password` char(70) NOT NULL,
   `enabled` tinyint NOT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -26,9 +26,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` 
 VALUES 
-('john','{bcrypt}$2a$10$qeS0HEh7urweMojsnwNAR.vcXJeXR1UcMRZ2WcGQl9YeuspUdgF.q',1),
-('mary','{bcrypt}$2a$10$qeS0HEh7urweMojsnwNAR.vcXJeXR1UcMRZ2WcGQl9YeuspUdgF.q',1),
-('susan','{bcrypt}$2a$10$qeS0HEh7urweMojsnwNAR.vcXJeXR1UcMRZ2WcGQl9YeuspUdgF.q',1);
+('John','{bcrypt}$2a$10$0/vcDe/rwIbhBjj7aDR9CeyrP6wQgxcJBAgolTX653HiXNEoXvKya',1),
+('Mary','{bcrypt}$2a$10$k7Re0mEI5lE7.IO4aQzKcOwZMEPdYIE8sw.JX48ldfAVAolmjz3ai',1),
+('Susan','{bcrypt}$2a$10$pVRZWPUlLVcKPQ0nYNivX.UlD5YLgMEl834w25UK9lAN3iH8s1AEK',1);
 
 
 --
@@ -48,9 +48,9 @@ CREATE TABLE `authorities` (
 
 INSERT INTO `authorities` 
 VALUES 
-('john','ROLE_EMPLOYEE'),
-('mary','ROLE_EMPLOYEE'),
-('mary','ROLE_MANAGER'),
-('susan','ROLE_EMPLOYEE'),
-('susan','ROLE_MANAGER'),
-('susan','ROLE_ADMIN');
+('John','ROLE_EMPLOYEE'),
+('Mary','ROLE_EMPLOYEE'),
+('Mary','ROLE_MANAGER'),
+('Susan','ROLE_EMPLOYEE'),
+('Susan','ROLE_MANAGER'),
+('Susan','ROLE_ADMIN');
