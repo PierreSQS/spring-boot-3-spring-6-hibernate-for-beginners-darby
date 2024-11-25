@@ -19,10 +19,16 @@ public class DemoSecurityConfig {
     public static final String MANAGER_ROLE = "MANAGER";
     public static final String ADMIN_ROLE = "ADMIN";
     public static final String EMPLOYEE_PATH = "/api/employees";
+    public static final String FROM_MEMBERS_BY_USER_ID = "select user_id, pw, active  from members where user_id = ?";
+    public static final String ROLES_BY_USER_ID = "select user_id, role  from roles where user_id = ?";
 
     @Bean
     public UserDetailsService userDetailsService(DataSource dataSource) {
-        return new JdbcUserDetailsManager(dataSource);
+
+        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+        jdbcUserDetailsManager.setUsersByUsernameQuery(FROM_MEMBERS_BY_USER_ID);
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery(ROLES_BY_USER_ID);
+        return jdbcUserDetailsManager;
     }
 
     @Bean
