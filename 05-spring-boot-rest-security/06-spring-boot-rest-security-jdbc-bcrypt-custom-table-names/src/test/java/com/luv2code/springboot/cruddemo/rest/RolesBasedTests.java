@@ -121,4 +121,12 @@ class RolesBasedTests {
                 .andDo(print());
     }
 
+    @WithMockUser(username = "MockUser", roles = {EMPLOYEE_ROLE})
+    @Test
+    void roleEmployeeCanNotDeleteEmployee() throws Exception {
+        mockMvc.perform(delete("/api/employees"))
+                .andExpect(status().isForbidden())
+                .andDo(print());
+    }
+
 }
