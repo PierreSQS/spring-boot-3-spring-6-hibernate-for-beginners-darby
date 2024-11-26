@@ -8,6 +8,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.List;
+
 @Slf4j
 @SpringBootApplication
 public class CruddemoApplication {
@@ -19,7 +21,50 @@ public class CruddemoApplication {
 	@Bean
 	public CommandLineRunner commandLineRunner(StudentDAO studentDAO) {
 
-		return runner -> createStudent(studentDAO);
+		return runner -> {
+			createStudent(studentDAO);
+			createMultipleStudents(studentDAO);
+		};
+	}
+
+	private void createMultipleStudents(StudentDAO studentDAO) {
+		// create students
+		log.info("Creating 3 Students...");
+		Student studentToCreate1 = Student
+				.builder()
+				.firstName("John")
+				.lastName("Doe")
+				.email("john.doe@luv2code.com")
+				.build();
+
+		Student studentToCreate2 = Student
+				.builder()
+				.firstName("Mary")
+				.lastName("Public")
+				.email("john.doe@luv2code.com")
+				.build();
+
+		Student studentToCreate3 = Student
+				.builder()
+				.firstName("Bonita")
+				.lastName("Applebaum")
+				.email("bonita.applebaum@luv2code.com")
+				.build();
+
+		List<Student> students = List.of(studentToCreate1, studentToCreate2, studentToCreate3);
+
+
+		// save the new created students
+		log.info("Saving the new created students...");
+		students.forEach(
+				studentDAO::save
+		);
+
+		// Display the new created Student
+		log.info("Displaying the new created students {}",students);
+
+		// Done message
+		doneMessage();
 	}
 
 	private void createStudent(StudentDAO studentDAO) {
@@ -40,9 +85,16 @@ public class CruddemoApplication {
 		// Display the new created Student
 		log.info("Displaying the new created student {}",studentToCreate);
 
-	}
-}
+		// Done message
+		doneMessage();
 
+	}
+
+	private static void doneMessage() {
+		log.info("****** Done! ******");
+	}
+
+}
 
 
 
