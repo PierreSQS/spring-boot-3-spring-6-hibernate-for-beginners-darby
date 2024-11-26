@@ -7,4 +7,6 @@ public interface StudentDAO {
 
     void save(Student theStudent);
 
+    Student findStudentByID(int studentID);
+
 }
