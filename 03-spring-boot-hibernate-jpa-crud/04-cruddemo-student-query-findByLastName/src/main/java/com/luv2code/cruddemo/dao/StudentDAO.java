@@ -12,4 +12,6 @@ public interface StudentDAO {
 
     List<Student> findAllEmployees();
 
+    List<Student> findAllEmplployeesByLastName(String lastName);
+
 }
