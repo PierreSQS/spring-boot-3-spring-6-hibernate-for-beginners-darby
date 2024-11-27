@@ -21,9 +21,26 @@ public class CruddemoApplication {
 	@Bean
 	public CommandLineRunner commandLineRunner(StudentDAO studentDAO) {
 
-		return runner -> findAllEmployees(studentDAO);
+		return runner -> {
+
+			findAllEmployees(studentDAO);
+			findEmployeesByName(studentDAO);
+
+		};
 
 }
+
+	private void findEmployeesByName(StudentDAO studentDAO) {
+		String lastNameToFind = "Doe";
+
+		log.info("Finding all employees by name: {}...", lastNameToFind);
+		List<Student> employeesByLastName = studentDAO.findAllEmplployeesByLastName(lastNameToFind);
+
+		log.info("The employees by name {}: {}", lastNameToFind, employeesByLastName);
+
+		doneMessage();
+
+	}
 
 	private void findAllEmployees(StudentDAO studentDAO) {
 		log.info("Finding all employees...");
