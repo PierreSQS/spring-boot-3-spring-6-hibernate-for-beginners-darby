@@ -1,11 +1,13 @@
 package com.luv2code.cruddemo;
 
 import com.luv2code.cruddemo.dao.StudentDAO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+@Slf4j
 @SpringBootApplication
 public class CruddemoApplication {
 
@@ -23,7 +25,9 @@ public class CruddemoApplication {
 	private void deleteStudent(StudentDAO studentDAO) {
 
 		int studentID = 5;
-		System.out.println("Deleting student id: " + studentID);
+        log.info("Deleting student with id: {}", studentID);
+		studentDAO.deleteStudent(studentID);
+		log.info("***** Done! *****");
 	}
 
 	
