@@ -33,8 +33,18 @@ class HelloWorldControllerTest {
         mockMvc.perform(get("/processFormVersionTwo").param("studentName","Pierrot"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("helloworld"))
-                .andExpect(model().attributeExists("message"))
+                .andExpect(model().attribute("message", "Yo! PIERROT"))
                 .andExpect(content().string(containsString("Yo! PIERROT")))
+                .andDo(print());
+    }
+
+    @Test
+    void processFormVersionThree() throws Exception {
+        mockMvc.perform(get("/processFormVersionThree").param("studentName", "Odile"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("helloworld"))
+                .andExpect(model().attribute("message", "Hey My Friend from v3! ODILE"))
+                .andExpect(content().string(containsString("Odile")))
                 .andDo(print());
     }
 }

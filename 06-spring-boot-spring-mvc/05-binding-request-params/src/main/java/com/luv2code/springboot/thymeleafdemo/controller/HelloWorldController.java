@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HelloWorldController {
+    public static final String HELLOWORLD_TEMPLATE = "helloworld";
 
     // need a controller method to show initial HTML form
 
@@ -19,7 +20,7 @@ public class HelloWorldController {
     // need a controller method to process the HTML form
     @RequestMapping("/processForm")
     public String processForm() {
-        return "helloworld";
+        return HELLOWORLD_TEMPLATE;
     }
 
     // need a controller method to read form data and
@@ -41,7 +42,7 @@ public class HelloWorldController {
         // add message to the model
         model.addAttribute("message", result);
 
-        return "helloworld";
+        return HELLOWORLD_TEMPLATE;
     }
 
     @RequestMapping("/processFormVersionThree")
@@ -60,7 +61,7 @@ public class HelloWorldController {
         // add message to the model
         model.addAttribute("message", result);
 
-        return "helloworld";
+        return HELLOWORLD_TEMPLATE;
     }
 }
 
