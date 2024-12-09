@@ -7,6 +7,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -30,7 +31,8 @@ class HelloWorldControllerTest {
 
     @Test
     void letsShoutDude() throws Exception {
-        mockMvc.perform(get("/processFormVersionTwo").param("studentName","Pierrot"))
+        mockMvc.perform(get("/processFormVersionTwo")
+                        .param("studentName","Pierrot"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("helloworld"))
                 .andExpect(model().attribute("message", "Yo! PIERROT"))
@@ -40,7 +42,8 @@ class HelloWorldControllerTest {
 
     @Test
     void processFormVersionThree() throws Exception {
-        mockMvc.perform(get("/processFormVersionThree").param("studentName", "Odile"))
+        mockMvc.perform(post("/processFormVersionThree")
+                        .param("studentName", "Odile"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("helloworld"))
                 .andExpect(model().attribute("message", "Hey My Friend from v3! ODILE"))
