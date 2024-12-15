@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
@@ -46,8 +47,13 @@ class StudentControllerTest {
     void processForm() throws Exception {
 
         mockMvc.perform(post("/processStudentForm")
-                        .content(student1.toString()))
+                        .content("firstName="+student1.getFirstName()+"&lastName="+student1.getLastName())
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute("student",student1))
+                .andExpect(view().name("student-confirmation"))
+                .andExpect(content()
+                        .string(containsString("The student is confirmed: <span >Test User</span>")))
                 .andDo(print());
     }
 }
