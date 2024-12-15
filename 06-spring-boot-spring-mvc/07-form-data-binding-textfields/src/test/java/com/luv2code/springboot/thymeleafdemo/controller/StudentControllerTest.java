@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -46,8 +48,11 @@ class StudentControllerTest {
     @Test
     void processForm() throws Exception {
 
-        mockMvc.perform(post("/processStudentForm")
-                        .content("firstName="+student1.getFirstName()+"&lastName="+student1.getLastName())
+        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+        multiValueMap.add("firstName", student1.getFirstName());
+        multiValueMap.add("lastName", student1.getLastName());
+
+        mockMvc.perform(post("/processStudentForm").params(multiValueMap)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("student",student1))
