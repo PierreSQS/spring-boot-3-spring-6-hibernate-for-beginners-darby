@@ -1,3 +1,4 @@
+<!-- Introduced in Sec6_Chap178 -->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -19,10 +20,13 @@
     <br><br>
 
     Country:
-
+    <!-- added Dropdown List in Sec6_Chap182-->
     <select th:field="*{country}">
 
-        <option th:each="tempCountry : ${countries}" th:value="${tempCountry}" th:text="${tempCountry}" />
+       <option th:value="Brazil">Brazil</option>
+        <option th:value="France">France</option>
+        <option th:value="Germany">Germany</option>
+        <option th:value="India">India</option>
 
     </select>
 
