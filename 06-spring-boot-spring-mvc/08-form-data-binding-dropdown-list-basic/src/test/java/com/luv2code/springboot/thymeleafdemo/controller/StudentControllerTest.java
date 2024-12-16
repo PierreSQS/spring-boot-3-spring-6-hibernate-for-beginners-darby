@@ -31,7 +31,9 @@ class StudentControllerTest {
     void setUp() {
         student1 = Student.builder()
                 .firstName("Test")
-                .lastName("User").build();
+                .lastName("User")
+                .country("BRAZIL")
+                .build();
     }
 
     @Test
@@ -50,6 +52,7 @@ class StudentControllerTest {
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
         multiValueMap.add("firstName", student1.getFirstName());
         multiValueMap.add("lastName", student1.getLastName());
+        multiValueMap.add("country", student1.getCountry());
 
         mockMvc.perform(post("/processStudentForm").params(multiValueMap)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
@@ -58,6 +61,7 @@ class StudentControllerTest {
                 .andExpect(view().name("student-confirmation"))
                 .andExpect(content()
                         .string(containsString("The student is confirmed: <span >Test User</span>")))
+                .andExpect(content().string(containsString("Country: <span >BRAZIL</span>")))
                 .andDo(print());
     }
 }
