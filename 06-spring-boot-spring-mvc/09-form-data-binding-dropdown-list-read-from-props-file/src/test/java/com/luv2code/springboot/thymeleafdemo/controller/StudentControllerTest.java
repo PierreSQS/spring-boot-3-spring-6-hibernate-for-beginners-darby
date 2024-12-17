@@ -43,6 +43,7 @@ class StudentControllerTest {
                 .andExpect(model().attribute("student", new Student()))
                 .andExpect(view().name("student-form"))
                 .andExpect(content().string(containsString("<h3>Student Registration Form</h3>")))
+                .andExpect(content().string(containsString("<option value=\"CAMEROON\" >CAMEROON</option>")))
                 .andDo(print());
     }
 
