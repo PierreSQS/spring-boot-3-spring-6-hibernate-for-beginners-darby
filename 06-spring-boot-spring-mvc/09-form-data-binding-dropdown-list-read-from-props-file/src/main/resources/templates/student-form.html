@@ -23,12 +23,7 @@
     <!-- added Dropdown List in Sec6_Chap182-->
     <select th:field="*{country}">
 
-       <option th:value="Brazil">Brazil</option>
-        <option th:value="France">France</option>
-        <option th:value="Germany">Germany</option>
-        <option th:value="India">India</option>
-
-    </select>
+       <option th:each="country: ${countries}" th:value="${country}" th:text="${country}" />
 
     <br><br>
 
