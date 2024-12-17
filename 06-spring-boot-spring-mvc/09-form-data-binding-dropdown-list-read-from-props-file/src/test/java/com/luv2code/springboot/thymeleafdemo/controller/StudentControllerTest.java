@@ -42,7 +42,7 @@ class StudentControllerTest {
         mockMvc.perform(get("/showStudentForm"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("student", new Student()))
-                .andExpect(model().attribute("countries", hasItems("BRAZIL,CAMEROON")))
+                .andExpect(model().attribute("countries", hasItems("BRAZIL","CAMEROON")))
                 .andExpect(view().name("student-form"))
                 .andExpect(content().string(containsString("<h3>Student Registration Form</h3>")))
                 .andExpect(content().string(containsString("<option value=\"CAMEROON\" >CAMEROON</option>")))
