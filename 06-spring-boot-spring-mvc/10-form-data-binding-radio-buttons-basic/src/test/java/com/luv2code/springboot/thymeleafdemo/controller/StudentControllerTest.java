@@ -34,6 +34,7 @@ class StudentControllerTest {
                 .firstName("Test")
                 .lastName("User")
                 .country("Brazil")
+                .favoriteLanguage("Java")
                 .build();
     }
 
@@ -46,6 +47,9 @@ class StudentControllerTest {
                 .andExpect(view().name("student-form"))
                 .andExpect(content().string(containsString("<h3>Student Registration Form</h3>")))
                 .andExpect(content().string(containsString("<option value=\"Cameroun\" >Cameroun</option>")))
+                .andExpect(content()
+                        .string(containsString("<input type=\"radio\" value=\"Java\" " +
+                                "id=\"favoriteLanguage2\" name=\"favoriteLanguage\">Java</input>")))
                 .andDo(print());
     }
 
@@ -65,6 +69,7 @@ class StudentControllerTest {
                 .andExpect(content()
                         .string(containsString("The student is confirmed: <span >Test User</span>")))
                 .andExpect(content().string(containsString("Country: <span >Brazil</span>")))
+                .andExpect(content().string(containsString("Favorite Programming Language:: <span >Java</span>")))
                 .andDo(print());
     }
 }
