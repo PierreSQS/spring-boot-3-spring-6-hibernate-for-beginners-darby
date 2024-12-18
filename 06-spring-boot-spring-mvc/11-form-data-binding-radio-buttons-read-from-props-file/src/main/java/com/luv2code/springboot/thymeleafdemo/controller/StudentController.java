@@ -16,7 +16,10 @@ import java.util.List;
 public class StudentController {
 
     @Value("${countries}")
-    private List<String> countryList;
+    private List<String> countriesList;
+
+    @Value("${languages}")
+    private List<String> languagesList;
 
     // shows the Student form
     @GetMapping("/showStudentForm")
@@ -29,7 +32,10 @@ public class StudentController {
         theModel.addAttribute("student", theStudent);
 
         // add the list of countries to the model
-        theModel.addAttribute("countries", countryList);
+        theModel.addAttribute("countries", countriesList);
+
+        // add the list of languages to the model
+        theModel.addAttribute("languages", languagesList);
 
         return "student-form";
     }
