@@ -60,6 +60,7 @@ class StudentControllerTest {
         multiValueMap.add("firstName", student1.getFirstName());
         multiValueMap.add("lastName", student1.getLastName());
         multiValueMap.add("country", student1.getCountry());
+        multiValueMap.add("favoriteLanguage", student1.getFavoriteLanguage());
 
         mockMvc.perform(post("/processStudentForm").params(multiValueMap)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
@@ -69,7 +70,7 @@ class StudentControllerTest {
                 .andExpect(content()
                         .string(containsString("The student is confirmed: <span >Test User</span>")))
                 .andExpect(content().string(containsString("Country: <span >Brazil</span>")))
-                .andExpect(content().string(containsString("Favorite Programming Language:: <span >Java</span>")))
+                .andExpect(content().string(containsString("Favorite Programming Language: <span >Java</span>")))
                 .andDo(print());
     }
 }
