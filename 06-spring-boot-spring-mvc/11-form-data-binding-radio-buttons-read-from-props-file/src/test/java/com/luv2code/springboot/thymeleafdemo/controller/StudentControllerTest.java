@@ -44,12 +44,13 @@ class StudentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("student", new Student()))
                 .andExpect(model().attribute("countries", hasItems("Brazil","Cameroun")))
+                .andExpect(model().attribute("languages", hasItems("Java","Perl")))
                 .andExpect(view().name("student-form"))
                 .andExpect(content().string(containsString("<h3>Student Registration Form</h3>")))
                 .andExpect(content().string(containsString("<option value=\"Cameroun\" >Cameroun</option>")))
                 .andExpect(content()
                         .string(containsString("<input type=\"radio\" value=\"Java\" " +
-                                "id=\"favoriteLanguage2\" name=\"favoriteLanguage\">Java</input>")))
+                                "id=\"favoriteLanguage1\" name=\"favoriteLanguage\">Java</input>")))
                 .andDo(print());
     }
 
