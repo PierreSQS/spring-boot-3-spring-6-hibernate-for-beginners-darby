@@ -1,3 +1,4 @@
+<!-- Introduced in Sec6_Chap178 -->
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
@@ -19,7 +20,7 @@
     <br><br>
 
     Country:
-
+    <!-- added Dropdown List in Sec6_Chap182-->
     <select th:field="*{country}">
 
         <option th:each="tempCountry : ${countries}" th:value="${tempCountry}" th:text="${tempCountry}" />
@@ -30,6 +31,7 @@
 
     Favorite Programming Language:
 
+    <!-- added Radio Buttons in Sec6_Chap185-->
     <input type="radio" th:field="*{favoriteLanguage}"
                         th:each="tempLang : ${languages}"
                         th:value="${tempLang}"
@@ -39,6 +41,7 @@
 
     Favorite Operating Systems:
 
+    <!-- added Radio Buttons in Sec6_Chap188-->
     <input type="checkbox" th:field="*{favoriteSystems}" th:value="Linux">Linux</input>
     <input type="checkbox" th:field="*{favoriteSystems}" th:value="macOS">macOS</input>
     <input type="checkbox" th:field="*{favoriteSystems}"
