@@ -10,6 +10,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.util.List;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,6 +37,7 @@ class StudentControllerTest {
                 .lastName("User")
                 .country("Brazil")
                 .favoriteLanguage("Java")
+                .favoriteSystems(List.of("Linux","MacOS","MicroSoft Windows"))
                 .build();
     }
 
@@ -58,7 +61,7 @@ class StudentControllerTest {
                 .andExpect(content()
                         .string(containsString("<input type=\"checkbox\" value=\"Linux\" " +
                                 "id=\"favoriteSystems1\" name=\"favoriteSystems\"><input type=\"hidden\"" +
-                                " name=\"_favoriteSystems\" value=\"on\"/>Linux</input>\n")))
+                                " name=\"_favoriteSystems\" value=\"on\"/>Linux</input>")))
                 .andDo(print());
     }
 
@@ -70,11 +73,21 @@ class StudentControllerTest {
         multiValueMap.add("lastName", student1.getLastName());
         multiValueMap.add("country", student1.getCountry());
         multiValueMap.add("favoriteLanguage", student1.getFavoriteLanguage());
+        multiValueMap.add("favoriteSystems", student1.getFavoriteSystems().subList(0,2).toString());
+
+        // Student Properties sent in the model
+        Student student2 = Student.builder()
+                .firstName("Test")
+                .lastName("User")
+                .country("Brazil")
+                .favoriteLanguage("Java")
+                .favoriteSystems(List.of("Linux","MacOS"))
+                .build();
 
         mockMvc.perform(post("/processStudentForm").params(multiValueMap)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("student",student1))
+                .andExpect(model().attribute("student",student2))
                 .andExpect(view().name("student-confirmation"))
                 .andExpect(content()
                         .string(containsString("The student is confirmed: <span >Test User</span>")))
