@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -73,26 +75,36 @@ class StudentControllerTest {
         multiValueMap.add("lastName", student1.getLastName());
         multiValueMap.add("country", student1.getCountry());
         multiValueMap.add("favoriteLanguage", student1.getFavoriteLanguage());
-        multiValueMap.add("favoriteSystems", student1.getFavoriteSystems().subList(0,2).toString());
+        multiValueMap.add("favoriteSystems", "Linux, MacOS, MicroSoft Windows");
 
-        // Student Properties sent in the model
-        Student student2 = Student.builder()
-                .firstName("Test")
-                .lastName("User")
-                .country("Brazil")
-                .favoriteLanguage("Java")
-                .favoriteSystems(List.of("Linux","MacOS"))
-                .build();
+        String checkBoxesOnConfirmationPage = "Favorite Operating Systems:" +
+                "<ul>" +
+                "    <li >Linux</li>" +
+                "    <li >MacOS</li>" +
+                "    <li >MicroSoft Windows</li>" +
+                "</ul>";
 
-        mockMvc.perform(post("/processStudentForm").params(multiValueMap)
+        String theCbxWithoutSpaces = checkBoxesOnConfirmationPage.replaceAll("\\s","");
+
+        System.out.println("the checkBoxes on the confirmation page: "+checkBoxesOnConfirmationPage);
+        System.out.println("the checkBoxes without spaces: "+theCbxWithoutSpaces);
+
+
+        MvcResult mvcResult = mockMvc.perform(post("/processStudentForm").params(multiValueMap)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("student",student2))
+                .andExpect(model().attribute("student", student1))
                 .andExpect(view().name("student-confirmation"))
                 .andExpect(content()
                         .string(containsString("The student is confirmed: <span >Test User</span>")))
                 .andExpect(content().string(containsString("Country: <span >Brazil</span>")))
                 .andExpect(content().string(containsString("Favorite Programming Language: <span >Java</span>")))
-                .andDo(print());
+                .andDo(print())
+                .andReturn();
+
+        String respWithoutWhiteSpace = mvcResult.getResponse().getContentAsString().replaceAll("\\s", "");
+        System.out.println("the response without spaces:" +respWithoutWhiteSpace);
+
+        assertThat(respWithoutWhiteSpace).containsAnyOf(theCbxWithoutSpaces);
     }
 }
