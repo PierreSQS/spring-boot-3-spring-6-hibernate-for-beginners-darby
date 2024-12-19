@@ -1,6 +1,7 @@
 package com.luv2code.springboot.thymeleafdemo.controller;
 
 import com.luv2code.springboot.thymeleafdemo.model.Student;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+@Slf4j
 @WebMvcTest(StudentController.class)
 class StudentControllerTest {
 
@@ -86,8 +88,8 @@ class StudentControllerTest {
 
         String theCbxWithoutSpaces = checkBoxesOnConfirmationPage.replaceAll("\\s","");
 
-        System.out.println("the checkBoxes on the confirmation page: "+checkBoxesOnConfirmationPage);
-        System.out.println("the checkBoxes without spaces: "+theCbxWithoutSpaces);
+        log.info("the checkBoxes on the confirmation page: {}", checkBoxesOnConfirmationPage);
+        log.info("the checkBoxes without spaces: {}", theCbxWithoutSpaces);
 
 
         MvcResult mvcResult = mockMvc.perform(post("/processStudentForm").params(multiValueMap)
@@ -103,7 +105,7 @@ class StudentControllerTest {
                 .andReturn();
 
         String respWithoutWhiteSpace = mvcResult.getResponse().getContentAsString().replaceAll("\\s", "");
-        System.out.println("the response without spaces:" +respWithoutWhiteSpace);
+        log.info("the response without spaces:{}", respWithoutWhiteSpace);
 
         assertThat(respWithoutWhiteSpace).containsAnyOf(theCbxWithoutSpaces);
     }
