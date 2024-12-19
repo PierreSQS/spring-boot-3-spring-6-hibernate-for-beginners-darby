@@ -46,11 +46,19 @@ class StudentControllerTest {
                 .andExpect(model().attribute("countries", hasItems("Brazil","Cameroun")))
                 .andExpect(model().attribute("languages", hasItems("Java","Perl")))
                 .andExpect(view().name("student-form"))
+                // show Student Registration Page
                 .andExpect(content().string(containsString("<h3>Student Registration Form</h3>")))
+                // show one Dropdown List Item
                 .andExpect(content().string(containsString("<option value=\"Cameroun\" >Cameroun</option>")))
+                // show one Radio Button
                 .andExpect(content()
                         .string(containsString("<input type=\"radio\" value=\"Java\" " +
-                                "id=\"favoriteLanguage1\" name=\"favoriteLanguage\">Java</input>")))
+                                "id=\"favoriteLanguage1\" name=\"favoriteLanguage\" >Java</input>")))
+                // show one Check Box
+                .andExpect(content()
+                        .string(containsString("<input type=\"checkbox\" value=\"Linux\" " +
+                                "id=\"favoriteSystems1\" name=\"favoriteSystems\"><input type=\"hidden\"" +
+                                " name=\"_favoriteSystems\" value=\"on\"/>Linux</input>\n")))
                 .andDo(print());
     }
 
