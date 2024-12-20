@@ -64,7 +64,8 @@ class CustomerControllerTest {
     void processFormCustomerNotValid() throws Exception {
         // field customer lastName is not submitted
         mockMvc.perform(post("/processForm")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .content("firstName="+customer1.getFirstName()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors("customer"))
                 .andExpect(view().name("customer-form"))
