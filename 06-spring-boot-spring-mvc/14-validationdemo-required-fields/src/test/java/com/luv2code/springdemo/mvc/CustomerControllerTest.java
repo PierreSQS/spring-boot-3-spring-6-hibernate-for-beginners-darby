@@ -22,10 +22,14 @@ class CustomerControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-
+    Customer customer1;
 
     @BeforeEach
     void setUp() {
+        customer1 = Customer.builder()
+                .firstName("Test")
+                .lastName("User")
+                .build();
     }
 
     @Test
@@ -41,7 +45,8 @@ class CustomerControllerTest {
     @Test
     void processFormValidCustomer() throws Exception {
         mockMvc.perform(post("/processForm")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .content("firstName="+customer1.getFirstName()+"&lastName="+customer1.getLastName()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("customer-confirmation"))
                 .andDo(print());
