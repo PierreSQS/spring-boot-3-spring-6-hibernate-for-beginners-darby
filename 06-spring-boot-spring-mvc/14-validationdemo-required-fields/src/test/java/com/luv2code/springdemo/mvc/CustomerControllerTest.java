@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -44,9 +46,13 @@ class CustomerControllerTest {
 
     @Test
     void processFormValidCustomer() throws Exception {
+        MultiValueMap<String,String> formFields = new LinkedMultiValueMap<>();
+        formFields.add("firstName", customer1.getFirstName());
+        formFields.add("lastName", customer1.getLastName());
+
         mockMvc.perform(post("/processForm")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .content("firstName="+customer1.getFirstName()+"&lastName="+customer1.getLastName()))
+                        .params(formFields))
                 .andExpect(status().isOk())
                 .andExpect(view().name("customer-confirmation"))
                 .andDo(print());
