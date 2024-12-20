@@ -54,7 +54,9 @@ class CustomerControllerTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .params(formFields))
                 .andExpect(status().isOk())
+                .andExpect(model().attribute("customer",customer1))
                 .andExpect(view().name("customer-confirmation"))
+                .andExpect(content().string(containsString("The customer is confirmed: <span >Test User</span>")))
                 .andDo(print());
     }
 }
