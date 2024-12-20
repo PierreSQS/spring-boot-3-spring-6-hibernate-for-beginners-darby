@@ -59,4 +59,15 @@ class CustomerControllerTest {
                 .andExpect(content().string(containsString("The customer is confirmed: <span >Test User</span>")))
                 .andDo(print());
     }
+
+    @Test
+    void processFormCustomerNotValid() throws Exception {
+        // field customer lastName is not submitted
+        mockMvc.perform(post("/processForm")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasErrors("customer"))
+                .andExpect(view().name("customer-form"))
+                .andDo(print());
+    }
 }
