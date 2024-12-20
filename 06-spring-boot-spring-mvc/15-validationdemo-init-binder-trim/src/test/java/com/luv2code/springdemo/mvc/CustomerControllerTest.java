@@ -71,4 +71,18 @@ class CustomerControllerTest {
                 .andExpect(view().name("customer-form"))
                 .andDo(print());
     }
+
+
+    @Test
+    void processFormTestInitBinder() throws Exception {
+        // BLANKS IN FIELD LASTNAME ARE NOT ALLOWED!!!!!!!1
+        mockMvc.perform(post("/processForm")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .content("firstName="+customer1.getFirstName()+"&lastName=  "))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasErrors("customer"))
+                .andExpect(view().name("customer-form"))
+                .andExpect(content().string(containsString("<title>Customer Registration Form</title>")))
+                .andDo(print());
+    }
 }
