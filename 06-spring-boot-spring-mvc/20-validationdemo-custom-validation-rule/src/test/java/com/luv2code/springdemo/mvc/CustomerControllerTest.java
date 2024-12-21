@@ -136,7 +136,7 @@ class CustomerControllerTest {
                         .content("lastName="+customer1.getLastName()+
                                  "&freePasses="+customer1.getFreePasses()+
                                  "&postalCode=12" +
-                                 "&postalCode=SB"))
+                                 "&courseCode=SB"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasFieldErrorCode("customer","courseCode","CourseCode"))
                 .andExpect(view().name("customer-form"))
