@@ -1,11 +1,15 @@
 package com.luv2code.springdemo.mvc;
 
 import jakarta.validation.constraints.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Setter
-@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Customer {
 
     private String firstName;
@@ -17,7 +21,7 @@ public class Customer {
     @NotNull(message="is required")
     @Min(value=0, message="must be greater than or equal to zero")
     @Max(value=10, message="must be less than or equal to 10")
-    private Integer freePasses;
+    private Integer freePasses=0;
 
     @Pattern(regexp = "^[a-zA-Z0-9]{5}", message = "only 5 chars/digits")
     private String postalCode;
