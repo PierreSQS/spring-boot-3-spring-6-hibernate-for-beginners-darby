@@ -34,6 +34,7 @@ class CustomerControllerTest {
                 .lastName("User")
                 .freePasses(10)
                 .postalCode("12345")
+                .courseCode("TOPS_JAVA")
                 .build();
     }
 
@@ -54,6 +55,7 @@ class CustomerControllerTest {
         formFields.add("lastName", customer1.getLastName());
         formFields.add("freePasses", Integer.toString(customer1.getFreePasses()));
         formFields.add("postalCode", customer1.getPostalCode());
+        formFields.add("courseCode", customer1.getCourseCode());
 
         mockMvc.perform(post("/processForm")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -61,9 +63,11 @@ class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("customer",customer1))
                 .andExpect(view().name("customer-confirmation"))
-                .andExpect(content().string(containsString("The customer is confirmed: <span >Test User</span>")))
+                .andExpect(content()
+                        .string(containsString("The customer is confirmed: <span >Test User</span>")))
                 .andExpect(content().string(containsString("Free passes: <span >10</span>")))
                 .andExpect(content().string(containsString("Postal code: <span >12345</span>")))
+                .andExpect(content().string(containsString("Course code: <span >TOPS_JAVA</span>")))
                 .andDo(print());
     }
 
@@ -122,6 +126,24 @@ class CustomerControllerTest {
                         containsString("<span class=\"error\">is required</span>"))))
                 .andExpect(content().string(
                         containsString("<span class=\"error\">only 5 chars/digits</span>")))
+                .andDo(print());
+    }
+    @Test
+    void processFormCustomerNotValidCourseCodeNotConform() throws Exception {
+        // CourseCode not conform
+        mockMvc.perform(post("/processForm")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .content("lastName="+customer1.getLastName()+
+                                 "&freePasses="+customer1.getFreePasses()+
+                                 "&postalCode=12" +
+                                 "&postalCode=SB"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasFieldErrorCode("customer","courseCode","CourseCode"))
+                .andExpect(view().name("customer-form"))
+                .andExpect(content().string(not(
+                        containsString("<span class=\"error\">is required</span>"))))
+                .andExpect(content().string(
+                        containsString("<span class=\"error\">must start with TOPS</span>")))
                 .andDo(print());
     }
 
