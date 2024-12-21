@@ -31,6 +31,7 @@ class CustomerControllerTest {
         customer1 = Customer.builder()
                 .firstName("Test")
                 .lastName("User")
+                .freePasses(10)
                 .build();
     }
 
@@ -49,6 +50,7 @@ class CustomerControllerTest {
         MultiValueMap<String,String> formFields = new LinkedMultiValueMap<>();
         formFields.add("firstName", customer1.getFirstName());
         formFields.add("lastName", customer1.getLastName());
+        formFields.add("freePasses", Integer.toString(customer1.getFreePasses()));
 
         mockMvc.perform(post("/processForm")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -57,21 +59,43 @@ class CustomerControllerTest {
                 .andExpect(model().attribute("customer",customer1))
                 .andExpect(view().name("customer-confirmation"))
                 .andExpect(content().string(containsString("The customer is confirmed: <span >Test User</span>")))
+                .andExpect(content().string(containsString("Free passes: <span >10</span>")))
                 .andDo(print());
     }
 
     @Test
     void processFormCustomerNotValid() throws Exception {
-        // field customer lastName is not submitted
+        // field customer lastName is not submitted, freePass=11
         mockMvc.perform(post("/processForm")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .content("firstName="+customer1.getFirstName()))
+                        .content("firstName="+customer1.getFirstName()+"&freePasses=11"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("customer"))
+                .andExpect(model().attributeHasFieldErrorCode("customer","lastName","Size"))
+                .andExpect(model().attributeHasFieldErrorCode("customer","freePasses","Max"))
                 .andExpect(view().name("customer-form"))
+                .andExpect(content().string(
+                        containsString("<span class=\"error\">is required</span>")))
+                .andExpect(content().string(
+                        containsString("<span class=\"error\">must be less than or equal to 10</span>")))
                 .andDo(print());
     }
 
+    @Test
+    void processFormCustomerNotValid2() throws Exception {
+        // field customer lastName is not submitted, freePass=-1
+        mockMvc.perform(post("/processForm")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .content("firstName="+customer1.getFirstName()+"&freePasses=-1"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasFieldErrorCode("customer","lastName","Size"))
+                .andExpect(model().attributeHasFieldErrorCode("customer","freePasses","Min"))
+                .andExpect(view().name("customer-form"))
+                .andExpect(content().string(
+                        containsString("<span class=\"error\">is required</span>")))
+                .andExpect(content().string(
+                        containsString("<span class=\"error\">must be greater than or equal to zero</span>")))
+                .andDo(print());
+    }
 
     @Test
     void processFormTestInitBinder() throws Exception {
