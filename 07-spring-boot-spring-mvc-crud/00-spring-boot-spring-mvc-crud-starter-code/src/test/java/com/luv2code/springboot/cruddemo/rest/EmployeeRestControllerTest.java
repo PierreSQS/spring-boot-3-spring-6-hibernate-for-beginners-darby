@@ -17,10 +17,14 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -127,6 +131,16 @@ class EmployeeRestControllerTest {
     }
 
     @Test
-    void deleteEmployee() {
+    void deleteEmployee() throws Exception {
+        // Given
+        given(empServ.findById(anyInt())).willReturn(emp1);
+
+        // When, Then
+        mockMvc.perform(delete("/api/employees/{empID}",emp1.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Deleted employee id - 1"))
+                .andDo(print());
+
+        verify(empServ, times(1)).deleteById(emp1.getId());
     }
 }
