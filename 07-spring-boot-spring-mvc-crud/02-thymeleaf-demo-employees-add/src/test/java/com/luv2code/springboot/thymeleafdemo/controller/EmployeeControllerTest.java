@@ -63,4 +63,15 @@ class EmployeeControllerTest {
                 .andExpect(content().string(containsString("<title>Employee Directory</title>")))
                 .andDo(print());
     }
+
+    @Test
+    void showFormForAdd() throws Exception {
+        // When, Then
+        mockMvc.perform(get("/employees/showFormForAdd"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("employees/employee-form"))
+                .andExpect(model().attribute("employee", new Employee()))
+                .andExpect(content().string(containsString("<title>Save Employee</title>")))
+                .andDo(print());
+    }
 }
