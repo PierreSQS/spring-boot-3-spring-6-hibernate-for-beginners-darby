@@ -32,7 +32,7 @@ public class EmployeeController {
 		// add to the spring model
 		theModel.addAttribute("employees", theEmployees);
 
-		return "employees/list-employees";
+		return "employees/list-employees"; // refactored in Sec7_Chap221
 	}
 
 	@GetMapping("/showFormForAdd")
