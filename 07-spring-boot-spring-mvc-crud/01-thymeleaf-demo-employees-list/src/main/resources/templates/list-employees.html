@@ -1,3 +1,5 @@
+<!-- INTRODUCED IN SEC7_CHAP217 -->
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -15,6 +17,7 @@
     <hr>
 
     <table class="table table-bordered table-striped">
+        <!-- THE TABLE HEADER -->
         <thead class="table-dark">
             <tr>
                 <th>First Name</th>
@@ -23,6 +26,7 @@
             </tr>
         </thead>
 
+        <!-- ITERATING THROUGH THE EMPLOYEES MODEL OBJECT -->
         <tbody>
             <tr th:each="tempEmployee : ${employees}">
 
