@@ -6,14 +6,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -73,5 +79,30 @@ class EmployeeControllerTest {
                 .andExpect(model().attribute("employee", new Employee()))
                 .andExpect(content().string(containsString("<title>Save Employee</title>")))
                 .andDo(print());
+    }
+
+    @Test
+    void saveEmployee() throws Exception {
+        // Given
+        Employee empToSave = Employee.builder()
+                .firstName("Test")
+                .lastName("To Save")
+                .email("test.tosave@example.com")
+                .build();
+
+        MultiValueMap<String, String> empToSaveMap = new LinkedMultiValueMap<>();
+        empToSaveMap.add("firstName", empToSave.getFirstName());
+        empToSaveMap.add("lastName", empToSave.getLastName());
+        empToSaveMap.add("email", empToSave.getEmail());
+
+        // When, Then
+        mockMvc.perform(post("/employees/save")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .params(empToSaveMap))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/employees/list"))
+                .andDo(print());
+
+        verify(empServMock,times(1)).save(empToSave);
     }
 }
