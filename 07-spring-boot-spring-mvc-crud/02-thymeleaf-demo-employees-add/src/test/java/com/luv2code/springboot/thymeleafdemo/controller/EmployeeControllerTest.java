@@ -58,7 +58,7 @@ class EmployeeControllerTest {
         // When, Then
         mockMvc.perform(get("/employees/list"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("list-employees"))
+                .andExpect(view().name("employees/list-employees"))
                 .andExpect(model().attribute("employees", employeeList))
                 .andExpect(content().string(containsString("<title>Employee Directory</title>")))
                 .andDo(print());
