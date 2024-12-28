@@ -113,7 +113,7 @@ class EmployeeControllerTest {
         given(empServMock.findById(anyInt())).willReturn(emp1);
 
         // When, then
-        mockMvc.perform(get("/employees/showFormForUpdated")
+        mockMvc.perform(get("/employees/showFormForUpdate")
                         .param("employeeId", String.valueOf(emp1.getId())))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("employee", emp1))
