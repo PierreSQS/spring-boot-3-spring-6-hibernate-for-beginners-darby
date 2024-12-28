@@ -15,6 +15,7 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -104,5 +105,20 @@ class EmployeeControllerTest {
                 .andDo(print());
 
         verify(empServMock,times(1)).save(empToSave);
+    }
+
+    @Test
+    void showFormForUpdate() throws Exception {
+        // Given
+        given(empServMock.findById(anyInt())).willReturn(emp1);
+
+        // When, then
+        mockMvc.perform(get("/employees/showFormForUpdated")
+                        .param("employeeId", String.valueOf(emp1.getId())))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("employee", emp1))
+                .andExpect(view().name("employees/employee-form"))
+                .andExpect(content().string(containsString("<title>Save Employee</title>")))
+                .andDo(print());
     }
 }
