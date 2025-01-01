@@ -17,7 +17,6 @@ import java.util.List;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -135,7 +134,7 @@ class EmployeeControllerTest {
 
         given(empServMock.findById(anyInt())).willReturn(empToDelete);
 
-        mockMvc.perform(get("/employees/delete/?employeeId={empID}" ,empToDelete.getId()))
+        mockMvc.perform(get("/employees/delete?employeeId={empID}" ,empToDelete.getId()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(model().attribute("tempEmployee", empToDelete))
                 .andDo(print());
