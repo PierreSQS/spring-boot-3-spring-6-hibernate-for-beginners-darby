@@ -17,6 +17,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -121,4 +122,25 @@ class EmployeeControllerTest {
                 .andExpect(content().string(containsString("<title>Save Employee</title>")))
                 .andDo(print());
     }
+
+    @Test
+    void deleteEmployee() throws Exception {
+        // Given
+        Employee empToDelete = Employee.builder()
+                .id(1)
+                .firstName("Employee")
+                .lastName("To Delete")
+                .email("employee.todele@luv2code.com")
+                .build();
+
+        given(empServMock.findById(anyInt())).willReturn(empToDelete);
+
+        mockMvc.perform(get("/employees/delete/?employeeId={empID}" ,empToDelete.getId()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(model().attribute("tempEmployee", empToDelete))
+                .andDo(print());
+
+        verify(empServMock).deleteById(empToDelete.getId());
+    }
+
 }
