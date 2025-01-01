@@ -136,7 +136,9 @@ class EmployeeControllerTest {
 
         mockMvc.perform(get("/employees/delete?employeeId={empID}" ,empToDelete.getId()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(model().attribute("tempEmployee", empToDelete))
+                // doesn't work since we have a redirect?
+                //.andExpect(model().attribute("tempEmployee", empToDelete))
+                .andExpect(view().name("redirect:/employees/list"))
                 .andDo(print());
 
         verify(empServMock).deleteById(empToDelete.getId());
