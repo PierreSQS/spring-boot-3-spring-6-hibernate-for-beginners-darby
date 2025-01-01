@@ -4,6 +4,8 @@ import com.luv2code.springboot.thymeleafdemo.entity.Employee;
 import com.luv2code.springboot.thymeleafdemo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -14,6 +16,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
@@ -35,6 +38,9 @@ class EmployeeControllerTest {
 
     @MockitoBean
     EmployeeService empServMock;
+
+    @Captor
+    ArgumentCaptor<Integer> intArgumentCaptor;
 
     // Mocks
     Employee emp1, emp2;
@@ -134,14 +140,18 @@ class EmployeeControllerTest {
 
         given(empServMock.findById(anyInt())).willReturn(empToDelete);
 
-        mockMvc.perform(get("/employees/delete?employeeId={empID}" ,empToDelete.getId()))
+        mockMvc.perform(get("/employees/delete")
+                        .param("employeeId",String.valueOf(empToDelete.getId())))
                 .andExpect(status().is3xxRedirection())
                 // doesn't work since we have a redirect?
                 //.andExpect(model().attribute("tempEmployee", empToDelete))
                 .andExpect(view().name("redirect:/employees/list"))
                 .andDo(print());
 
-        verify(empServMock).deleteById(empToDelete.getId());
+        verify(empServMock, times(1))
+                .deleteById(intArgumentCaptor.capture());
+
+        assertThat(empToDelete.getId()).isEqualTo(intArgumentCaptor.getValue());
     }
 
 }
