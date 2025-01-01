@@ -71,6 +71,18 @@ public class EmployeeController {
 		// use a redirect to prevent duplicate submissions
 		return "redirect:/employees/list";
 	}
+
+	@GetMapping("/delete")
+	public String deleteEmployee(@RequestParam("employeeId") int theID, Model model) {
+		// find the employee to delete
+		Employee empToDelete = employeeService.findById(theID);
+		employeeService.deleteById(theID);
+
+		model.addAttribute("tempEmployee", empToDelete);
+
+		// show the new Employee list
+		return "redirect:/employees/list";
+	}
 }
 
 
