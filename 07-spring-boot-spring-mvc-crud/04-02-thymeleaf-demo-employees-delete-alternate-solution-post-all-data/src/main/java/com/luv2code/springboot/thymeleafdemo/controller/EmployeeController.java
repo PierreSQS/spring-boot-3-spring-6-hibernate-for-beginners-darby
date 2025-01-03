@@ -4,21 +4,19 @@ import java.util.List;
 
 import com.luv2code.springboot.thymeleafdemo.service.EmployeeService;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.luv2code.springboot.thymeleafdemo.entity.Employee;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/employees")
 public class EmployeeController {
 
-	private EmployeeService employeeService;
-
-	public EmployeeController(EmployeeService theEmployeeService) {
-		employeeService = theEmployeeService;
-	}
+	private final EmployeeService employeeService;
 
 	// add mapping for "/list"
 
