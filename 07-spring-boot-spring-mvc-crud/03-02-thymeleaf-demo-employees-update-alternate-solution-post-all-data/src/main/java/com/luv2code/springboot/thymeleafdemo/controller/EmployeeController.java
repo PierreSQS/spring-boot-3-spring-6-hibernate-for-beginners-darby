@@ -4,21 +4,19 @@ import java.util.List;
 
 import com.luv2code.springboot.thymeleafdemo.service.EmployeeService;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.luv2code.springboot.thymeleafdemo.entity.Employee;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/employees")
 public class EmployeeController {
 
-	private EmployeeService employeeService;
-
-	public EmployeeController(EmployeeService theEmployeeService) {
-		employeeService = theEmployeeService;
-	}
+	private final EmployeeService employeeService;
 
 	// add mapping for "/list"
 
@@ -45,9 +43,9 @@ public class EmployeeController {
 		return "employees/employee-form";
 	}
 
+	// INTRODUCED IN SEC7_CHAP225
 	@PostMapping("/showFormForUpdate")
-	public String showFormForUpdate(@RequestParam("employeeId") int theId,
-									Model theModel) {
+	public String showFormForUpdate(@RequestParam("employeeId") int theId, Model theModel) {
 
 		// get the employee from the service
 		Employee theEmployee = employeeService.findById(theId);
