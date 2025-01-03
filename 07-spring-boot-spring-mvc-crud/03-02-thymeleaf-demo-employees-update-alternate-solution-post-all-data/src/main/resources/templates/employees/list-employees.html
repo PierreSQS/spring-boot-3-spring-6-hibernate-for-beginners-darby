@@ -42,6 +42,7 @@
 				<td th:text="${tempEmployee.lastName}" />	
 				<td th:text="${tempEmployee.email}" />
 
+				<!-- INTRODUCED IN SEC7_CHAP225 -->
 				<!-- Add update button/link -->
 				<td>
 					<form action="#" th:action="@{/employees/showFormForUpdate}" method="POST">
