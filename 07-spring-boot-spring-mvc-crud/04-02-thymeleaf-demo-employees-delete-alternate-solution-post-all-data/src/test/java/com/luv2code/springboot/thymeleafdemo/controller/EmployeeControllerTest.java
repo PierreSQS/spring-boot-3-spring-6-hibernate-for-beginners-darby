@@ -119,7 +119,7 @@ class EmployeeControllerTest {
         given(empServMock.findById(anyInt())).willReturn(emp1);
 
         // When, then
-        mockMvc.perform(get("/employees/showFormForUpdate")
+        mockMvc.perform(post("/employees/showFormForUpdate")
                         .param("employeeId", String.valueOf(emp1.getId())))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("employee", emp1))
@@ -138,7 +138,7 @@ class EmployeeControllerTest {
                 .email("employee.todele@luv2code.com")
                 .build();
 
-        mockMvc.perform(get("/employees/delete")
+        mockMvc.perform(post("/employees/delete")
                         .param("employeeId",String.valueOf(empToDelete.getId())))
                 .andExpect(status().is3xxRedirection())
 
