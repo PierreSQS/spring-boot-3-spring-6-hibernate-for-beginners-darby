@@ -4,7 +4,9 @@ import com.luv2code.cruddemo.entity.Course;
 import com.luv2code.cruddemo.entity.Instructor;
 import com.luv2code.cruddemo.entity.InstructorDetail;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,14 +66,20 @@ public class AppDAOImpl implements AppDAO {
     @Override
     public List<Course> findCoursesByInstructorId(int theId) {
 
-        // create query
-        TypedQuery<Course> query = entityManager.createQuery(
-                                    "from Course where instructor.id = :data", Course.class);
-        query.setParameter("data", theId);
+        // Get CriteriaBuilder instance from EntityManager
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
-        // execute query
-        return query.getResultList();
+        // Create CriteriaQuery for Course
+        CriteriaQuery<Course> criteriaQuery = criteriaBuilder.createQuery(Course.class);
 
+        // Define the root of the query (Course entity)
+        Root<Course> courseRoot = criteriaQuery.from(Course.class);
+
+        // Add the where clause (instructor.id = :data)
+        criteriaQuery.where(criteriaBuilder.equal(courseRoot.get("instructor").get("id"), theId));
+
+        // Create and execute the query
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 }
 
