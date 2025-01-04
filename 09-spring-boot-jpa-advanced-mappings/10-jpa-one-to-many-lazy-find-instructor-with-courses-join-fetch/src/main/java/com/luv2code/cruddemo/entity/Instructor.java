@@ -1,11 +1,17 @@
 package com.luv2code.cruddemo.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+@Setter
+@Getter
 @Entity
+@Builder
 @Table(name="instructor")
 public class Instructor {
 
@@ -13,15 +19,12 @@ public class Instructor {
 
     // define the fields
 
+    // annotate with Lombok annotation
+
     // annotate the fields with db column names
 
     // ** set up mapping to InstructorDetail entity
 
-    // create constructors
-
-    // generate getter/setter methods
-
-    // generate toString() method
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,56 +48,20 @@ public class Instructor {
                fetch = FetchType.LAZY,
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
-    private List<Course> courses;
+    private Set<Course> courses;
 
     public Instructor() {
 
     }
 
-    public Instructor(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public Instructor( int id, String firstName, String lastName, String email,
+                      InstructorDetail instructorDetail, Set<Course> courses ) {
+        this.courses = courses;
         this.email = email;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
+        this.firstName = firstName;
         this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public InstructorDetail getInstructorDetail() {
-        return instructorDetail;
-    }
-
-    public void setInstructorDetail(InstructorDetail instructorDetail) {
         this.instructorDetail = instructorDetail;
+        this.lastName = lastName;
     }
 
     @Override
@@ -108,20 +75,12 @@ public class Instructor {
                 '}';
     }
 
-    public List<Course> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
-    }
-
-    // add convenience methods for bi-directional relationship
+    // add convenience methods for bidirectional relationship
 
     public void add(Course tempCourse) {
 
         if (courses == null) {
-            courses = new ArrayList<>();
+            courses = new HashSet<>();
         }
 
         courses.add(tempCourse);
