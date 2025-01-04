@@ -30,22 +30,22 @@ public class CruddemoApplication {
 
 		int theId = 1;
 		// find instructor
-        log.info("Finding instructor id: {}", theId);
+        log.info("### Finding instructor with the ID: {}", theId);
 
-		Instructor tempInstructor = appDAO.findInstructorById(theId);
+		Instructor foundInstructor = appDAO.findInstructorById(theId);
 
-        log.info("tempInstructor: {}", tempInstructor);
+        log.info("### the founded Instructor: {}", foundInstructor);
 
 		// find courses for instructor
-        log.info("Finding courses for instructor id: {}", theId);
+        log.info("### Finding courses for instructor with ID: {}", theId);
 		List<Course> courses = appDAO.findCoursesByInstructorId(theId);
 
-		// associate the objects
-		tempInstructor.setCourses(new HashSet<>(courses));
+		// WE MUST ASSOCIATE THE OBJECTS, SINCE LAZY LOADING !!!
+		foundInstructor.setCourses(new HashSet<>(courses));
 
-        log.info("the associated courses: {}", tempInstructor.getCourses());
+        log.info("### the associated courses of the Instructor: {}", foundInstructor.getCourses());
 
-		log.info("Done!");
+		log.info("### Done! ###");
 	}
 
 }
