@@ -55,13 +55,13 @@ public class CruddemoApplication implements CommandLineRunner {
 
 
 		// save the created new students
-		log.info("Saving the created new students...");
+		log.info("Saving the created students...");
 		students.forEach(
 				studentDAO::save
 		);
 
 		// Display the created new Student
-		log.info("Displaying the created new students {}",students);
+		log.info("Displaying the created students {}",students);
 
 		// Done message
 		doneMessage();
@@ -79,11 +79,11 @@ public class CruddemoApplication implements CommandLineRunner {
 		log.info("The created Student {}", studentToCreate);
 
 		// save the created new student
-		log.info("Saving the created new student...");
+		log.info("Saving the new student...");
 		studentDAO.save(studentToCreate);
 
 		// Display the created new Student
-		log.info("Displaying the new created student {}",studentToCreate);
+		log.info("Displaying the created student {}",studentToCreate);
 
 		// Done message
 		doneMessage();
