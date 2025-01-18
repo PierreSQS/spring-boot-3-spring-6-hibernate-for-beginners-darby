@@ -1,7 +1,15 @@
 package com.luv2code.cruddemo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
+@Builder
+@AllArgsConstructor
 @Entity
 @Table(name="instructor_detail")
 public class InstructorDetail {
@@ -12,11 +20,7 @@ public class InstructorDetail {
 
     // annotate the fields with db column names
 
-    // create constructors
-
-    // generate getter/setter methods
-
-    // generate toString() method
+    // annotate class with lombok
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,30 +39,6 @@ public class InstructorDetail {
 
     public InstructorDetail(String youtubeChannel, String hobby) {
         this.youtubeChannel = youtubeChannel;
-        this.hobby = hobby;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getYoutubeChannel() {
-        return youtubeChannel;
-    }
-
-    public void setYoutubeChannel(String youtubeChannel) {
-        this.youtubeChannel = youtubeChannel;
-    }
-
-    public String getHobby() {
-        return hobby;
-    }
-
-    public void setHobby(String hobby) {
         this.hobby = hobby;
     }
 
