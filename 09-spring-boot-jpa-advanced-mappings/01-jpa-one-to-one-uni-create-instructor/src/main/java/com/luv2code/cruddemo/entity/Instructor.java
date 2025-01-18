@@ -9,10 +9,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
 @Builder
 @Entity
 @Table(name="instructor")
@@ -21,6 +27,8 @@ public class Instructor {
     // annotate the class as an entity and map to db table
 
     // define the fields
+
+    // create Constructors
 
     // annotate the fields with db column names
 
