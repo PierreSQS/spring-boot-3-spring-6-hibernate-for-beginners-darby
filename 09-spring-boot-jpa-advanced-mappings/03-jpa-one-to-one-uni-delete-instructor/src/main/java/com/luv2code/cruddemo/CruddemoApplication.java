@@ -3,11 +3,13 @@ package com.luv2code.cruddemo;
 import com.luv2code.cruddemo.dao.AppDAO;
 import com.luv2code.cruddemo.entity.Instructor;
 import com.luv2code.cruddemo.entity.InstructorDetail;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+@Slf4j
 @SpringBootApplication
 public class CruddemoApplication {
 
@@ -21,70 +23,57 @@ public class CruddemoApplication {
 		return runner -> {
 			// createInstructor(appDAO);
 
-			// findInstructor(appDAO);
-
 			deleteInstructor(appDAO);
 		};
 	}
 
 	private void deleteInstructor(AppDAO appDAO) {
 
-		int theId = 1;
-		System.out.println("Deleting instructor id: " + theId);
+		int theId = 2;
+        log.info("### Deleting instructor id: {} ###", theId);
 
+		// delete the instructor
+		//
+		// NOTE: this will ALSO delete the instructor details object
+		// because of CascadeType.ALL
+		//
 		appDAO.deleteInstructorById(theId);
 
-		System.out.println("Done!");
-	}
-
-	private void findInstructor(AppDAO appDAO) {
-
-		int theId = 2;
-		System.out.println("Finding instructor id: " + theId);
-
-		Instructor tempInstructor = appDAO.findInstructorById(theId);
-
-		System.out.println("tempInstructor: " + tempInstructor);
-		System.out.println("the associated instructorDetail only: " + tempInstructor.getInstructorDetail());
-
+		doneMessage();
 	}
 
 	private void createInstructor(AppDAO appDAO) {
 
-		/*
 		// create the instructor
-		Instructor tempInstructor =
-				new Instructor("Chad", "Darby", "darby@luv2code.com");
+		Instructor instrToCreate = Instructor.builder()
+				.firstName("Madhu")
+				.lastName("Patel")
+				.email("madhu@luv2code.com")
+				.build();
 
 		// create the instructor detail
-		InstructorDetail tempInstructorDetail =
-				new InstructorDetail(
-						"http://www.luv2code.com/youtube",
-						"Luv 2 code!!!");
-		*/
-
-		// create the instructor
-		Instructor tempInstructor =
-				new Instructor("Madhu", "Patel", "madhu@luv2code.com");
-
-		// create the instructor detail
-		InstructorDetail tempInstructorDetail =
-				new InstructorDetail(
-						"http://www.luv2code.com/youtube",
-						"Guitar");
+		InstructorDetail instrDetails = InstructorDetail.builder()
+				.youtubeChannel("http://www.luv2code.com/youtube")
+				.hobby("Guitar").build();
 
 		// associate the objects
-		tempInstructor.setInstructorDetail(tempInstructorDetail);
+		instrToCreate.setInstructorDetail(instrDetails);
 
 		// save the instructor
 		//
-		// NOTE: this will ALSO save the details object
+		// NOTE: this will ALSO save the instructor details object
 		// because of CascadeType.ALL
 		//
-		System.out.println("Saving instructor: " + tempInstructor);
-		appDAO.save(tempInstructor);
+        log.info("### Saving instructor: {} ###", instrToCreate);
+		appDAO.save(instrToCreate);
 
-		System.out.println("Done!");
+		log.info("### the saved instructor {} ###", instrToCreate);
+
+		doneMessage();
+	}
+
+	private static void doneMessage() {
+		log.info("Done!");
 	}
 }
 
