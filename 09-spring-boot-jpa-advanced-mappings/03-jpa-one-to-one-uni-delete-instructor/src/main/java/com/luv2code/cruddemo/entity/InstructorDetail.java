@@ -1,7 +1,24 @@
 package com.luv2code.cruddemo.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 @Entity
 @Table(name="instructor_detail")
 public class InstructorDetail {
@@ -12,11 +29,7 @@ public class InstructorDetail {
 
     // annotate the fields with db column names
 
-    // create constructors
-
-    // generate getter/setter methods
-
-    // generate toString() method
+    // annotate class with lombok annotations
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,47 +42,6 @@ public class InstructorDetail {
     @Column(name="hobby")
     private String hobby;
 
-    public InstructorDetail() {
-
-    }
-
-    public InstructorDetail(String youtubeChannel, String hobby) {
-        this.youtubeChannel = youtubeChannel;
-        this.hobby = hobby;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getYoutubeChannel() {
-        return youtubeChannel;
-    }
-
-    public void setYoutubeChannel(String youtubeChannel) {
-        this.youtubeChannel = youtubeChannel;
-    }
-
-    public String getHobby() {
-        return hobby;
-    }
-
-    public void setHobby(String hobby) {
-        this.hobby = hobby;
-    }
-
-    @Override
-    public String toString() {
-        return "InstructorDetail{" +
-                "id=" + id +
-                ", youtubeChannel='" + youtubeChannel + '\'' +
-                ", hobby='" + hobby + '\'' +
-                '}';
-    }
 }
 
 
