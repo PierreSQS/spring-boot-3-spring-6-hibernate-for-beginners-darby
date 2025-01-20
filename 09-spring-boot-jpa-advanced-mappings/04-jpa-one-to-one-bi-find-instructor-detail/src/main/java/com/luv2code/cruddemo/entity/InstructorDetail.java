@@ -44,6 +44,7 @@ public class InstructorDetail {
     @Column(name="hobby")
     private String hobby;
 
+    @ToString.Exclude
     @OneToOne(mappedBy = "instructorDetail", cascade = CascadeType.ALL)
     private Instructor instructor;
 
