@@ -27,19 +27,19 @@ public class CruddemoApplication {
 	private void createInstructorWithCourses(AppDAO appDAO) {
 
 		// create the instructor
-		Instructor tempInstructor = Instructor.builder()
+		Instructor instrToSave = Instructor.builder()
 				.firstName("Susan")
 				.lastName("Public")
 				.email("susan.public@luv2code.com")
 				.build();
 
 		// create the instructor detail
-		InstructorDetail tempInstructorDetail = InstructorDetail.builder()
+		InstructorDetail instrDetailToSave = InstructorDetail.builder()
 				.youtubeChannel("http://www.youtube.com")
 				.hobby("Video Games").build();
 
 		// associate the objects
-		tempInstructor.setInstructorDetail(tempInstructorDetail);
+		instrToSave.setInstructorDetail(instrDetailToSave);
 
 		// create some courses
 		Course tempCourse1 = Course.builder()
@@ -51,29 +51,29 @@ public class CruddemoApplication {
 				.build();
 
 		// add courses to instructor
-		tempInstructor.add(tempCourse1);
-		tempInstructor.add(tempCourse2);
+		instrToSave.add(tempCourse1);
+		instrToSave.add(tempCourse2);
 
 		// save the instructor
 		//
 		// NOTE: this will ALSO save the courses
 		// because of CascadeType.PERSIST
 		//
-		saveInstructorMessage(tempInstructor);
-        log.info("### The courses to save: {} ###", tempInstructor.getCourses());
-		appDAO.save(tempInstructor);
+		saveInstructorMessage(instrToSave);
+        log.info("### The courses to save: {} ###", instrToSave.getCourses());
+		appDAO.save(instrToSave);
 
 		doneMessage();
 
-		log.info("### the saved Courses: {} ###", tempInstructor.getCourses());
+		log.info("### the saved Courses: {} ###", instrToSave.getCourses());
 	}
 
 	private static void doneMessage() {
 		log.info("### Saving Instructor Done! ###");
 	}
 
-	private static void saveInstructorMessage(Instructor tempInstructor) {
-        log.info("### Saving instructor: {} ###", tempInstructor);
+	private static void saveInstructorMessage(Instructor instructor) {
+        log.info("### Saving instructor: {} ###", instructor);
 	}
 }
 

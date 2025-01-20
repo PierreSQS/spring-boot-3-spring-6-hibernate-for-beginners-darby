@@ -10,8 +10,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
@@ -20,6 +22,8 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Table(name="instructor")
 public class Instructor {
@@ -32,11 +36,9 @@ public class Instructor {
 
     // ** set up mapping to InstructorDetail entity
 
-    // create constructors
-
-    // generate getter/setter methods
-
     // generate toString() method
+
+    // annotate the class with lombok
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,20 +62,6 @@ public class Instructor {
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Course> courses;
-
-    public Instructor() {
-
-    }
-
-    public Instructor( int id, String firstName, String lastName, String email,
-                      InstructorDetail instructorDetail, Set<Course> courses ) {
-        this.courses = courses;
-        this.email = email;
-        this.firstName = firstName;
-        this.id = id;
-        this.instructorDetail = instructorDetail;
-        this.lastName = lastName;
-    }
 
     @Override
     public String toString() {

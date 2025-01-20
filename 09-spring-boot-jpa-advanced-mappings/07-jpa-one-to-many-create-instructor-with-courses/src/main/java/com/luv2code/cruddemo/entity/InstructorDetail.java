@@ -8,12 +8,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Entity
 @Table(name="instructor_detail")
@@ -25,7 +29,7 @@ public class InstructorDetail {
 
     // annotate the fields with db column names
 
-    // annotate with Lombok Annotations
+    // annotate class with Lombok Annotations
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,17 +46,6 @@ public class InstructorDetail {
     @OneToOne(mappedBy = "instructorDetail",
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Instructor instructor;
-
-    public InstructorDetail() {
-
-    }
-
-    public InstructorDetail(int id, String youtubeChannel, String hobby, Instructor instructor) {
-        this.id = id;
-        this.instructor = instructor;
-        this.youtubeChannel = youtubeChannel;
-        this.hobby = hobby;
-    }
 
     @Override
     public String toString() {

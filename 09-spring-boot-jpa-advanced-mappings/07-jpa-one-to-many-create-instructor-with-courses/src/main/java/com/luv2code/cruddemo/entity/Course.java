@@ -1,12 +1,16 @@
 package com.luv2code.cruddemo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Entity
 @Table(name="course")
@@ -14,7 +18,7 @@ public class Course {
 
     // define our fields
 
-    // define constructors
+    // define constructors with lombok
 
     // define getter setters
 
@@ -34,16 +38,6 @@ public class Course {
                           CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name="instructor_id")
     private Instructor instructor;
-
-    public Course() {
-
-    }
-
-    public Course(int id, String title, Instructor instructor) {
-        this.id = id;
-        this.instructor = instructor;
-        this.title = title;
-    }
 
     @Override
     public String toString() {
