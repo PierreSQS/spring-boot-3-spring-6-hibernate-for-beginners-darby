@@ -20,6 +20,7 @@ public interface AppDAO {
 
     List<Course> findCoursesByInstructorId(int theId);
 
+    // INTRODUCED IN Sec9_Chap308
     Instructor findInstructorByIdJoinFetch(int theId);
 }
 

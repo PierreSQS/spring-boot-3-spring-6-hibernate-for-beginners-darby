@@ -5,6 +5,9 @@ import com.luv2code.cruddemo.entity.Instructor;
 import com.luv2code.cruddemo.entity.InstructorDetail;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,17 +81,24 @@ public class AppDAOImpl implements AppDAO {
     // Chap307
     @Override
     public Instructor findInstructorByIdJoinFetch(int theId) {
+        // Get the CriteriaBuilder
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
-        // create query
-        TypedQuery<Instructor> query = entityManager.createQuery(
-                                                "select i from Instructor i "
-                                                    + "JOIN FETCH i.courses "
-                                                    + "JOIN FETCH i.instructorDetail "
-                                                    + "where i.id = :data", Instructor.class);
-        query.setParameter("data", theId);
+        // Create a CriteriaQuery for the Instructor class
+        CriteriaQuery<Instructor> criteriaQuery = criteriaBuilder.createQuery(Instructor.class);
 
-        // execute query
-        return query.getSingleResult();
+        // Define the root of the query (Instructor entity)
+        Root<Instructor> instructorRoot = criteriaQuery.from(Instructor.class);
+
+        // Join with courses and instructorDetail to fetch them eagerly
+        instructorRoot.fetch("courses"); // Assuming "courses" is the name of the relationship
+        instructorRoot.fetch("instructorDetail"); // Assuming "instructorDetail" is the name of the relationship
+
+        // Add a where clause for the instructor ID
+        criteriaQuery.select(instructorRoot).where(criteriaBuilder.equal(instructorRoot.get("id"), theId));
+
+        // Create and execute the query
+        return entityManager.createQuery(criteriaQuery).getSingleResult();
 
     }
 }
