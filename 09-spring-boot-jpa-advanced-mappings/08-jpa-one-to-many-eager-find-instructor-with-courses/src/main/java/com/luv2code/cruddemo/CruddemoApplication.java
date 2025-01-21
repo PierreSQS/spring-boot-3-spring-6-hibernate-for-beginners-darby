@@ -47,7 +47,10 @@ public class CruddemoApplication {
 		Instructor foundInstructor = appDAO.findInstructorById(theId);
 
         log.info("### Found Instructor: {} ###", foundInstructor);
-        log.info("### The associated courses from Instructor object: {} ###", foundInstructor.getCourses());
+
+		// CALLING THE COURSES OF THE INSTRUCTOR WILL NOT WORK AT THIS STAGE!!!!
+		// SINCE LAZY LOADING
+		log.info("### The associated courses from Instructor object: {} ###", foundInstructor.getCourses());
 
 		displayDoneMsg();
 	}
