@@ -40,7 +40,7 @@ public class CruddemoApplication {
 		// find courses for instructor
 		log.info("### Finding the Courses of the Instructor with the ID: {}", instructID);
 		List<Course> coursesByInstructorID = appDAO.findCoursesByInstructorId(instructID);
-		log.info("### The founded courses of the instructor: {}", coursesByInstructorID);
+		log.info("### The found courses of the instructor: {}", coursesByInstructorID);
 
 		// WE MUST ASSOCIATE THE OBJECTS, SINCE LAZY LOADING !!!
 		instructorById.setCourses(new HashSet<>(coursesByInstructorID));
