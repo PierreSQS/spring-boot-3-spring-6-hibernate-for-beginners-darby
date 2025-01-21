@@ -1,15 +1,20 @@
 package com.luv2code.cruddemo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Table(name="instructor_detail")
+
 public class InstructorDetail {
 
     // annotate the class as an entity and map to db table
@@ -37,17 +42,6 @@ public class InstructorDetail {
     @OneToOne(mappedBy = "instructorDetail",
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Instructor instructor;
-
-    public InstructorDetail() {
-
-    }
-
-    public InstructorDetail(int id, String youtubeChannel, String hobby, Instructor instructor) {
-        this.id = id;
-        this.youtubeChannel = youtubeChannel;
-        this.hobby = hobby;
-        this.instructor = instructor;
-    }
 
     @Override
     public String toString() {

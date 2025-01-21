@@ -1,8 +1,10 @@
 package com.luv2code.cruddemo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
@@ -11,6 +13,8 @@ import java.util.Set;
 @Setter
 @Getter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Table(name="instructor")
 public class Instructor {
@@ -49,20 +53,6 @@ public class Instructor {
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Course> courses;
-
-    public Instructor() {
-
-    }
-
-    public Instructor( int id, String firstName, String lastName, String email,
-                      InstructorDetail instructorDetail, Set<Course> courses ) {
-        this.courses = courses;
-        this.email = email;
-        this.firstName = firstName;
-        this.id = id;
-        this.instructorDetail = instructorDetail;
-        this.lastName = lastName;
-    }
 
     @Override
     public String toString() {
