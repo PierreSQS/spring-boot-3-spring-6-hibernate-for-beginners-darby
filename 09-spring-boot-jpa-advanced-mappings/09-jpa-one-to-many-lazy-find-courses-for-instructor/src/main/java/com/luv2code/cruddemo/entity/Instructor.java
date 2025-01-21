@@ -29,12 +29,11 @@ public class Instructor {
 
     // define the fields
 
-    // annotate with Lombok annotation
-
     // annotate the fields with db column names
 
     // ** set up mapping to InstructorDetail entity
 
+    // annotate class with lombok annotations
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,20 +58,6 @@ public class Instructor {
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Course> courses;
-
-    public Instructor() {
-
-    }
-
-    public Instructor( int id, String firstName, String lastName, String email,
-                      InstructorDetail instructorDetail, Set<Course> courses ) {
-        this.courses = courses;
-        this.email = email;
-        this.firstName = firstName;
-        this.id = id;
-        this.instructorDetail = instructorDetail;
-        this.lastName = lastName;
-    }
 
     @Override
     public String toString() {

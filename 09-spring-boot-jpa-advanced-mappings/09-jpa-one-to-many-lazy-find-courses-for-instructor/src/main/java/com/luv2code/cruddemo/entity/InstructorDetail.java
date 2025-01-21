@@ -1,11 +1,17 @@
 package com.luv2code.cruddemo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name="instructor_detail")
 public class InstructorDetail {
@@ -34,15 +40,6 @@ public class InstructorDetail {
     @OneToOne(mappedBy = "instructorDetail",
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Instructor instructor;
-
-    public InstructorDetail() {
-
-    }
-
-    public InstructorDetail(String youtubeChannel, String hobby) {
-        this.youtubeChannel = youtubeChannel;
-        this.hobby = hobby;
-    }
 
     @Override
     public String toString() {
