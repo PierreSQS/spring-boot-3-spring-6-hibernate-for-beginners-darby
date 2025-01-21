@@ -18,6 +18,7 @@ public interface AppDAO {
 
     void deleteInstructorDetailById(int theId);
 
+    // INTRODUCED IN Sec9_Chap304
     List<Course> findCoursesByInstructorId(int theId);
 }
 

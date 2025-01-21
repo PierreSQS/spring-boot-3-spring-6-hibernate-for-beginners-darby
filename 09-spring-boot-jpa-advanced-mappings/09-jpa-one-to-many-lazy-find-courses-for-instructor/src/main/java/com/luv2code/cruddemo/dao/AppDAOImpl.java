@@ -63,6 +63,7 @@ public class AppDAOImpl implements AppDAO {
         entityManager.remove(tempInstructorDetail);
     }
 
+    // INTRODUCED IN Sec9_Chap304 BUT REIMPLEMENTED WITH CriteriaQuery
     @Override
     public List<Course> findCoursesByInstructorId(int theId) {
 

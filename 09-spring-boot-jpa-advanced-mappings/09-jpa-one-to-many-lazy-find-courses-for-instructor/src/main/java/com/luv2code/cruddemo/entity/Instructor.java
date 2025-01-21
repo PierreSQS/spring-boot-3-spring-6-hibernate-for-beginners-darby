@@ -58,7 +58,7 @@ public class Instructor {
     private InstructorDetail instructorDetail;
 
     @OneToMany(mappedBy = "instructor",
-               fetch = FetchType.LAZY,
+               fetch = FetchType.LAZY, // Default value but introduced for the course
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
     private Set<Course> courses;
