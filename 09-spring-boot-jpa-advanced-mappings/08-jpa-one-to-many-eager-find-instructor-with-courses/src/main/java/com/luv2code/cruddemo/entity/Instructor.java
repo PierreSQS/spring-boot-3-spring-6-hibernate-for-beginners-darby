@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -53,7 +53,7 @@ public class Instructor {
                fetch = FetchType.EAGER,
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
-    private List<Course> courses;
+    private Set<Course> courses;
 
     @Override
     public String toString() {
@@ -71,7 +71,7 @@ public class Instructor {
     public void add(Course tempCourse) {
 
         if (courses == null) {
-            courses = new ArrayList<>();
+            courses = new HashSet<>();
         }
 
         courses.add(tempCourse);
