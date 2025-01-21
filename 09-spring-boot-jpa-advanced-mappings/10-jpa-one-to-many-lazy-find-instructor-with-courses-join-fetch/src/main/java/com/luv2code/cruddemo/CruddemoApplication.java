@@ -30,6 +30,9 @@ public class CruddemoApplication {
         log.info("### Finding instructor (and courses)  id: {}", theId);
 		Instructor foundInstructor = appDAO.findInstructorByIdJoinFetch(theId);
 
+		// WE DON'T NEED TO ASSOCIATE THE COURSES THE JOIN FETCH COMMAND
+		// IN THE SQL-COMMAND, LOADED THE COURSES EAGERLY!!
+
         log.info("### Found Instructor: {}", foundInstructor);
         log.info("### The associated courses of the found instructor\n: {}", foundInstructor.getCourses());
 
