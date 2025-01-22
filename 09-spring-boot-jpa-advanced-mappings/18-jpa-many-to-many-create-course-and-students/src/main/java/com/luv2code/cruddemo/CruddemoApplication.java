@@ -54,14 +54,14 @@ public class CruddemoApplication {
 
 		// Link Students to Course
 		log.info("### Linking students to course... ###");
-		course.setStudents(studentSet);
+		course.addStudents(studentSet);
 
 		// save Course
 		log.info("### Saving course... ###");
 		appDAO.saveCourse(course);
 
 		log.info("### Saved the Course {} ###", course);
-		log.info("### The students in the course {} ###", course.getStudents());
+		log.info("### The associated students in the course {} ###", course.getStudents());
 
 
 		printDoneMessage();
