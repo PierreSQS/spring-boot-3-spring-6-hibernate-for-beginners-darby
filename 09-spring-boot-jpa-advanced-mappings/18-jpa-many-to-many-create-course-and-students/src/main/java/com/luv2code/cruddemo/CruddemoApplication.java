@@ -22,16 +22,12 @@ public class CruddemoApplication {
 	@Bean
 	public CommandLineRunner commandLineRunner(AppDAO appDAO) {
 
-		return runner -> {
-
-			createCoursesAndStudents(appDAO);
-
-		};
+		return runner -> createCoursesAndStudents(appDAO);
 	}
 
 	private void createCoursesAndStudents(AppDAO appDAO) {
 		// create Course
-		log.info("Creating courses...");
+		log.info("### Creating courses... ###");
 		Course course = Course.builder().title("Security in Payments Systems").build();
 		log.info("created course {}", course);
 
@@ -48,31 +44,31 @@ public class CruddemoApplication {
 				.lastName("Mongonnam")
 				.email("odile.mongonnam@gmail.com")
 				.build();
-		log.info("Creating courses...");
+		log.info("### Creating courses... ###");
 
 
-		log.info("Created Set of Students...");
+		log.info("### Created Set of Students... ###");
 		Set<Student> studentSet = Set.of(student1, student2);
-		log.info("Created Set of {} students", studentSet.size());
+		log.info("### Created Set of {} students ###", studentSet.size());
 
 
 		// Link Students to Course
-		log.info("Linking students to course...");
+		log.info("### Linking students to course... ###");
 		course.setStudents(studentSet);
 
 		// save Course
-		log.info("Saving course...");
+		log.info("### Saving course... ###");
 		appDAO.saveCourse(course);
 
-		log.info("Saved the Course {}", course);
-		log.info("The students in the course {}", course.getStudents());
+		log.info("### Saved the Course {} ###", course);
+		log.info("### The students in the course {} ###", course.getStudents());
 
 
 		printDoneMessage();
 	}
 
 	private static void printDoneMessage() {
-		log.info("Done!");
+		log.info("### Done! ###");
 	}
 
 }
