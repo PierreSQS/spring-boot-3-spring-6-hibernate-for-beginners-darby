@@ -4,15 +4,21 @@ import com.luv2code.cruddemo.dao.AppDAO;
 import com.luv2code.cruddemo.entity.Course;
 import com.luv2code.cruddemo.entity.Instructor;
 import com.luv2code.cruddemo.entity.InstructorDetail;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.HashSet;
 import java.util.List;
 
+@Slf4j
 @SpringBootApplication
 public class CruddemoApplication {
+
+	public static final String DONE_MSG = "### Done! ###";
+	public static final String THE_ASSOCIATED_COURSES = "### The associated courses: ";
 
 	public static void main(String[] args) {
 		SpringApplication.run(CruddemoApplication.class, args);
@@ -50,16 +56,20 @@ public class CruddemoApplication {
 		int theId = 1;
 
 		// find the instructor
-		System.out.println("Finding instructor id: " + theId);
+		findingInstructorMsg(theId);
 		Instructor tempInstructor = appDAO.findInstructorById(theId);
 
 		// update the instructor
-		System.out.println("Updating instructor id: " + theId);
+		processingMsg("### Updating instructor with ID: " + theId);
 		tempInstructor.setLastName("TESTER");
 
 		appDAO.update(tempInstructor);
 
-		System.out.println("Done!");
+		processingMsg(DONE_MSG);
+	}
+
+	private static void findingInstructorMsg(int theId) {
+		log.info("### Finding instructor with ID: {} ", theId);
 	}
 
 	private void findInstructorWithCoursesJoinFetch(AppDAO appDAO) {
@@ -67,168 +77,170 @@ public class CruddemoApplication {
 		int theId = 1;
 
 		// find the instructor
-		System.out.println("Finding instructor id: " + theId);
-		Instructor tempInstructor = appDAO.findInstructorByIdJoinFetch(theId);
+		findingInstructorMsg(theId);
+		Instructor foundInstructor = appDAO.findInstructorByIdJoinFetch(theId);
 
-		System.out.println("tempInstructor: " + tempInstructor);
-		System.out.println("the associated courses: " + tempInstructor.getCourses());
+        log.info("foundInstructor: {}", foundInstructor);
+		processingMsg(THE_ASSOCIATED_COURSES + foundInstructor.getCourses());
 
-		System.out.println("Done!");
+		processingMsg(DONE_MSG);
 	}
 
 	private void findCoursesForInstructor(AppDAO appDAO) {
 
 		int theId = 1;
 		// find instructor
-		System.out.println("Finding instructor id: " + theId);
+		findingInstructorMsg(theId);
 
-		Instructor tempInstructor = appDAO.findInstructorById(theId);
+		Instructor foundInstructor = appDAO.findInstructorById(theId);
 
-		System.out.println("tempInstructor: " + tempInstructor);
+		processingMsg("### Found Instructor: " + foundInstructor);
 
 		// find courses for instructor
-		System.out.println("Finding courses for instructor id: " + theId);
+		processingMsg("### Finding courses for instructor id: " + theId);
 		List<Course> courses = appDAO.findCoursesByInstructorId(theId);
 
 		// associate the objects
-		tempInstructor.setCourses(courses);
+		foundInstructor.setCourses(new HashSet<>(courses));
 
-		System.out.println("the associated courses: " + tempInstructor.getCourses());
+		processingMsg(THE_ASSOCIATED_COURSES + foundInstructor.getCourses());
 
-		System.out.println("Done!");
+		processingMsg(DONE_MSG);
 	}
 
 	private void findInstructorWithCourses(AppDAO appDAO) {
 
 		int theId = 1;
-		System.out.println("Finding instructor id: " + theId);
+		findingInstructorMsg(theId);
 
-		Instructor tempInstructor = appDAO.findInstructorById(theId);
+		Instructor foundInstructor = appDAO.findInstructorById(theId);
 
-		System.out.println("tempInstructor: " + tempInstructor);
-		System.out.println("the associated courses: " + tempInstructor.getCourses());
+		processingMsg("### Found Instructor: " + foundInstructor);
+		processingMsg(THE_ASSOCIATED_COURSES + foundInstructor.getCourses());
 
-		System.out.println("Done!");
+		processingMsg(DONE_MSG);
 	}
 
 	private void createInstructorWithCourses(AppDAO appDAO) {
 
 		// create the instructor
-		Instructor tempInstructor =
-				new Instructor("Susan", "Public", "susan.public@luv2code.com");
+		Instructor instrToCreate = Instructor.builder()
+				.firstName("Susan")
+				.lastName("Public")
+				.email("susan.public@luv2code.com").build();
 
 		// create the instructor detail
-		InstructorDetail tempInstructorDetail =
-				new InstructorDetail(
-						"http://www.youtube.com",
-						"Video Games");
+		InstructorDetail instrDetailToCreate = InstructorDetail.builder()
+				.youtubeChannel("http://www.youtube.com")
+				.hobby("Video Games")
+				.build();
 
 		// associate the objects
-		tempInstructor.setInstructorDetail(tempInstructorDetail);
+		instrToCreate.setInstructorDetail(instrDetailToCreate);
 
 		// create some courses
-		Course tempCourse1 = new Course("Air Guitar - The Ultimate Guide");
-		Course tempCourse2 = new Course("The Pinball Masterclass");
+		Course tempCourse1 = Course.builder()
+				.title("Air Guitar - The Ultimate Guide")
+				.build();
+
+		Course tempCourse2 = Course.builder()
+				.title("The Pinball Masterclass")
+				.build();
 
 		// add courses to instructor
-		tempInstructor.add(tempCourse1);
-		tempInstructor.add(tempCourse2);
+		instrToCreate.add(tempCourse1);
+		instrToCreate.add(tempCourse2);
 
 		// save the instructor
 		//
 		// NOTE: this will ALSO save the courses
 		// because of CascadeType.PERSIST
 		//
-		System.out.println("Saving instructor: " + tempInstructor);
-		System.out.println("The courses: " + tempInstructor.getCourses());
-		appDAO.save(tempInstructor);
+		processingMsg("### Saving instructor: " + instrToCreate);
+		processingMsg("### The courses: " + instrToCreate.getCourses());
+		appDAO.save(instrToCreate);
 
-		System.out.println("Done!");
+		processingMsg(DONE_MSG);
+	}
+
+	private static void processingMsg(String instrToCreate) {
+		log.info(instrToCreate);
 	}
 
 	private void deleteInstructorDetail(AppDAO appDAO) {
 
 		int theId = 3;
-		System.out.println("Deleting instructor detail id: " + theId);
+		processingMsg("### Deleting instructor detail ID: " + theId);
 
 		appDAO.deleteInstructorDetailById(theId);
 
-		System.out.println("Done!");
+		processingMsg(DONE_MSG);
 	}
 
 	private void findInstructorDetail(AppDAO appDAO) {
 
 		// get the instructor detail object
 		int theId = 2;
-		InstructorDetail tempInstructorDetail = appDAO.findInstructorDetailById(theId);
+		InstructorDetail foundInstrDetail = appDAO.findInstructorDetailById(theId);
 
 		// print the instructor detail
-		System.out.println("tempInstructorDetail: " + tempInstructorDetail);
+		processingMsg("### Found InstrDetail: " + foundInstrDetail);
 
 		// print the associated instructor
-		System.out.println("the associated instructor: " + tempInstructorDetail.getInstructor());
+		processingMsg("### The associated instructor: " + foundInstrDetail.getInstructor());
 
-		System.out.println("Done!");
+		processingMsg(DONE_MSG);
 	}
 
 	private void deleteInstructor(AppDAO appDAO) {
 
 		int theId = 1;
-		System.out.println("Deleting instructor id: " + theId);
+		processingMsg("Deleting instructor id: " + theId);
 
 		appDAO.deleteInstructorById(theId);
 
-		System.out.println("Done!");
+		processingMsg(DONE_MSG);
 	}
 
 	private void findInstructor(AppDAO appDAO) {
 
 		int theId = 2;
-		System.out.println("Finding instructor id: " + theId);
+		findingInstructorMsg(theId);
 
 		Instructor tempInstructor = appDAO.findInstructorById(theId);
 
-		System.out.println("tempInstructor: " + tempInstructor);
-		System.out.println("the associated instructorDetail only: " + tempInstructor.getInstructorDetail());
+		processingMsg("tempInstructor: " + tempInstructor);
+		processingMsg("the associated instructorDetail only: " + tempInstructor.getInstructorDetail());
 
 	}
 
 	private void createInstructor(AppDAO appDAO) {
 
-		/*
 		// create the instructor
-		Instructor tempInstructor =
-				new Instructor("Chad", "Darby", "darby@luv2code.com");
+		Instructor instructorToCreate = Instructor.builder()
+				.firstName("Madhu")
+				.lastName("Patel")
+				.email("madhu@luv2code.com")
+				.build();
 
 		// create the instructor detail
-		InstructorDetail tempInstructorDetail =
-				new InstructorDetail(
-						"http://www.luv2code.com/youtube",
-						"Luv 2 code!!!");
-		*/
-
-		// create the instructor
-		Instructor tempInstructor =
-				new Instructor("Madhu", "Patel", "madhu@luv2code.com");
-
-		// create the instructor detail
-		InstructorDetail tempInstructorDetail =
-				new InstructorDetail(
-						"http://www.luv2code.com/youtube",
-						"Guitar");
+		InstructorDetail instrDetailToCreate = InstructorDetail.builder()
+				.youtubeChannel("http://www.luv2code.com/youtube")
+				.hobby("Guitar")
+				.build();
 
 		// associate the objects
-		tempInstructor.setInstructorDetail(tempInstructorDetail);
+		instructorToCreate.setInstructorDetail(instrDetailToCreate);
 
 		// save the instructor
 		//
 		// NOTE: this will ALSO save the details object
 		// because of CascadeType.ALL
 		//
-		System.out.println("Saving instructor: " + tempInstructor);
-		appDAO.save(tempInstructor);
+		processingMsg("Saving instructor: " + instructorToCreate);
+		appDAO.save(instructorToCreate);
 
-		System.out.println("Done!");
+		processingMsg(DONE_MSG);
 	}
 }
 
