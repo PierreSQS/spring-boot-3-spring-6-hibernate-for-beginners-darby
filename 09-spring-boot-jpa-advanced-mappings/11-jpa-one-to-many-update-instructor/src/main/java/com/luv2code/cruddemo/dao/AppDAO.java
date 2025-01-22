@@ -22,6 +22,7 @@ public interface AppDAO {
 
     Instructor findInstructorByIdJoinFetch(int theId);
 
+    // INTRODUCED IN Sec9_Chap309
     void update(Instructor tempInstructor);
 }
 
