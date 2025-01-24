@@ -27,15 +27,39 @@ public class CruddemoApplication {
 
 			// deleteInstructor(appDAO);
 
-			findInstructorDetail(appDAO);
+			// findInstructorDetail(appDAO);
+
+			deleteIntructorDetail(appDAO);
 		};
 	}
+
+	private void deleteIntructorDetail(AppDAO appDAO) {
+		// deleting the instructor detail object
+		int theId = 1;
+		log.info("### Deleting the InstructorDetail with {}... ###", theId);
+		appDAO.deleteInstructorDetailById(theId);
+
+		logFindingInstrDetailMsg(theId);
+		Instructor foundInstructor = appDAO.findInstructorById(theId);
+
+		if (foundInstructor == null) {
+			// instructor detail not found
+			log.info("### Instructor with ID: {} not found !###", theId);
+		} else {
+			// print the instructor detail
+			log.info("### The found Instructor: {} ###", foundInstructor);
+
+		}
+
+		logEndMessage();
+	}
+
 
 	private void findInstructorDetail(AppDAO appDAO) {
 
 		// get the instructor detail object
 		int theId = 1;
-		log.info("### Finding InstructorDetail with {}... ###", theId);
+		logFindingInstrDetailMsg(theId);
 		InstructorDetail foundInstructorDetail = appDAO.findInstructorDetailById(theId);
 
 		if (foundInstructorDetail == null) {
@@ -48,8 +72,6 @@ public class CruddemoApplication {
 			// print the associated instructor
 			log.info("### The associated instructor: {} ###", foundInstructorDetail.getInstructor());
 		}
-
-
 
 		logEndMessage();
 	}
@@ -106,6 +128,10 @@ public class CruddemoApplication {
 
 	private static void logEndMessage() {
 		log.info("Done!");
+	}
+
+	private static void logFindingInstrDetailMsg(int theId) {
+		log.info("### Finding InstructorDetail with {}... ###", theId);
 	}
 }
 
