@@ -3,21 +3,17 @@ package com.luv2code.cruddemo.dao;
 import com.luv2code.cruddemo.entity.Instructor;
 import com.luv2code.cruddemo.entity.InstructorDetail;
 import jakarta.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@RequiredArgsConstructor
 @Repository
 public class AppDAOImpl implements AppDAO {
 
     // define field for entity manager
-    private EntityManager entityManager;
-
-    // inject entity manager using constructor injection
-    @Autowired
-    public AppDAOImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+    // inject entity manager with lombok
+    private final EntityManager entityManager;
 
     @Override
     @Transactional
@@ -30,15 +26,19 @@ public class AppDAOImpl implements AppDAO {
         return entityManager.find(Instructor.class, theId);
     }
 
+    // introduced in Sec9_Chap286
     @Override
     @Transactional
     public void deleteInstructorById(int theId) {
 
         // retrieve the instructor
-        Instructor tempInstructor = entityManager.find(Instructor.class, theId);
+        Instructor foundInstructor = entityManager.find(Instructor.class, theId);
 
-        // delete the instructor
-        entityManager.remove(tempInstructor);
+        // delete the instructor if exists
+        if (foundInstructor != null) {
+            entityManager.remove(foundInstructor);
+        }
+
     }
 
     @Override
@@ -46,20 +46,15 @@ public class AppDAOImpl implements AppDAO {
         return entityManager.find(InstructorDetail.class, theId);
     }
 
-    @Override
     @Transactional
+    @Override
     public void deleteInstructorDetailById(int theId) {
+        InstructorDetail foundInstrDetail = entityManager.find(InstructorDetail.class, theId);
 
-        // retrieve instructor detail
-        InstructorDetail tempInstructorDetail = entityManager.find(InstructorDetail.class, theId);
+        if (foundInstrDetail != null) {
+            entityManager.remove(foundInstrDetail);
+        }
 
-        // remove the associated object reference
-        // break bi-directional link
-        //
-        tempInstructorDetail.getInstructor().setInstructorDetail(null);
-
-        // delete the instructor detail
-        entityManager.remove(tempInstructorDetail);
     }
 }
 
