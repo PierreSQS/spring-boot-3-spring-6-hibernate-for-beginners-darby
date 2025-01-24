@@ -53,6 +53,7 @@ public class AppDAOImpl implements AppDAO {
 
         if (foundInstrDetail != null) {
             entityManager.remove(foundInstrDetail);
+            foundInstrDetail.getInstructor().setInstructorDetail(null);
         }
 
     }
