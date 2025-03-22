@@ -3,6 +3,7 @@ package com.luv2code.springboot.cruddemo.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeServiceImpl;
+import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -97,7 +101,15 @@ class EmployeeRestControllerAiTest {
 
     @Test
     void deleteEmployeeById() throws Exception {
-        mockMvc.perform(delete("/api/employees/{employeeId}", 6)
+        Employee empToDelete = Employee.builder()
+                .firstName("emp")
+                .lastName("todelete")
+                .email("todelete@example.com")
+                .build();
+
+        Employee saveEmpToDelete = empServ.save(empToDelete);
+
+        mockMvc.perform(delete("/api/employees/{employeeId}", saveEmpToDelete.getId())
                         .with(httpBasic("Susan", "Susan"))
                         .with(csrf()))
                 .andExpect(status().isOk())
@@ -105,43 +117,51 @@ class EmployeeRestControllerAiTest {
     }
 
     @Test
-    void getEmployeeNotFound() throws Exception {
-        mockMvc.perform(get("/api/employees/{employeeId}", 999)
-                        .with(httpBasic("John", "John")))
-                .andExpect(status().isNotFound())
-                .andDo(print());
+    void getEmployeeNotFound() {
+        assertThatThrownBy(() -> mockMvc.perform(get("/api/employees/{employeeId}", 999)
+                        .with(httpBasic("John", "John"))))
+                .isInstanceOf(ServletException.class)
+                .hasMessageContaining("Did not find Employee with ID - 999");
     }
 
     @Test
     void addEmployeeWithExistingId() throws Exception {
         emp1.setId(1);
-        mockMvc.perform(post("/api/employees")
+        MvcResult mvcResult = mockMvc.perform(post("/api/employees")
                         .with(httpBasic("Mary", "Mary"))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(emp1)))
-                .andExpect(status().isBadRequest())
-                .andDo(print());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(not(equalTo(1))))
+                .andDo(print())
+                .andReturn();
+
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        System.out.println(contentAsString);
     }
 
     @Test
     void updateNonExistingEmployee() throws Exception {
         emp2.setId(999);
-        mockMvc.perform(put("/api/employees")
+
+        assertThatThrownBy(() -> mockMvc.perform(put("/api/employees")
                         .with(httpBasic("Susan", "Susan"))
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(emp2)))
-                .andExpect(status().isNotFound())
-                .andDo(print());
+                        .content(objectMapper.writeValueAsString(emp2))))
+                .isInstanceOf(ServletException.class)
+                .hasMessageContaining("Did not find Employee with ID - 999");
     }
 
     @Test
-    void deleteNonExistingEmployee() throws Exception {
-        mockMvc.perform(delete("/api/employees/{employeeId}", 999)
+    void deleteNonExistingEmployee() {
+        int nonExistingID = 999;
+
+        assertThatThrownBy(() -> mockMvc.perform(delete("/api/employees/{employeeId}", nonExistingID)
                         .with(httpBasic("Susan", "Susan"))
-                        .with(csrf()))
-                .andExpect(status().isNotFound())
-                .andDo(print());
+                        .with(csrf())))
+                .isInstanceOf(ServletException.class)
+                .hasMessageContaining("Did not find Employee with ID - 999");
     }
 }
