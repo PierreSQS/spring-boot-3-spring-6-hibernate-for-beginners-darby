@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class EmployeeRestController {
 
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
     @Autowired
     public EmployeeRestController(EmployeeService theEmployeeService) {
@@ -43,14 +43,12 @@ public class EmployeeRestController {
     @PostMapping("/employees")
     public Employee addEmployee(@RequestBody Employee theEmployee) {
 
-        // also just in case they pass an id in JSON ... set id to 0
+        // also just in case they pass an id in JSON ... set id to 0,
         // this is to force a save of new item ... instead of update
 
         theEmployee.setId(0);
 
-        Employee dbEmployee = employeeService.save(theEmployee);
-
-        return dbEmployee;
+        return employeeService.save(theEmployee);
     }
 
     // add mapping for PUT /employees - update existing employee
@@ -58,9 +56,7 @@ public class EmployeeRestController {
     @PutMapping("/employees")
     public Employee updateEmployee(@RequestBody Employee theEmployee) {
 
-        Employee dbEmployee = employeeService.save(theEmployee);
-
-        return dbEmployee;
+        return employeeService.save(theEmployee);
     }
 
 }
