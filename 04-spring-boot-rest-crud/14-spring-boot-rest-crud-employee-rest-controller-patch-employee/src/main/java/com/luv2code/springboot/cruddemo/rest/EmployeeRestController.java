@@ -1,9 +1,11 @@
 package com.luv2code.springboot.cruddemo.rest;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,7 +28,7 @@ public class EmployeeRestController {
         return employeeService.findAll();
     }
 
-    // add mapping for GET /employees/{employeeId}
+    // add mapping for GET /employees/{employeeId} - get employee by id
 
     @GetMapping("/employees/{employeeId}")
     public Employee getEmployee(@PathVariable int employeeId) {
@@ -60,6 +62,30 @@ public class EmployeeRestController {
 
         return employeeService.save(theEmployee);
     }
+
+    // add mapping for PATCH /employees/{employeeId} - patch existing employee
+    @PatchMapping("/employees/{employeeId}")
+    public Employee patchEmployee(@PathVariable int employeeId, @RequestBody ObjectNode updates) {
+        Employee existingEmployee = employeeService.findById(employeeId);
+
+        if (existingEmployee == null) {
+            throw new RuntimeException("Employee id not found - " + employeeId);
+        }
+
+        if (updates.has("firstName")) {
+            existingEmployee.setFirstName(updates.get("firstName").asText());
+        }
+        if (updates.has("lastName")) {
+            existingEmployee.setLastName(updates.get("lastName").asText());
+        }
+        if (updates.has("email")) {
+            existingEmployee.setEmail(updates.get("email").asText());
+        }
+
+        return employeeService.save(existingEmployee);
+    }
+
+
 
 }
 
