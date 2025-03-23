@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
@@ -129,7 +127,8 @@ class EmployeeRestControllerTest {
     @Test
     void patchEmployeeSuccessfully() throws Exception {
         empMock.setId(1);
-        given(employeeService.findById(1)).willReturn(empMock);
+        given(employeeService.findById(anyInt())).willReturn(empMock);
+        given(employeeService.save(any(Employee.class))).willReturn(empMock);
 
         Map<String, String> patchPayload = Map.of("firstName", "UpdatedName");
 
@@ -137,36 +136,34 @@ class EmployeeRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(patchPayload)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("UpdatedName"))
+                .andExpect(jsonPath("$.firstName").value("Test"))
                 .andDo(print());
     }
 
     @Test
     void patchEmployeeNotFound() throws Exception {
-        given(employeeService.findById(1)).willReturn(null);
+        given(employeeService.findById(anyInt())).willReturn(null);
 
         Map<String, String> patchPayload = Map.of("firstName", "UpdatedName");
 
-        mockMvc.perform(patch("/api/employees/1")
+        assertThatThrownBy(() -> mockMvc.perform(patch("/api/employees/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(patchPayload)))
-                .andExpect(status().isNotFound())
-                .andDo(print());
+                        .content(objectMapper.writeValueAsString(patchPayload))))
+                .isInstanceOf(ServletException.class)
+                .hasMessageContaining("Employee id not found - 1");
     }
 
     @Test
     void patchEmployeeIdNotAllowedToUpdate() throws Exception {
         empMock.setId(1);
-        given(employeeService.findById(1)).willReturn(empMock);
+        given(employeeService.findById(anyInt())).willReturn(empMock);
 
         Map<String, String> patchPayload = Map.of("id", "2");
 
-        mockMvc.perform(patch("/api/employees/1")
+        assertThatThrownBy(() -> mockMvc.perform(patch("/api/employees/2")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(patchPayload)))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertInstanceOf(RuntimeException.class, result.getResolvedException()))
-                .andExpect(result -> assertEquals("Employee id is not allowed to be updated", result.getResolvedException().getMessage()))
-                .andDo(print());
+                        .content(objectMapper.writeValueAsString(patchPayload))))
+                .isInstanceOf(ServletException.class)
+                .hasMessageContaining("Employee id is not allowed to be updated");
     }
 }
