@@ -74,7 +74,7 @@ public class EmployeeRestController {
             throw new RuntimeException("Employee id not found - " + employeeId);
         }
 
-        if (patchPayload.get("id") == null) {
+        if (patchPayload.get("id") != null) {
             throw new RuntimeException("Employee id is not allowed to be updated");
         }
 
