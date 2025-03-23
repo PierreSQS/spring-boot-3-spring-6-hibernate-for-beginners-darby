@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import java.util.Map;
 @RequestMapping("/api")
 public class EmployeeRestController {
 
+    public static final String EMPLOYEE_ID_NOT_FOUND = "Employee id not found";
     private final EmployeeService employeeService;
 
     // expose "/employees" and return a list of employees
@@ -38,7 +40,7 @@ public class EmployeeRestController {
         Employee theEmployee = employeeService.findById(employeeId);
 
         if (theEmployee == null) {
-            throw new RuntimeException("Employee id not found - " + employeeId);
+            throw new RuntimeException(EMPLOYEE_ID_NOT_FOUND + " - " + employeeId);
         }
 
         return theEmployee;
@@ -71,7 +73,7 @@ public class EmployeeRestController {
         Employee existingEmployee = employeeService.findById(employeeId);
 
         if (existingEmployee == null) {
-            throw new RuntimeException("Employee id not found - " + employeeId);
+            throw new RuntimeException(EMPLOYEE_ID_NOT_FOUND + " - " + employeeId);
         }
 
         if (patchPayload.containsKey("id")) {
@@ -99,6 +101,23 @@ public class EmployeeRestController {
         return mapper.convertValue(existingNode, Employee.class);
     }
 
+    // add mapping for DELETE /employees/{employeeId} - delete employee
+
+    @DeleteMapping("/employees/{employeeId}")
+    public String deleteEmployee(@PathVariable int employeeId) {
+
+        Employee tempEmployee = employeeService.findById(employeeId);
+
+        // throw exception if null
+
+        if (tempEmployee == null) {
+            throw new RuntimeException(EMPLOYEE_ID_NOT_FOUND + " - " + employeeId);
+        }
+
+        employeeService.deleteById(employeeId);
+
+        return "Deleted employee id - " + employeeId;
+    }
 
 }
 
