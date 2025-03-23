@@ -141,7 +141,7 @@ class EmployeeRestControllerTest {
     }
 
     @Test
-    void patchEmployeeNotFound() throws Exception {
+    void patchEmployeeNotFound() {
         given(employeeService.findById(anyInt())).willReturn(null);
 
         Map<String, String> patchPayload = Map.of("firstName", "UpdatedName");
@@ -154,7 +154,7 @@ class EmployeeRestControllerTest {
     }
 
     @Test
-    void patchEmployeeIdNotAllowedToUpdate() throws Exception {
+    void patchEmployeeIdNotAllowedToUpdate() {
         empMock.setId(1);
         given(employeeService.findById(anyInt())).willReturn(empMock);
 

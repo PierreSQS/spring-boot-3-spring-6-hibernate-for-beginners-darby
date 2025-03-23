@@ -74,7 +74,7 @@ public class EmployeeRestController {
             throw new RuntimeException("Employee id not found - " + employeeId);
         }
 
-        if (patchPayload.get("id") != null) {
+        if (patchPayload.containsKey("id")) {
             throw new RuntimeException("Employee id is not allowed to be updated");
         }
 
@@ -86,16 +86,16 @@ public class EmployeeRestController {
     private Employee applyPatch(Employee existingEmployee, Map<String, String> patchPayload) {
         ObjectMapper mapper = new ObjectMapper();
 
-        // convert existing employee to ObjectNode
+        // convert existing employee to a JSON ObjectNode
         ObjectNode existingNode = mapper.convertValue(existingEmployee, ObjectNode.class);
 
-        // convert patchPayload to ObjectNode
+        // convert patchPayload to JSON ObjectNode
         ObjectNode patchNode = mapper.convertValue(patchPayload, ObjectNode.class);
 
-        // merge the patchNode to existingNode
+        // merge the patchNode to Employee existingNode
         existingNode.setAll(patchNode);
 
-        // convert the existingNode back to Employee
+        // convert the Employee existingNode back to Employee
         return mapper.convertValue(existingNode, Employee.class);
     }
 
