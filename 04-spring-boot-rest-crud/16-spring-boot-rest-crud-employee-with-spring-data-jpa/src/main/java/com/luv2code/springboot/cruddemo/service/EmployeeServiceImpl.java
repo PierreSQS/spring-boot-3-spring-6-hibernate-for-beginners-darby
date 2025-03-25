@@ -1,6 +1,6 @@
 package com.luv2code.springboot.cruddemo.service;
 
-import com.luv2code.springboot.cruddemo.dao.EmployeeDAO;
+import com.luv2code.springboot.cruddemo.dao.EmployeeRepository;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,28 +12,29 @@ import java.util.List;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final EmployeeDAO employeeDAO;
+    private final EmployeeRepository employeeRepo;
 
     @Override
     public List<Employee> findAll() {
-        return employeeDAO.findAll();
+        return employeeRepo.findAll();
     }
 
     @Override
     public Employee findById(int theId) {
-        return employeeDAO.findById(theId);
+        return employeeRepo.findById(theId)
+                .orElseThrow(() -> new RuntimeException("Employee id not found - " + theId));
     }
 
     @Transactional
     @Override
     public Employee save(Employee theEmployee) {
-        return employeeDAO.save(theEmployee);
+        return employeeRepo.save(theEmployee);
     }
 
     @Transactional
     @Override
     public void deleteById(int theId) {
-        employeeDAO.deleteById(theId);
+        employeeRepo.deleteById(theId);
     }
 
 }
