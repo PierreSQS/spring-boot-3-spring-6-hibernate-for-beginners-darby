@@ -20,6 +20,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -166,4 +170,21 @@ class EmployeeRestControllerTest {
                 .isInstanceOf(ServletException.class)
                 .hasMessageContaining("Employee id is not allowed to be updated");
     }
+
+    @Test
+    void deleteEmployee() throws Exception {
+        empMock.setId(1);
+        given(employeeService.findById(anyInt())).willReturn(empMock);
+
+        mockMvc.perform(delete("/api/employees/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Deleted employee id - 1"))
+                .andDo(print());
+
+        // verify employeeService.deleteById() is called once
+        verify(employeeService, times(1)).deleteById(1);
+
+
+    }
+
 }
