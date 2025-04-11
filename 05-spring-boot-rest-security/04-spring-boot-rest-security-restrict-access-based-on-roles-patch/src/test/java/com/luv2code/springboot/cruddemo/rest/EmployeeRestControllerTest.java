@@ -15,8 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,13 +30,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class EmployeeRestControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @MockitoBean
-    private EmployeeService employeeService;
+    EmployeeService employeeService;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
     private Employee employee;
 
@@ -62,8 +62,10 @@ class EmployeeRestControllerTest {
     @WithMockUser(roles = "EMPLOYEE")
     @DisplayName("GET /employees - Returns list of employees for EMPLOYEE role")
     void getEmployeesReturnsListForEmployeeRole() throws Exception {
-        when(employeeService.findAll()).thenReturn(List.of(employee));
+        // Given
+        given(employeeService.findAll()).willReturn(List.of(employee));
 
+        // When & Then
         mockMvc.perform(get("/api/employees"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
@@ -75,12 +77,14 @@ class EmployeeRestControllerTest {
     @WithMockUser(roles = "MANAGER")
     @DisplayName("POST /employees - Creates a new employee for MANAGER role")
     void postEmployeeCreatesNewEmployeeForManagerRole() throws Exception {
+        // Given
         Employee savedEmployee = new Employee();
         savedEmployee.setId(2);
         savedEmployee.setFirstName("Jane");
 
-        when(employeeService.save(any(Employee.class))).thenReturn(savedEmployee);
+        given(employeeService.save(any(Employee.class))).willReturn(savedEmployee);
 
+        // When & Then
         mockMvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(employee))
@@ -106,8 +110,10 @@ class EmployeeRestControllerTest {
     @WithMockUser(roles = "ADMIN")
     @DisplayName("DELETE /employees/{id} - Deletes an employee for ADMIN role")
     void deleteEmployeeDeletesEmployeeForAdminRole() throws Exception {
-        when(employeeService.findById(1)).thenReturn(employee);
+        // Given
+        given(employeeService.findById(1)).willReturn(employee);
 
+        // When & Then
         mockMvc.perform(delete("/api/employees/1").with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Deleted employee id - 1"))
