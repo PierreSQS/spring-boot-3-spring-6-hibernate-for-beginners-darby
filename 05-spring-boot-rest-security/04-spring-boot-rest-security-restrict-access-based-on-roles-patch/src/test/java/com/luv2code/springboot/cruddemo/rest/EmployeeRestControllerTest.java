@@ -6,11 +6,10 @@ import com.luv2code.springboot.cruddemo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -25,6 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,24 +33,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class EmployeeRestControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
-    @MockBean
-    private EmployeeService employeeService;
+    @MockitoBean
+    EmployeeService employeeService;
 
-    @MockBean
-    private ObjectMapper objectMapper;
+    @Autowired
+    ObjectMapper objectMapper;
 
     private Employee employee;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        employee = new Employee();
-        employee.setId(1);
-        employee.setFirstName("John");
-        employee.setLastName("Doe");
-        employee.setEmail("john.doe@example.com");
+        employee = Employee.builder()
+                .id(1)
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .build();
     }
 
     @Test
@@ -61,7 +61,8 @@ class EmployeeRestControllerTest {
         mockMvc.perform(get("/api/employees"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].firstName").value("John"));
+                .andExpect(jsonPath("$[0].firstName").value("John"))
+                .andDo(print());
     }
 
     @Test
@@ -71,7 +72,8 @@ class EmployeeRestControllerTest {
 
         mockMvc.perform(get("/api/employees"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(0));
+                .andExpect(jsonPath("$.size()").value(0))
+                .andDo(print());
     }
 
     @Test
@@ -81,7 +83,8 @@ class EmployeeRestControllerTest {
 
         mockMvc.perform(get("/api/employees/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("John"));
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andDo(print());
     }
 
     @Test
@@ -90,7 +93,8 @@ class EmployeeRestControllerTest {
         when(employeeService.findById(1)).thenReturn(null);
 
         mockMvc.perform(get("/api/employees/1"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(print());
     }
 
     @Test
@@ -104,10 +108,11 @@ class EmployeeRestControllerTest {
 
         mockMvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(employee)))
+                        .content(objectMapper.writeValueAsString(employee)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(2))
-                .andExpect(jsonPath("$.firstName").value("Jane"));
+                .andExpect(jsonPath("$.firstName").value("Jane"))
+                .andDo(print());
     }
 
     @Test
@@ -119,7 +124,8 @@ class EmployeeRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(employee)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("John"));
+                .andExpect(jsonPath("$.firstName").value("John"))
+                .andDo(print());
     }
 
     @Test
@@ -139,7 +145,8 @@ class EmployeeRestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(patchPayload)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.lastName").value("Smith"));
+                .andExpect(jsonPath("$.lastName").value("Smith"))
+                .andDo(print());
     }
 
     @Test
@@ -149,7 +156,8 @@ class EmployeeRestControllerTest {
 
         mockMvc.perform(delete("/api/employees/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Deleted employee id - 1"));
+                .andExpect(content().string("Deleted employee id - 1"))
+                .andDo(print());
     }
 
     @Test
@@ -158,6 +166,7 @@ class EmployeeRestControllerTest {
         when(employeeService.findById(1)).thenReturn(null);
 
         mockMvc.perform(delete("/api/employees/1"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(print());
     }
 }
