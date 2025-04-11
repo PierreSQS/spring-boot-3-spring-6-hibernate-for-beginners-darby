@@ -17,9 +17,11 @@ import java.util.List;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,7 +54,8 @@ class EmployeeRestControllerTest {
     @DisplayName("GET /employees - Access denied for unauthenticated users")
     void getEmployeesAccessDeniedForUnauthenticatedUsers() throws Exception {
         mockMvc.perform(get("/api/employees"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
     }
 
     @Test
@@ -64,7 +67,8 @@ class EmployeeRestControllerTest {
         mockMvc.perform(get("/api/employees"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
-                .andExpect(jsonPath("$[0].firstName").value("John"));
+                .andExpect(jsonPath("$[0].firstName").value("John"))
+                .andDo(print());
     }
 
     @Test
@@ -79,10 +83,12 @@ class EmployeeRestControllerTest {
 
         mockMvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(employee)))
+                        .content(objectMapper.writeValueAsString(employee))
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(2))
-                .andExpect(jsonPath("$.firstName").value("Jane"));
+                .andExpect(jsonPath("$.firstName").value("Jane"))
+                .andDo(print());
     }
 
     @Test
@@ -92,7 +98,8 @@ class EmployeeRestControllerTest {
         mockMvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(employee)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andDo(print());
     }
 
     @Test
@@ -101,9 +108,10 @@ class EmployeeRestControllerTest {
     void deleteEmployeeDeletesEmployeeForAdminRole() throws Exception {
         when(employeeService.findById(1)).thenReturn(employee);
 
-        mockMvc.perform(delete("/api/employees/1"))
+        mockMvc.perform(delete("/api/employees/1").with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Deleted employee id - 1"));
+                .andExpect(content().string("Deleted employee id - 1"))
+                .andDo(print());
     }
 
     @Test
@@ -111,6 +119,7 @@ class EmployeeRestControllerTest {
     @DisplayName("DELETE /employees/{id} - Access denied for MANAGER role")
     void deleteEmployeeAccessDeniedForManagerRole() throws Exception {
         mockMvc.perform(delete("/api/employees/1"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andDo(print());
     }
 }
