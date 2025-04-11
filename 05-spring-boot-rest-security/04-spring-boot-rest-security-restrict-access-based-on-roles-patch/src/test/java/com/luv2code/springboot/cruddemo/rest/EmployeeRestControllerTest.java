@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,14 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.any;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -125,6 +128,49 @@ class EmployeeRestControllerTest {
     @DisplayName("DELETE /employees/{id} - Access denied for MANAGER role")
     void deleteEmployeeAccessDeniedForManagerRole() throws Exception {
         mockMvc.perform(delete("/api/employees/1"))
+                .andExpect(status().isForbidden())
+                .andDo(print());
+    }
+
+    @Test
+    @WithMockUser(roles = "MANAGER")
+    @DisplayName("PATCH /employees/{id} - Partially updates an employee for MANAGER role")
+    void patchEmployeeUpdatesEmployeeForManagerRole() throws Exception {
+        // Given
+        Map<String, Object> patchPayload = Map.of("lastName", "Smith");
+        Employee patchedEmployee = Employee.builder()
+                .id(1)
+                .firstName("John")
+                .lastName("Smith")
+                .email("john.doe@example.com")
+                .build();
+
+        given(employeeService.findById(1)).willReturn(employee);
+        given(employeeService.save(any(Employee.class))).willReturn(patchedEmployee);
+
+        // When & Then
+        mockMvc.perform(patch("/api/employees/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(patchPayload))
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.lastName").value("Smith"))
+                .andDo(print());
+    }
+
+    @Disabled("for debugging purposes")
+    @Test
+    @WithMockUser(roles = "EMPLOYEE")
+    @DisplayName("PATCH /employees/{id} - Access denied for EMPLOYEE role")
+    void patchEmployeeAccessDeniedForEmployeeRole() throws Exception {
+        // Given
+        Map<String, Object> patchPayload = Map.of("lastName", "Smith");
+
+        // When & Then
+        mockMvc.perform(patch("/api/employees/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(patchPayload))
+                        .with(csrf()))
                 .andExpect(status().isForbidden())
                 .andDo(print());
     }
