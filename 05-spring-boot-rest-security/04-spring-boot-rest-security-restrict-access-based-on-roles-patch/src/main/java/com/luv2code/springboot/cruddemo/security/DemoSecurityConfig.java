@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -18,19 +19,19 @@ public class DemoSecurityConfig {
 
         UserDetails john = User.builder()
                 .username("john")
-                .password("{noop}test123")
+                .password("{noop}john")
                 .roles("EMPLOYEE")
                 .build();
 
         UserDetails mary = User.builder()
                 .username("mary")
-                .password("{noop}test123")
+                .password("{noop}mary")
                 .roles("EMPLOYEE", "MANAGER")
                 .build();
 
         UserDetails susan = User.builder()
                 .username("susan")
-                .password("{noop}test123")
+                .password("{noop}susan")
                 .roles("EMPLOYEE", "MANAGER", "ADMIN")
                 .build();
 
@@ -42,7 +43,6 @@ public class DemoSecurityConfig {
 
         http.authorizeHttpRequests(configurer ->
                 configurer
-                        .requestMatchers(HttpMethod.GET, "/api/employees").hasRole("EMPLOYEE")
                         .requestMatchers(HttpMethod.GET, "/api/employees/**").hasRole("EMPLOYEE")
                         .requestMatchers(HttpMethod.POST, "/api/employees").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.PUT, "/api/employees").hasRole("MANAGER")
@@ -54,7 +54,7 @@ public class DemoSecurityConfig {
 
         // disable Cross Site Request Forgery (CSRF)
         // in general, not required for stateless REST APIs that use POST, PUT, DELETE and/or PATCH
-        http.csrf(csrf -> csrf.disable());
+        http.csrf(CsrfConfigurer::disable);
 
         return http.build();
     }
