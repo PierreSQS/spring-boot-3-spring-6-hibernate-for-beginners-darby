@@ -1,5 +1,5 @@
-CREATE DATABASE  IF NOT EXISTS `employee_directory`;
-USE `employee_directory`;
+CREATE DATABASE  IF NOT EXISTS `chad_security_demo-bcrypt-db`;
+USE `chad_security_demo-bcrypt-db`;
 
 --
 -- Table structure for table `employee`
