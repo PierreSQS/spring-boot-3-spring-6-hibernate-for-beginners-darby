@@ -1,4 +1,4 @@
-USE `employee_directory`;
+USE `chad_security_demo-cust-tables-db`;
 
 DROP TABLE IF EXISTS `roles`;
 DROP TABLE IF EXISTS `members`;
@@ -26,9 +26,9 @@ CREATE TABLE `members` (
 
 INSERT INTO `members`
 VALUES
-('john','{bcrypt}$2a$10$qeS0HEh7urweMojsnwNAR.vcXJeXR1UcMRZ2WcGQl9YeuspUdgF.q',1),
-('mary','{bcrypt}$2a$10$qeS0HEh7urweMojsnwNAR.vcXJeXR1UcMRZ2WcGQl9YeuspUdgF.q',1),
-('susan','{bcrypt}$2a$10$qeS0HEh7urweMojsnwNAR.vcXJeXR1UcMRZ2WcGQl9YeuspUdgF.q',1);
+('John','{bcrypt}$2a$12$DUoucH.T1sX0dedA5jl5aeflYxJz.uZ4P2sLrXfZbxIbhV2vVoBti',1),
+('Mary','{bcrypt}$2a$12$/6cnhWcrp3cwTBRjYNn16eSp.4B/olpWTEz0lW.AN6QD3HwfkPMj6',1),
+('Susan','{bcrypt}$2a$12$JmYc/a1t1NGFepa9rDtqbOKYZ6km5OsabR23hOK3Q8KVPHC4TLoke',1);
 
 
 --
@@ -48,9 +48,9 @@ CREATE TABLE `roles` (
 
 INSERT INTO `roles`
 VALUES
-('john','ROLE_EMPLOYEE'),
-('mary','ROLE_EMPLOYEE'),
-('mary','ROLE_MANAGER'),
-('susan','ROLE_EMPLOYEE'),
-('susan','ROLE_MANAGER'),
-('susan','ROLE_ADMIN');
+('John','ROLE_EMPLOYEE'),
+('Mary','ROLE_EMPLOYEE'),
+('Mary','ROLE_MANAGER'),
+('Susan','ROLE_EMPLOYEE'),
+('Susan','ROLE_MANAGER'),
+('Susan','ROLE_ADMIN');
