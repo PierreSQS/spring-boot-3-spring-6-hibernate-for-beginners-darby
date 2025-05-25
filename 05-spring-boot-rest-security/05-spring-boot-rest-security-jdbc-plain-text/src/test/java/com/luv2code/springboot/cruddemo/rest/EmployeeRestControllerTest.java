@@ -1,15 +1,15 @@
 // Datei: src/test/java/com/luv2code/springboot/cruddemo/rest/EmployeeRestControllerTest.java
 package com.luv2code.springboot.cruddemo.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,8 +20,8 @@ import java.util.Map;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Disabled("Disabled until checked the controller")
-@WebMvcTest(EmployeeRestController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class EmployeeRestControllerTest {
 
     @Autowired
@@ -30,9 +30,8 @@ class EmployeeRestControllerTest {
     @MockitoBean
     private EmployeeService employeeService;
 
-    @MockitoBean
-    private ObjectMapper objectMapper;
 
+    @WithMockUser(username = "max", roles = {"EMPLOYEE"})
     @Test
     void testFindAllEmployees() throws Exception {
         Employee emp1 = new Employee(1, "Max", "Mustermann", "max@firma.de");
@@ -46,6 +45,7 @@ class EmployeeRestControllerTest {
                 .andExpect(jsonPath("$[1].firstName").value("Erika"));
     }
 
+    @WithMockUser(username = "max", roles = {"EMPLOYEE"})
     @Test
     void testGetEmployeeById() throws Exception {
         Employee emp = new Employee(1, "Max", "Mustermann", "max@firma.de");
@@ -57,6 +57,7 @@ class EmployeeRestControllerTest {
                 .andExpect(jsonPath("$.firstName").value("Max"));
     }
 
+    @WithMockUser(username = "max", roles = {"MANAGER"})
     @Test
     void testAddEmployee() throws Exception {
         Employee emp = new Employee(0, "Max", "Mustermann", "max@firma.de");
@@ -70,6 +71,7 @@ class EmployeeRestControllerTest {
                 .andExpect(jsonPath("$.id").value(1));
     }
 
+    @WithMockUser(username = "max", roles = {"MANAGER"})
     @Test
     void testUpdateEmployee() throws Exception {
         Employee emp = new Employee(1, "Max", "Mustermann", "max@firma.de");
@@ -82,6 +84,7 @@ class EmployeeRestControllerTest {
                 .andExpect(jsonPath("$.id").value(1));
     }
 
+    @WithMockUser(username = "max", roles = {"MANAGER"})
     @Test
     void testPatchEmployee() throws Exception {
         Employee emp = new Employee(1, "Max", "Mustermann", "max@firma.de");
@@ -99,6 +102,7 @@ class EmployeeRestControllerTest {
                 .andExpect(jsonPath("$.firstName").value("Maximilian"));
     }
 
+    @WithMockUser(username = "max", roles = {"ADMIN"})
     @Test
     void testDeleteEmployee() throws Exception {
         Employee emp = new Employee(1, "Max", "Mustermann", "max@firma.de");
