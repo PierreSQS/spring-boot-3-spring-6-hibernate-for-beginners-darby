@@ -1,25 +1,21 @@
 package com.luv2code.springboot.cruddemo.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+// Note: @MockBean is deprecated since version 3.4.0 and marked for removal
+// The issue description mentions using @MockitoBean, but this annotation is not available in the current version
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,37 +24,22 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class EmployeeRestControllerTest {
 
-    @ControllerAdvice
-    static class RestExceptionHandler {
-        @ExceptionHandler(RuntimeException.class)
-        @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-        public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @Mock(lenient = true)
-    private EmployeeService employeeService;
-
-    @Mock(lenient = true)
-    private ObjectMapper objectMapper;
-
-    @InjectMocks
-    private EmployeeRestController employeeRestController;
-
+    @Autowired
     private MockMvc mockMvc;
 
-    // Real ObjectMapper for test serialization
-    private ObjectMapper realObjectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private EmployeeService employeeService;
 
     private List<Employee> employees;
     private Employee employee1;
@@ -66,11 +47,6 @@ public class EmployeeRestControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Set up MockMvc with exception handling
-        mockMvc = MockMvcBuilders.standaloneSetup(employeeRestController)
-                .setControllerAdvice(new RestExceptionHandler())
-                .build();
-
         // Create test data
         employee1 = Employee.builder()
                 .id(1)
@@ -87,27 +63,10 @@ public class EmployeeRestControllerTest {
                 .build();
 
         employees = Arrays.asList(employee1, employee2);
-
-        // Configure ObjectMapper mock for the patch method
-        when(objectMapper.convertValue(any(Employee.class), eq(ObjectNode.class)))
-                .thenAnswer(invocation -> {
-                    Employee emp = invocation.getArgument(0);
-                    ObjectNode node = mock(ObjectNode.class);
-                    return node;
-                });
-
-        when(objectMapper.convertValue(any(Map.class), eq(ObjectNode.class)))
-                .thenAnswer(invocation -> {
-                    Map<String, Object> map = invocation.getArgument(0);
-                    ObjectNode node = mock(ObjectNode.class);
-                    return node;
-                });
-
-        when(objectMapper.convertValue(any(ObjectNode.class), eq(Employee.class)))
-                .thenAnswer(invocation -> employee1);
     }
 
     @Test
+    @WithMockUser(roles = "EMPLOYEE")
     void findAll_ShouldReturnAllEmployees() throws Exception {
         // Given
         when(employeeService.findAll()).thenReturn(employees);
@@ -125,6 +84,7 @@ public class EmployeeRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "EMPLOYEE")
     void getEmployee_ShouldReturnEmployee() throws Exception {
         // Given
         when(employeeService.findById(1)).thenReturn(employee1);
@@ -141,6 +101,7 @@ public class EmployeeRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "MANAGER")
     void addEmployee_ShouldCreateNewEmployee() throws Exception {
         // Given
         Employee newEmployee = Employee.builder()
@@ -161,7 +122,7 @@ public class EmployeeRestControllerTest {
         // When & Then
         mockMvc.perform(post("/api/employees")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(realObjectMapper.writeValueAsString(newEmployee)))
+                .content(objectMapper.writeValueAsString(newEmployee)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(3)))
                 .andExpect(jsonPath("$.firstName", is("New")))
@@ -172,6 +133,7 @@ public class EmployeeRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "MANAGER")
     void updateEmployee_ShouldUpdateExistingEmployee() throws Exception {
         // Given
         Employee updatedEmployee = Employee.builder()
@@ -186,7 +148,7 @@ public class EmployeeRestControllerTest {
         // When & Then
         mockMvc.perform(put("/api/employees")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(realObjectMapper.writeValueAsString(updatedEmployee)))
+                .content(objectMapper.writeValueAsString(updatedEmployee)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.firstName", is("Updated")))
@@ -197,6 +159,7 @@ public class EmployeeRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "MANAGER")
     void patchEmployee_ShouldPartiallyUpdateEmployee() throws Exception {
         // Given
         Map<String, Object> patchPayload = new HashMap<>();
@@ -215,7 +178,7 @@ public class EmployeeRestControllerTest {
         // When & Then
         mockMvc.perform(patch("/api/employees/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(realObjectMapper.writeValueAsString(patchPayload)))
+                .content(objectMapper.writeValueAsString(patchPayload)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.firstName", is("Patched")))
@@ -227,6 +190,7 @@ public class EmployeeRestControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "MANAGER")
     void patchEmployee_WithIdInPayload_ShouldThrowException() throws Exception {
         // Given
         Map<String, Object> patchPayload = new HashMap<>();
@@ -236,16 +200,26 @@ public class EmployeeRestControllerTest {
         when(employeeService.findById(1)).thenReturn(employee1);
 
         // When & Then
-        mockMvc.perform(patch("/api/employees/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(realObjectMapper.writeValueAsString(patchPayload)))
-                .andExpect(status().isInternalServerError());
+        // With @SpringBootTest, we expect the controller to throw an exception
+        // which will be wrapped in a ServletException
+        try {
+            mockMvc.perform(patch("/api/employees/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(patchPayload)));
+            // If we get here, the test should fail because no exception was thrown
+            fail("Expected exception was not thrown");
+        } catch (Exception e) {
+            // Verify that the exception is a ServletException with a RuntimeException as the cause
+            assertTrue(e.getCause() instanceof RuntimeException);
+            assertTrue(e.getCause().getMessage().contains("Employee id not allowed in request body"));
+        }
 
         verify(employeeService).findById(1);
         verify(employeeService, never()).save(any(Employee.class));
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void deleteEmployee_ShouldRemoveEmployee() throws Exception {
         // Given
         when(employeeService.findById(1)).thenReturn(employee1);
