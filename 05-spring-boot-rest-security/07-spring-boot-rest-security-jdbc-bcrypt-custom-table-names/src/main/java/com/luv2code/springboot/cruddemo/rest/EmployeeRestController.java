@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
 public class EmployeeRestController {
@@ -17,12 +18,6 @@ public class EmployeeRestController {
     private final EmployeeService employeeService;
 
     private final ObjectMapper objectMapper;
-
-    @Autowired
-    public EmployeeRestController(EmployeeService theEmployeeService, ObjectMapper theObjectMapper) {
-        employeeService = theEmployeeService;
-        objectMapper = theObjectMapper;
-    }
 
     // expose "/employees" and return a list of employees
     @GetMapping("/employees")
@@ -38,7 +33,6 @@ public class EmployeeRestController {
     }
 
     // add mapping for POST /employees - add new employee
-
     @PostMapping("/employees")
     public Employee addEmployee(@RequestBody Employee theEmployee) {
 
