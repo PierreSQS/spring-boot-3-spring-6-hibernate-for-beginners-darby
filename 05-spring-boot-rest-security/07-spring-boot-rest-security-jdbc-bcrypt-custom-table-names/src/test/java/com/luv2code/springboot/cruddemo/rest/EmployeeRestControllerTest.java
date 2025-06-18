@@ -5,16 +5,15 @@ import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 // Note: @MockBean is deprecated since version 3.4.0 and marked for removal
 // The issue description mentions using @MockitoBean, but this annotation is not available in the current version
-import org.springframework.boot.test.mock.mockito.MockBean;
+//import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -38,12 +38,11 @@ public class EmployeeRestControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     private EmployeeService employeeService;
 
     private List<Employee> employees;
     private Employee employee1;
-    private Employee employee2;
 
     @BeforeEach
     void setUp() {
@@ -55,7 +54,7 @@ public class EmployeeRestControllerTest {
                 .email("john@example.com")
                 .build();
 
-        employee2 = Employee.builder()
+        Employee employee2 = Employee.builder()
                 .id(2)
                 .firstName("Jane")
                 .lastName("Smith")
@@ -191,7 +190,7 @@ public class EmployeeRestControllerTest {
 
     @Test
     @WithMockUser(roles = "MANAGER")
-    void patchEmployee_WithIdInPayload_ShouldThrowException() throws Exception {
+    void patchEmployee_WithIdInPayload_ShouldThrowException() {
         // Given
         Map<String, Object> patchPayload = new HashMap<>();
         patchPayload.put("id", 999);
@@ -210,7 +209,7 @@ public class EmployeeRestControllerTest {
             fail("Expected exception was not thrown");
         } catch (Exception e) {
             // Verify that the exception is a ServletException with a RuntimeException as the cause
-            assertTrue(e.getCause() instanceof RuntimeException);
+            assertInstanceOf(RuntimeException.class, e.getCause());
             assertTrue(e.getCause().getMessage().contains("Employee id not allowed in request body"));
         }
 
