@@ -3,14 +3,14 @@ package com.luv2code.springboot.cruddemo.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name="employee")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
+@Entity
+@Table(name="employee")
 public class Employee {
 
     // define fields
@@ -28,10 +28,4 @@ public class Employee {
     @Column(name="email")
     private String email;
 
-    // Custom constructor with only required fields (without id)
-    public Employee(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
 }
