@@ -6,16 +6,12 @@ import com.luv2code.springboot.cruddemo.service.EmployeeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.quality.Strictness;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.HttpStatus;
@@ -34,31 +30,22 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(EmployeeRestController.class)
 public class EmployeeRestControllerEdgeCaseTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private EmployeeService employeeService;
 
-    @Mock
-    private ObjectMapper objectMapperMock;
-
-    @InjectMocks
-    private EmployeeRestController employeeRestController;
-
-    private ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private Employee employee1;
 
     @BeforeEach
     void setUp() {
-        // Set up MockMvc with custom exception handler
-        mockMvc = MockMvcBuilders
-                .standaloneSetup(employeeRestController)
-                .build();
-
         // Set up test data
         employee1 = Employee.builder()
                 .id(1)
@@ -66,14 +53,6 @@ public class EmployeeRestControllerEdgeCaseTest {
                 .lastName("Doe")
                 .email("john@example.com")
                 .build();
-
-        // Configure objectMapperMock for the apply method in the controller - use lenient mode
-        Mockito.lenient().when(objectMapperMock.convertValue(any(), eq(com.fasterxml.jackson.databind.node.ObjectNode.class)))
-            .thenAnswer(invocation -> objectMapper.convertValue(invocation.getArgument(0), 
-                com.fasterxml.jackson.databind.node.ObjectNode.class));
-
-        Mockito.lenient().when(objectMapperMock.convertValue(any(), eq(Employee.class)))
-            .thenAnswer(invocation -> objectMapper.convertValue(invocation.getArgument(0), Employee.class));
     }
 
     @Test
