@@ -3,25 +3,25 @@ package com.luv2code.springboot.cruddemo.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
+import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -32,14 +32,13 @@ public class EmployeeRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private EmployeeService employeeService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     private Employee employee1;
-    private Employee employee2;
     private List<Employee> employees;
 
     @BeforeEach
@@ -52,14 +51,14 @@ public class EmployeeRestControllerTest {
                 .email("john@example.com")
                 .build();
 
-        employee2 = Employee.builder()
+        Employee employee2 = Employee.builder()
                 .id(2)
                 .firstName("Jane")
                 .lastName("Smith")
                 .email("jane@example.com")
                 .build();
 
-        employees = Arrays.asList(employee1, employee2);
+        employees = List.of(employee1, employee2);
     }
 
     @Test
@@ -116,18 +115,14 @@ public class EmployeeRestControllerTest {
 
     @Test
     @DisplayName("GET /api/employees/{id} - Not Found")
-    void testGetEmployeeNotFound() throws Exception {
+    void testGetEmployeeNotFound() {
         // Given
         when(employeeService.findById(999)).thenThrow(new RuntimeException("Did not find employee id - 999"));
 
         // When & Then
-        try {
-            mockMvc.perform(get("/api/employees/999"));
-        } catch (Exception e) {
-            // Expected exception
-            assert e.getCause() instanceof RuntimeException;
-            assert e.getCause().getMessage().contains("Did not find employee id - 999");
-        }
+        assertThatThrownBy(() -> mockMvc.perform(get("/api/employees/999")))
+                .isInstanceOf(ServletException.class)
+                .hasMessageContaining("Did not find employee id - 999");
 
         verify(employeeService, times(1)).findById(999);
     }
@@ -261,7 +256,7 @@ public class EmployeeRestControllerTest {
 
     @Test
     @DisplayName("PATCH /api/employees/{id} - With ID in Payload")
-    void testPatchEmployeeWithIdInPayload() throws Exception {
+    void testPatchEmployeeWithIdInPayload() {
         // Given
         Map<String, Object> patchPayload = new HashMap<>();
         patchPayload.put("id", 100);
@@ -270,15 +265,11 @@ public class EmployeeRestControllerTest {
         when(employeeService.findById(1)).thenReturn(employee1);
 
         // When & Then
-        try {
-            mockMvc.perform(patch("/api/employees/1")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(patchPayload)));
-        } catch (Exception e) {
-            // Expected exception
-            assert e.getCause() instanceof RuntimeException;
-            assert e.getCause().getMessage().contains("Employee id not allowed in request body - 1");
-        }
+        assertThatThrownBy(() -> mockMvc.perform(patch("/api/employees/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(patchPayload))))
+                .isInstanceOf(ServletException.class)
+                .hasMessageContaining("Employee id not allowed in request body - 1");
 
         verify(employeeService, times(1)).findById(1);
         verify(employeeService, never()).save(any(Employee.class));
@@ -286,7 +277,7 @@ public class EmployeeRestControllerTest {
 
     @Test
     @DisplayName("PATCH /api/employees/{id} - Employee Not Found")
-    void testPatchEmployeeNotFound() throws Exception {
+    void testPatchEmployeeNotFound() {
         // Given
         Map<String, Object> patchPayload = new HashMap<>();
         patchPayload.put("firstName", "Patched");
@@ -294,15 +285,11 @@ public class EmployeeRestControllerTest {
         when(employeeService.findById(999)).thenThrow(new RuntimeException("Did not find employee id - 999"));
 
         // When & Then
-        try {
-            mockMvc.perform(patch("/api/employees/999")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(patchPayload)));
-        } catch (Exception e) {
-            // Expected exception
-            assert e.getCause() instanceof RuntimeException;
-            assert e.getCause().getMessage().contains("Did not find employee id - 999");
-        }
+        assertThatThrownBy(() -> mockMvc.perform(patch("/api/employees/999")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(patchPayload))))
+                .isInstanceOf(ServletException.class)
+                .hasMessageContaining("Did not find employee id - 999");
 
         verify(employeeService, times(1)).findById(999);
         verify(employeeService, never()).save(any(Employee.class));
@@ -326,18 +313,14 @@ public class EmployeeRestControllerTest {
 
     @Test
     @DisplayName("DELETE /api/employees/{id} - Not Found")
-    void testDeleteEmployeeNotFound() throws Exception {
+    void testDeleteEmployeeNotFound() {
         // Given
         when(employeeService.findById(999)).thenThrow(new RuntimeException("Did not find employee id - 999"));
 
         // When & Then
-        try {
-            mockMvc.perform(delete("/api/employees/999"));
-        } catch (Exception e) {
-            // Expected exception
-            assert e.getCause() instanceof RuntimeException;
-            assert e.getCause().getMessage().contains("Did not find employee id - 999");
-        }
+        assertThatThrownBy(() -> mockMvc.perform(delete("/api/employees/999")))
+                .isInstanceOf(ServletException.class)
+                .hasMessageContaining("Did not find employee id - 999");
 
         verify(employeeService, times(1)).findById(999);
         verify(employeeService, never()).deleteById(anyInt());

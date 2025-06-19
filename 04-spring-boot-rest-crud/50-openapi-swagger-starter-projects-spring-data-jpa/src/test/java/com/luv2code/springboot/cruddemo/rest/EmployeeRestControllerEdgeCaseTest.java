@@ -3,31 +3,27 @@ package com.luv2code.springboot.cruddemo.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
+import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(EmployeeRestController.class)
@@ -36,23 +32,15 @@ public class EmployeeRestControllerEdgeCaseTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private EmployeeService employeeService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    private Employee employee1;
-
     @BeforeEach
     void setUp() {
         // Set up test data
-        employee1 = Employee.builder()
-                .id(1)
-                .firstName("John")
-                .lastName("Doe")
-                .email("john@example.com")
-                .build();
     }
 
     @Test
@@ -130,7 +118,7 @@ public class EmployeeRestControllerEdgeCaseTest {
 
     @Test
     @DisplayName("POST /api/employees - With Database Constraint Violation")
-    void testAddEmployeeWithDatabaseConstraintViolation() throws Exception {
+    void testAddEmployeeWithDatabaseConstraintViolation() {
         // Given
         Employee newEmployee = Employee.builder()
                 .firstName("New")
@@ -142,15 +130,11 @@ public class EmployeeRestControllerEdgeCaseTest {
                 .thenThrow(new DataIntegrityViolationException("Duplicate email address"));
 
         // When & Then
-        try {
-            mockMvc.perform(post("/api/employees")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(newEmployee)));
-        } catch (Exception e) {
-            // Expected exception
-            assert e.getCause() instanceof DataIntegrityViolationException;
-            assert e.getCause().getMessage().contains("Duplicate email address");
-        }
+        assertThatThrownBy(() -> mockMvc.perform(post("/api/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newEmployee))))
+                .isInstanceOf(ServletException.class)
+                .hasMessageContaining("Duplicate email address");
 
         verify(employeeService, times(1)).save(any(Employee.class));
     }
@@ -162,13 +146,10 @@ public class EmployeeRestControllerEdgeCaseTest {
         mockMvc.perform(patch("/api/employees/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(""))
-                .andExpect(result -> {
-                    // Verify that the exception was thrown
-                    Throwable exception = result.getResolvedException();
-                    assert exception != null;
-                    assert exception instanceof org.springframework.http.converter.HttpMessageNotReadableException;
-                });
+        .andExpect(status().isBadRequest())
+        .andDo(print());
 
+        // Verify that no service methods were called
         verify(employeeService, never()).findById(anyInt());
         verify(employeeService, never()).save(any(Employee.class));
     }
@@ -215,18 +196,14 @@ public class EmployeeRestControllerEdgeCaseTest {
 
     @Test
     @DisplayName("DELETE /api/employees/{id} - With Non-Existent ID")
-    void testDeleteEmployeeWithNonExistentId() throws Exception {
+    void testDeleteEmployeeWithNonExistentId() {
         // Given
         when(employeeService.findById(999)).thenThrow(new RuntimeException("Did not find employee id - 999"));
 
         // When & Then
-        try {
-            mockMvc.perform(delete("/api/employees/999"));
-        } catch (Exception e) {
-            // Expected exception
-            assert e.getCause() instanceof RuntimeException;
-            assert e.getCause().getMessage().contains("Did not find employee id - 999");
-        }
+        assertThatThrownBy(() -> mockMvc.perform(delete("/api/employees/999")))
+                .isInstanceOf(ServletException.class)
+                .hasMessageContaining("Did not find employee id - 999");
 
         verify(employeeService, times(1)).findById(999);
         verify(employeeService, never()).deleteById(anyInt());
