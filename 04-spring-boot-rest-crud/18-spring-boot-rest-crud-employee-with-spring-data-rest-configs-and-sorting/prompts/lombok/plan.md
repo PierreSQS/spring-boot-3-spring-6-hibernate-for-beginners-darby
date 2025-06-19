@@ -16,7 +16,7 @@ This document outlines the plan for integrating Project Lombok into the Spring B
   ```
 
 ### 2. Configure Maven Compiler Plugin
-- Update the Spring Boot Maven plugin configuration in `pom.xml` to exclude Lombok from the final artifact:
+- Update the Spring Boot Maven plugin configuration in `pom.xml` to exclude Lombok from the final artifact (for Java 17):
   ```xml
   <plugin>
       <groupId>org.springframework.boot</groupId>
@@ -38,12 +38,13 @@ This document outlines the plan for integrating Project Lombok into the Spring B
     - `@Getter`: To generate getters for all fields
     - `@Setter`: To generate setters for all fields
     - `@NoArgsConstructor`: To replace the default constructor
+    - `@AllArgsConstructor`: To generate a constructor with all fields
     - `@ToString`: To replace the toString() method
-  - Keep the custom constructor that takes firstName, lastName, and email parameters
   - Remove all manually written boilerplate code:
     - Remove all getter methods
     - Remove all setter methods
     - Remove the default constructor
+    - Remove the custom constructor (replaced by @AllArgsConstructor)
     - Remove the toString() method
 
 ### 4. Build and Test
@@ -71,8 +72,7 @@ The current `Employee` class contains:
 The refactored `Employee` class will contain:
 - The same four fields with JPA annotations
 - Lombok annotations at the class level
-- Only the custom constructor for firstName, lastName, and email
-- No manually written getters, setters, default constructor, or toString() method
+- No manually written getters, setters, constructors, or toString() method
 
 ### Example of Refactored Employee Class
 ```java
@@ -86,6 +86,7 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class Employee {
     @Id
@@ -101,13 +102,6 @@ public class Employee {
 
     @Column(name="email")
     private String email;
-
-    // Custom constructor for creating an employee without ID
-    public Employee(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
 }
 ```
 

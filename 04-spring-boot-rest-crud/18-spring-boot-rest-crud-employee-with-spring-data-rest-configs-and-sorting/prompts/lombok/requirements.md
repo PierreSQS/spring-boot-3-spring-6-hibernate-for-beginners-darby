@@ -18,32 +18,20 @@ The current project contains an `Employee` entity class with standard boilerplat
   </dependency>
   ```
 
-- Configure the Maven compiler plugin to enable annotation processing for Lombok. Since the project is using Spring Boot 3.5.0 with Java 21, use the following configuration:
+- Configure the Maven compiler plugin to enable annotation processing for Lombok. Since the project is using Spring Boot 3.5.0 with Java 17, use the following configuration:
   ```xml
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-                <annotationProcessorPaths>
-                    <path>
-                        <groupId>org.projectlombok</groupId>
-                        <artifactId>lombok</artifactId>
-                    </path>
-                </annotationProcessorPaths>
-            </configuration>
-        </plugin>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <configuration>
-                <excludes>
-                    <exclude>
-                        <groupId>org.projectlombok</groupId>
-                        <artifactId>lombok</artifactId>
-                    </exclude>
-                </excludes>
-            </configuration>
-        </plugin>
+  <plugin>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-maven-plugin</artifactId>
+      <configuration>
+          <excludes>
+              <exclude>
+                  <groupId>org.projectlombok</groupId>
+                  <artifactId>lombok</artifactId>
+              </exclude>
+          </excludes>
+      </configuration>
+  </plugin>
   ```
 
 - Note: Spring Boot's parent POM already manages the Lombok version, so you don't need to specify it explicitly. The `<optional>true</optional>` setting ensures that Lombok won't be transitively included in projects that depend on this one.
@@ -65,13 +53,13 @@ The current project contains an `Employee` entity class with standard boilerplat
   import jakarta.persistence.*;
   import lombok.*;
 
-  @Getter
-  @Setter
-  @AllArgsConstructor
-  @NoArgsConstructor
-  @ToString
   @Entity
   @Table(name="employee")
+  @Getter
+  @Setter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @ToString
   public class Employee {
       @Id
       @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -86,7 +74,6 @@ The current project contains an `Employee` entity class with standard boilerplat
 
       @Column(name="email")
       private String email;
-
   }
   ```
 
