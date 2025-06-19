@@ -2,6 +2,8 @@ package com.luv2code.springboot.cruddemo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luv2code.springboot.cruddemo.entity.Employee;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,8 +14,10 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
 public class EmployeeRestControllerTest {
@@ -51,17 +55,19 @@ public class EmployeeRestControllerTest {
 
         // Verify the Location header points to a valid resource
         String location = result.getResponse().getHeader("Location");
+        Assertions.assertNotNull(location);
         mockMvc.perform(get(location))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/hal+json"))
                 .andExpect(jsonPath("$.firstName", is("John")))
                 .andExpect(jsonPath("$.lastName", is("Doe")))
-                .andExpect(jsonPath("$.email", is("john.doe@example.com")));
+                .andExpect(jsonPath("$.email", is("john.doe@example.com")))
+                .andDo(print());
     }
 
     @Test
     public void testGetEmployeeById() throws Exception {
-        // First create an employee
+        // First, create an employee
         Employee employee = Employee.builder()
                 .firstName("Jane")
                 .lastName("Smith")
@@ -77,6 +83,8 @@ public class EmployeeRestControllerTest {
 
         // Extract the location header which contains the URL to the created resource
         String location = result.getResponse().getHeader("Location");
+        Assertions.assertNotNull(location);
+        loggingLocation(location);
 
         // Now get the employee by ID
         mockMvc.perform(get(location))
@@ -84,12 +92,13 @@ public class EmployeeRestControllerTest {
                 .andExpect(content().contentType("application/hal+json"))
                 .andExpect(jsonPath("$.firstName", is("Jane")))
                 .andExpect(jsonPath("$.lastName", is("Smith")))
-                .andExpect(jsonPath("$.email", is("jane.smith@example.com")));
+                .andExpect(jsonPath("$.email", is("jane.smith@example.com")))
+                .andDo(print());
     }
 
     @Test
     public void testUpdateEmployee() throws Exception {
-        // First create an employee
+        // First, create an employee
         Employee employee = Employee.builder()
                 .firstName("Bob")
                 .lastName("Johnson")
@@ -105,6 +114,8 @@ public class EmployeeRestControllerTest {
 
         // Extract the location header which contains the URL to the created resource
         String location = result.getResponse().getHeader("Location");
+        Assertions.assertNotNull(location);
+        loggingLocation(location);
 
         // Update the employee
         employee.setFirstName("Robert");
@@ -127,7 +138,7 @@ public class EmployeeRestControllerTest {
 
     @Test
     public void testDeleteEmployee() throws Exception {
-        // First create an employee
+        // First, create an employee
         Employee employee = Employee.builder()
                 .firstName("Alice")
                 .lastName("Brown")
@@ -142,6 +153,8 @@ public class EmployeeRestControllerTest {
 
         // Extract the location header which contains the URL to the created resource
         String location = result.getResponse().getHeader("Location");
+        Assertions.assertNotNull(location);
+        loggingLocation(location);
 
         // Delete the employee
         mockMvc.perform(delete(location))
@@ -151,4 +164,9 @@ public class EmployeeRestControllerTest {
         mockMvc.perform(get(location))
                 .andExpect(status().isNotFound());
     }
+
+    private static void loggingLocation(String location) {
+        log.info("###### Location: {} #######", location);
+    }
+
 }
