@@ -27,19 +27,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(EmployeeRestController.class)
-public class EmployeeRestControllerTest {
+class EmployeeRestControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
 
     @MockitoBean
-    private EmployeeService employeeService;
+    EmployeeService employeeService;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
 
-    private Employee employee1;
-    private List<Employee> employees;
+    Employee employee1;
+    List<Employee> employees;
 
     @BeforeEach
     void setUp() {
