@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,6 +21,7 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -56,7 +58,8 @@ class EmployeeRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].firstName").value("Max"))
-                .andExpect(jsonPath("$[1].firstName").value("Erika"));
+                .andExpect(jsonPath("$[1].firstName").value("Erika"))
+                .andDo(print());
     }
 
     @WithMockUser(username = "max", roles = {"EMPLOYEE"})
@@ -119,7 +122,8 @@ class EmployeeRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objMapper.writeValueAsString(patchPayload)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("Maximilian"));
+                .andExpect(jsonPath("$.firstName").value("Maximilian"))
+                .andDo(print());
     }
 
     @WithMockUser(username = "max", roles = {"ADMIN"})
@@ -128,8 +132,31 @@ class EmployeeRestControllerTest {
         given(employeeService.findById(1)).willReturn(emp1);
 
         mockMvc.perform(delete("/api/employees/1")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Deleted employee id - 1"));
+    }
+
+    @Test
+    void testDeleteEmployeeWithRequestProcessor() throws Exception {
+        given(employeeService.findById(1)).willReturn(emp1);
+
+        mockMvc.perform(delete("/api/employees/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(user("Susan").roles("ADMIN")))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Deleted employee id - 1"));
+    }
+
+    @WithUserDetails(value = "Susan", userDetailsServiceBeanName = "jdbcUserDetailsManager")
+    @Test
+    void testDeleteEmployeeWithRealUser() throws Exception {
+        given(employeeService.findById(1)).willReturn(emp1);
+
+        mockMvc.perform(delete("/api/employees/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Deleted employee id - 1"))
+                .andDo(print());
     }
 }
