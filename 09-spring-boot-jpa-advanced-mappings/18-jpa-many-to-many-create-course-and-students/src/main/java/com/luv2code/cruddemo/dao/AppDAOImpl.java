@@ -5,7 +5,6 @@ import com.luv2code.cruddemo.entity.Instructor;
 import com.luv2code.cruddemo.entity.InstructorDetail;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,17 +14,16 @@ import java.util.List;
 public class AppDAOImpl implements AppDAO {
 
     // define field for entity manager
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     // inject entity manager using constructor injection
-    @Autowired
     public AppDAOImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     @Override
     @Transactional
-    public void save(Instructor theInstructor) {
+    public void saveInstructor(Instructor theInstructor) {
         entityManager.persist(theInstructor);
     }
 
@@ -39,18 +37,14 @@ public class AppDAOImpl implements AppDAO {
     public void deleteInstructorById(int theId) {
 
         // retrieve the instructor
-        Instructor tempInstructor = entityManager.find(Instructor.class, theId);
+        Instructor foundInstructor = entityManager.find(Instructor.class, theId);
 
-        // get the courses
-        List<Course> courses = tempInstructor.getCourses();
-
-        // break association of all courses for the instructor
-        for (Course tempCourse : courses) {
-            tempCourse.setInstructor(null);
-        }
+        // remove instructor from all the associated Course
+        // Otherwise Constraint Violation
+        foundInstructor.getCourses().forEach(course -> course.setInstructor(null));
 
         // delete the instructor
-        entityManager.remove(tempInstructor);
+        entityManager.remove(foundInstructor);
     }
 
     @Override
@@ -66,7 +60,7 @@ public class AppDAOImpl implements AppDAO {
         InstructorDetail tempInstructorDetail = entityManager.find(InstructorDetail.class, theId);
 
         // remove the associated object reference
-        // break bi-directional link
+        // break bidirectional link
         //
         tempInstructorDetail.getInstructor().setInstructorDetail(null);
 
@@ -75,17 +69,17 @@ public class AppDAOImpl implements AppDAO {
     }
 
     @Override
-    public List<Course> findCoursesByInstructorId(int theId) {
-
+    public List<Course> findCoursesByInstructorID(int theID) {
         // create query
         TypedQuery<Course> query = entityManager.createQuery(
-                                    "from Course where instructor.id = :data", Course.class);
-        query.setParameter("data", theId);
+                "from Course where instructor.id = : data", Course.class);
 
-        // execute query
-        List<Course> courses = query.getResultList();
+        // Set NamedParameter
+        query.setParameter("data",theID);
 
-        return courses;
+        // execute and return the query results
+        return query.getResultList();
+
     }
 
     @Override
@@ -100,9 +94,8 @@ public class AppDAOImpl implements AppDAO {
         query.setParameter("data", theId);
 
         // execute query
-        Instructor instructor = query.getSingleResult();
 
-        return instructor;
+        return query.getSingleResult();
     }
 
     @Override
@@ -135,7 +128,7 @@ public class AppDAOImpl implements AppDAO {
 
     @Override
     @Transactional
-    public void save(Course theCourse) {
+    public void saveCourse(Course theCourse) {
         entityManager.persist(theCourse);
     }
 
@@ -151,9 +144,7 @@ public class AppDAOImpl implements AppDAO {
         query.setParameter("data", theId);
 
         // execute query
-        Course course = query.getSingleResult();
-
-        return course;
+        return query.getSingleResult();
     }
 }
 
