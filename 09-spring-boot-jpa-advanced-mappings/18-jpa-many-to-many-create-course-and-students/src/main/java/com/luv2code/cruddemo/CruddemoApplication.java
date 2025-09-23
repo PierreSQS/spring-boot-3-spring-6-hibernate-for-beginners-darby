@@ -29,7 +29,7 @@ public class CruddemoApplication {
 		// create Course
 		log.info("### Creating courses... ###");
 		Course course = Course.builder().title("Security in Payments Systems").build();
-		log.info("Created course {}", course);
+		log.info("### Created course {} ###", course);
 
 		// create Students
 		log.info("Creating students...");
@@ -71,11 +71,3 @@ public class CruddemoApplication {
 	}
 
 }
-
-
-
-
-
-
-
-
