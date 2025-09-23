@@ -29,7 +29,7 @@ public class CruddemoApplication {
 		// create Course
 		log.info("### Creating courses... ###");
 		Course course = Course.builder().title("Security in Payments Systems").build();
-		log.info("created course {}", course);
+		log.info("Created course {}", course);
 
 		// create Students
 		log.info("Creating students...");
@@ -44,10 +44,9 @@ public class CruddemoApplication {
 				.lastName("Mongonnam")
 				.email("odile.mongonnam@gmail.com")
 				.build();
-		log.info("### Creating courses... ###");
 
 
-		log.info("### Created Set of Students... ###");
+		log.info("### Creating Set of Students... ###");
 		Set<Student> studentSet = Set.of(student1, student2);
 		log.info("### Created Set of {} students ###", studentSet.size());
 
